@@ -1,0 +1,34 @@
+'-----路径检测,一级目录(如http://域名/kltool/)得到/kltool/
+kltool_path
+'-----权限
+call kltool_quanxian
+'-----底部调用
+call kltool_end
+'-----部分Ubb
+kltool_code(str)
+'-----1上下页 2跳转
+call kltool_page(1/2)
+'-----错误提醒弹窗
+call kltool_err_msg(内容)
+'-----错误提示(底部)代码错误
+call kltool_err_end
+写入操作日志
+call kltool_write_log(内容)
+'-----取信息，uid为用户ID，things为1不带链接
+kltool_get_usermsg(uid,things)
+'-----取头像
+kltool_get_userheadimg(uid)
+'-----取性别
+kltool_get_usersex(uid)
+'-----取权限
+kltool_get_usermanagerlvl(uid)
+'-----取金钱积分,1金币，2经验，3存款，4RMB，5积时
+kltool_get_usermoney(uid,things)
+'-----取昵称,1显示vip图标颜色，2直接显示昵称
+kltool_get_usernickname(uid,thing)
+'-----取用户vip,0显示vip源代码，1显示图，2显示到期时间
+kltool_get_uservip(uid,things)
+'-----取vip，1显示图，2显示图源代码以及颜色源代码
+kltool_get_vip(uid,things)
+'-----获取vip列表，things为表单name
+call kltool_get_viplist(things)
