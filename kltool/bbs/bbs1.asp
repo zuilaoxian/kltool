@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/head.asp"-->
+<!--#include file="../inc/head.asp"-->
 <title>柯林工具箱-帖子管理</title>
 <%
 '-----查询一条回复语
@@ -101,6 +101,7 @@ Response.Write"<option value='4'>减少阅读量</option>"
 Response.Write"<option value='5'>增加回复</option>"
 Response.Write"<option value='6'>彻底删除</option>"
 Response.Write"<option value='7'>转移栏目</option>"
+Response.Write"<option value='8'>增加点赞数</option>"
 Response.write"</select><span id=""Re"" style=""display:none"">数量:<input type=""text"" name=""click"" maxlength=""2"" size=""5""></span><span id=""Re2"" style=""display:none"">"
 Set rs1=Server.CreateObject("ADODB.Recordset")
 rs1.open "Select * from [class] where userid="&siteid&" and typeid=16",conn,1,1
@@ -136,20 +137,15 @@ if tid="" then call kltool_err_msg("未选择任何记录")
 if action="1" then
 	conn.Execute("update [wap_bbs] set isCheck=2 where id in("&tid&")")
 	call kltool_write_log("(帖子)标记删除，帖子ID"&tid)
-	response.redirect "?siteid="&siteid&"&page="&page&"&uid="&uid&"&cid="&cid
 elseif action="2" then
 	conn.Execute("update [wap_bbs] set isCheck=0 where id in("&tid&")")
 	call kltool_write_log("(帖子)标记恢复，帖子ID"&tid)
-	response.redirect "?siteid="&siteid&"&page="&page&"&uid="&uid&"&cid="&cid
 elseif action="3" then
 	conn.Execute("update [wap_bbs] set book_click=book_click+"&clng(click)&" where id in("&tid&")")
 	call kltool_write_log("(帖子)增加阅读量，帖子ID"&tid)
-	response.redirect "?siteid="&siteid&"&page="&page&"&uid="&uid&"&cid="&cid
 elseif action="4" then
 	conn.Execute("update [wap_bbs] set book_click=book_click-"&clng(click)&" where id in("&tid&")")
 	call kltool_write_log("(帖子)减少阅读量，帖子ID"&tid)
-	response.redirect "?siteid="&siteid&"&page="&page&"&uid="&uid&"&cid="&cid
-
 elseif action="5" then
 rearrtid=split(tid,",")
 for d=0 to ubound(rearrtid)
@@ -187,20 +183,19 @@ if rearrtid(d)<>"" then
 end if
 next
 	call kltool_write_log("(帖子)一键回复，帖子ID:"&tid)
-	response.redirect "?siteid="&siteid&"&page="&page&"&uid="&uid&"&cid="&cid
-
 elseif action="6" then
 	conn.Execute("delete from [wap_bbs] where id in("&tid&")")
 	call kltool_write_log("(帖子)彻底删除，帖子ID:"&tid)
-	response.redirect "?siteid="&siteid&"&page="&page&"&uid="&uid&"&cid="&cid
 elseif action="7" then
 	conn.Execute("update [wap_bbs] set book_classid="&clid&" where id in("&tid&")")
 	call kltool_write_log("(帖子)转移栏目("&clid&")，帖子ID:"&tid)
-	response.redirect "?siteid="&siteid&"&page="&page&"&uid="&uid&"&cid="&cid
+elseif action="8" then
+	conn.Execute("update [wap_bbs] set good=good+"&clng(click)&" where id in("&tid&")")
+	call kltool_write_log("(帖子)增加点赞数("&clid&")，帖子ID:"&tid)
 else
-	response.redirect "?siteid="&siteid&"&page="&page&"&uid="&uid&"&cid="&cid
-end if
 
+end if
+	response.redirect "?siteid="&siteid&"&page="&page&"&uid="&uid&"&cid="&cid
 '-----
 elseif pg="rebbs" then
 page=request("page")
