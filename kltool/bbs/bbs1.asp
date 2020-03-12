@@ -74,7 +74,6 @@ If Not rs.eof Then
 	if page>pagecount then page=pagecount
 	rs.move(pagesize*(page-1))
 call kltool_page(1)
-suport=rs("suport")
 Response.write "<form name=""formDel"" method=""post"" action="""&gopage&"siteid="&siteid&"&amp;page="&page&"&amp;pg=bbs"">"&vbcrlf
 	For i=1 To PageSize
 	If rs.eof Then Exit For
@@ -86,7 +85,7 @@ set rs1=conn.execute("select * from [class] where classid="&rs("book_classid"))
 if not rs1.eof then Response.write"("&rs("book_classid")&"<a href=""?siteid="&siteid&"&amp;cid="&rs("book_classid")&""">"&rs1("classname")&"</a>)" else Response.write"("&rs("book_classid")&"栏目不存在)"
 rs1.close
 set rs1=nothing
-Response.write "<br/>　　(作者:<a href=""/bbs/userinfo.aspx?siteid="&siteid&"&amp;touserid="&rs("book_pub")&""">"%><%=kltool_get_usernickname(rs("book_pub"),1)%><%Response.write "</a>/<a href=""?siteid="&siteid&"&amp;uid="&rs("book_pub")&""">"&rs("book_pub")&"</a>/赞"&suport&")(<a href="""&gopage&"siteid="&siteid&"&amp;page="&page&"&amp;tid="&rs("id")&"&amp;pg=rebbs"">修改</a>)</div>"
+Response.write "<br/>　　(作者:<a href=""/bbs/userinfo.aspx?siteid="&siteid&"&amp;touserid="&rs("book_pub")&""">"%><%=kltool_get_usernickname(rs("book_pub"),1)%><%Response.write "</a>/<a href=""?siteid="&siteid&"&amp;uid="&rs("book_pub")&""">"&rs("book_pub")&"</a>/赞"&rs("suport")&")(<a href="""&gopage&"siteid="&siteid&"&amp;page="&page&"&amp;tid="&rs("id")&"&amp;pg=rebbs"">修改</a>)</div>"
 Response.write "<div class=tip>(阅:"&rs("book_click")&")"
 
 Response.write "(回:"&rs("book_re")&"</a>)"
