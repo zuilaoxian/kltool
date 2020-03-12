@@ -102,7 +102,7 @@ Response.Write"<option value='5'>增加回复</option>"
 Response.Write"<option value='6'>彻底删除</option>"
 Response.Write"<option value='7'>转移栏目</option>"
 Response.Write"<option value='8'>增加点赞数</option>"
-Response.write"</select><span id=""Re"" style=""display:none"">数量:<input type=""text"" name=""click"" maxlength=""2"" size=""5""></span><span id=""Re2"" style=""display:none"">"
+Response.write"</select><span id=""Re"" style=""display:none"">数量:<input type=""text"" name=""click"" size=""5""></span><span id=""Re2"" style=""display:none"">"
 Set rs1=Server.CreateObject("ADODB.Recordset")
 rs1.open "Select * from [class] where userid="&siteid&" and typeid=16",conn,1,1
 Response.write "转移栏目:<select name='clid'>"
