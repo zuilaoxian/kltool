@@ -33,6 +33,7 @@ Function kltool_bbs_tclassid(uid)
 End Function
 '-----
 pg=request("pg")
+
 	if pg="" then
 	uid=request("uid")
 	cid=request("cid")
