@@ -1,12 +1,7 @@
-﻿<!--#include file="../inc/head.asp"-->
-<title>网站币互转</title>
+﻿<!--#include file="../inc/config.asp"-->
 <%
-'数据库检测代码
-conn.execute("select * from [money_set]")
-If Err Then 
-err.Clear
-call kltool_err_msg("请等待站长配置本功能")
-end if
+kltool_head("网站币互转")
+kltool_sql("money_set")
 
 if kltool_yunxu=1 then Response.Write "<div class=tip><a href='admin1.asp?siteid="&siteid&"'>管理后台</a></div>"
 '''''''''''''''''''''''开始
@@ -32,7 +27,7 @@ end if
 	jia2=rs("jin2")
 	rs.close
 	set rs=nothing
-if (isnull(jia1) or jia1 ="") or (isnull(jia2) or jia2="") then call kltool_err_msg("请等待管理员配置参数")
+if (isnull(jia1) or jia1 ="") or (isnull(jia2) or jia2="") then call kltool_msge("请等待管理员配置参数")
 
 pg=request("pg")
 if pg="" then
@@ -52,10 +47,10 @@ Response.Write "<input type='submit' value='确定兑换' name='submit' onClick=
 elseif pg="dh" then
 jin=request("jin")
 lx=clng(request("lx"))
-if jin="" then call kltool_err_msg("不能为空")
-if not Isnumeric(jin) then call kltool_err_msg("必须是数字")
+if jin="" then call kltool_msge("不能为空")
+if not Isnumeric(jin) then call kltool_msge("必须是数字")
 if lx=1 then
-if clng(jin*jia1)>clng(money) then call kltool_err_msg(""&sitemoneyname&"不足，需要"&jin*jia1&"")
+if clng(jin*jia1)>clng(money) then call kltool_msge(""&sitemoneyname&"不足，需要"&jin*jia1&"")
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select siteid,money,rmb from [user] where siteid="&siteid&" and userid="&userid,conn,1,2
 	rs("money")=money-jin*jia1
@@ -78,7 +73,7 @@ if clng(jin*jia1)>clng(money) then call kltool_err_msg(""&sitemoneyname&"不足�
 	set rs=nothing
 Response.Write "<div class='tip'>兑换了"&Round(jin,2)&"RMB，花费"&clng(jin*jia1)&sitemoneyname&"</div>"
 elseif lx=2 then
-if Round(jin/jia2,2)>rmb then call kltool_err_msg("RMB不足，需要"&Round(jin/jia2,2)&"")
+if Round(jin/jia2,2)>rmb then call kltool_msge("RMB不足，需要"&Round(jin/jia2,2)&"")
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select siteid,money,rmb from [user] where siteid="&siteid&" and userid="&userid,conn,1,2
 	rs("money")=money+"&jin&"
@@ -104,5 +99,5 @@ end if
 
 end if
 
-call kltool_end
+kltool_end
 %>

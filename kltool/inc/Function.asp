@@ -1,9 +1,106 @@
 <%
+Function kltool_head(str)
+%>
+<!DOCTYPE html><html>
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+<meta http-equiv="Cache-Control" content="max-age=0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=0">
+<link rel="stylesheet" href="<%=kltool_path%>Template/default.css?v=<%=year(now)%><%=month(now)%><%=minute(now)%>" type="text/css" />
+<script src="<%=kltool_path%>Template/common.js?v=<%=year(now)%><%=month(now)%><%=minute(now)%>" type="text/javascript"></script>
+<script src="<%=kltool_path%>inc/kltool.js?v=<%=year(now)%><%=month(now)%><%=minute(now)%>" type="text/javascript"></script>
+<title><%=str%></title>
+</head>
+<body>
+<style type="text/css">
+textarea{width:100%;}
+.line1{font-size:11px;}
+</style>
+<header class="aside-left header" id="header">
+  <div class="logo"><a href="<%if kltool_yunxu=1 then Response.write kltool_path&"index.asp?siteid="&siteid else Response.write"/wapindex.aspx?siteid="&siteid%>"><img src="<%=kltool_logo%>" alt="logo"></a></div>
+  <div class="menu-btn">
+<a id="menu-js" href="javascript:;"><img src="<%=kltool_path%>Template/img/menu-btn.png" alt="菜单按钮"></a>
+
+
+<a id="search-js" href="javascript:;">
+    <div class="search-box" id="search-box">
+<%if kltool_yunxu=1 then%>
+      <form id="search-form" name="g" method="get" action="<%=kltool_path%>ziliao.Asp">
+        <div class="search-box-text"><input type="text" name="uid" placeholder="输入用户ID或用户名"></div>
+<%else%>
+      <form id="search-form" name="g" method="get" action="/article/book_list.aspx">
+        <div class="search-box-text"><input type="text" name="uid" placeholder="请输入关键字"></div>
+<%end if%>
+        <input type="hidden" name="siteid" value="<%=siteid%>">
+      </form>
+      <img src="<%=kltool_path%>Template/img/search-btn.png" alt="菜单按钮"></div>
+</a>
+<div class="Mail"><%=kltool_get_usermsg(userid,2)%></div>
+</div>
+</header>
+<div class="mains">
+<div class="xk_nav">
+<%
+if kltool_yunxu=1 then
+Response.write"<a href='"&kltool_path&"admin/admin2.asp?siteid="&siteid&"'>权限管理</a><a href='"&kltool_path&"admin/admin3.asp?siteid="&siteid&"'>验证&log</a>"
+else
+Response.write"<a href='/myfile.aspx?siteid="&siteid&"'>我的地盘</a><a href='/bbs/userinfo.aspx?siteid="&siteid&"&touserid="&userid&"&backurl="&kltool_path&"'>我的空间</a><a href='/wapindex.aspx?siteid="&siteid&"&backurl="&kltool_path&"'>网站首页</a>"
+end if
+Response.write "<a href=""javascript:window.history.back();"">页面后退</a>"
+if kltool_yanzheng=1 and kltool_logintimes<kltool_admintimes then Response.write "<a href=""#"">("&kltool_logintimes&"/"&kltool_admintimes&")</a>"
+%>
+</div>
+<%
+End Function
+'-----定义底部
+Function kltool_end
+kltool_execution_endtime=timer()
+kltool_execution_time=FormatNumber((kltool_execution_endtime-kltool_execution_startime)*1000,3)
+if kltool_execution_time<1 then kltool_execution_time="0"&kltool_execution_time
+Response.write""&vbcrlf&"</div>"&vbcrlf&"<footet>"
+Response.write"<div class=""xk_quandibg"">"&vbcrlf&"<div class=""xk_quandi"">"&vbcrlf
+Response.write"<h1><a href=""/myfile.aspx?siteid="&siteid&""">地盘</a>|<a href=""/wapindex.aspx?siteid="&siteid&"&backurl="&kltool_path&""">首页</a>|<a href=""/bbs/userinfo.aspx?touserid="&userid&"&siteid="&siteid&""">空间</a>"
+if kltool_yunxu=1 then Response.Write"|<a href="""&kltool_path&"index.asp?siteid="&siteid&""">工具箱首页</a>" else Response.Write"|<a href=""/wapstyle/skin.aspx?siteid="&siteid&"&backurl="&kltool_path&""">切换</a>"
+Response.write"</h1>"&vbcrlf&"<p>"
+if kltool_yunxu=1 then Response.Write"柯林工具箱  2013-"&year(now)&"  版本"&kltool_version&"<br/>"&vbcrlf
+Response.write date()&" "&time()&" "&weekdayname(weekday(now))&" "&kltool_execution_time&"毫秒</p>"&vbcrlf
+Response.write"</div>"&vbcrlf&"</div>"&vbcrlf&"</footet>"&vbcrlf&"<aside class=""aside"" id=""aside"">"&vbcrlf&"<div class=""xk_userbg"">"&vbcrlf&"<div class=""xk_user"">"&vbcrlf&"<li>"&vbcrlf&"<a href=""/myfile.aspx?siteid="&siteid&""">"&vbcrlf&"<div>"&vbcrlf
+Response.write"<span class=""tx"">"&kltool_get_userheadimg(userid)&"</span>"&vbcrlf&"<span class=""name"">"&vbcrlf
+Response.write"<p1>"&kltool_get_usernickname(userid,1)&"</p1>"&vbcrlf
+Response.write"<p2>"&userid&"/"&kltool_get_usersex(userid)&"/金"&kltool_get_usermoney(userid,1)&"/经"&kltool_get_usermoney(userid,2)&"</p2>"&vbcrlf
+Response.write"</span>"&vbcrlf&"</div>"&vbcrlf&"</a>"&vbcrlf&"</li>"&vbcrlf&"<y><a href=""/waplogout.aspx?siteid="&siteid&"""></a></y>"&vbcrlf&"</div>"&vbcrlf&"<div class=""xk_usercd"">"&vbcrlf
+Response.write"<li><a href=""/bbs/userinfo.aspx?siteid="&siteid&"&touserid="&userid&"&backurl="&kltool_path&""">空间</a></li>"&vbcrlf
+Response.write"<li><a href=""/bbs/book_list.aspx?action=search&siteid="&siteid&"&classid=0&key="&userid&"&type=pub"">帖子</a></li>"&vbcrlf
+Response.write"<li><a href=""/bbs/book_re_my.aspx?action=class&siteid="&siteid&"&classid=0&touserid="&userid&""">回帖</a></li>"&vbcrlf
+Response.write"<li><a href=""/rizhi/myrizhi.aspx?siteid="&siteid&"&touserid="&userid&"&backurl="&kltool_path&""">微博</a></li>"&vbcrlf
+Response.write"<li><a href=""/album/myalbum.aspx?siteid="&siteid&"&touserid="&userid&"&backurl="&kltool_path&""">相册</a></li>"&vbcrlf
+Response.write"</div>"&vbcrlf&"</div>"&vbcrlf&"  <div class=""nv"">"&vbcrlf&"    <ul>"&vbcrlf
+Response.write"      <li><a href=""/wapindex-"&siteid&"-0.html"">网站首页</a></li>"&vbcrlf
+Response.write"      <li><a href="""&kltool_path&"cdk/?siteid="&siteid&""">CDK兑换系统</a></li>"&vbcrlf
+Response.write"      <li><a href="""&kltool_path&"vip/?siteid="&siteid&""">自助开通vip</a></li>"&vbcrlf
+Response.write"      <li><a href="""&kltool_path&"svip/?siteid="&siteid&""">VIP每日抽奖</a></li>"&vbcrlf
+Response.write"    </ul>"&vbcrlf&"  </div>"&vbcrlf&"</aside>"&vbcrlf&"</body>"&vbcrlf&"</html>"
+End Function
+'-----组件检测函数
+function ObjTest(strObj,str)
+  on error resume next
+  set TestObj=server.CreateObject (strObj)
+	If -2147221005 <> Err then
+if str=1 then ObjTest =strObj&"：支持<br/>"&vbcrlf else ObjTest = True
+	else
+ObjTest=strObj&"：不支持<br/>"&vbcrlf
+'ObjTest=ObjTest&"错误号:"&Err.Number&"<br/>"&vbcrlf
+'ObjTest=ObjTest&"错误源:"&Err.Source&"<br/>"&vbcrlf
+'ObjTest=ObjTest&"错误信息:"&Err.Description&"<hr>"&vbcrlf
+if str=1 then ObjTest=ObjTest else ObjTest=false
+	end if
+  set TestObj=nothing
+End function
 '-----随机数运算，最大值最小值
 Function RndNumber(MaxNum,MinNum)
-Randomize 
-RndNumber=int((MaxNum-MinNum+1)*rnd+MinNum)
-RndNumber=RndNumber
+	Randomize 
+	RndNumber=int((MaxNum-MinNum+1)*rnd+MinNum)
+	RndNumber=RndNumber
 End Function
 '-----查询部分设置
 set rs=server.CreateObject("adodb.recordset")
@@ -45,41 +142,7 @@ if userid<>"" and userid>0 then
 if sidtimeout=sessionid then kltool_login=true
 end if
 end Function
-'-----路径检测
-Function kltool_path
-kltool_path=Left(Request.ServerVariables("script_name"),InStrRev(Request.ServerVariables("script_name"),"/"))
-kltool_folder="admin|bbs|cdk|hb|money|mydb|picture|svip|vip|uname|tx|inc"
-kltool_folder_split=split(kltool_folder,"|")
-for i=0 to ubound(kltool_folder_split)
-kltool_path=replace(kltool_path,kltool_folder_split(i)&"/","")
-next
-end function
-'-----路径检测1
-Function kltool_path1
-getpath=replace(Server.MapPath("."),server.mappath("/"),"")&"\"
-getpath=replace(getpath,"\","/")
-kltool_path=getpath
-kltool_folder="admin|bbs|cdk|hb|money|mydb|picture|vip|svip|uname|tx|inc"
-arr_getpath=split(getpath,"/")
-if instr(kltool_folder,arr_getpath(ubound(arr_getpath)-1)) then
-kltool_path=""
-for i=1 to ubound(arr_getpath)-2
-kltool_path=kltool_path&"/"&arr_getpath(i)
-next
-kltool_path1=kltool_path&"/"
-end if
-end function
-'-----路径检测2
-Function kltool_path2
-getpath=replace(Server.MapPath("."),server.mappath("/"),"")&"\"
-getpath=replace(getpath,"\","/")
-kltool_path=getpath
-kltool_folder="admin|bbs|cdk|hb|money|mydb|picture|vip|svip|uname|tx|inc"
-arr_kltool_folder=split(kltool_folder,"|")
-for i=0 to ubound(arr_kltool_folder)
-if instr(getpath,arr_kltool_folder(i)) then kltool_path2=replace(getpath,arr_kltool_folder(i)&"/","")
-next
-end function
+
 '-----函数名:getname
 '-----作用:获取日期
 public Function Getname()
@@ -139,7 +202,7 @@ end function
 '-----后台操作权限
 Function kltool_quanxian
 if clng(kltool_yunxu)<>1 then
-call kltool_err_msg("你没有浏览本页的权限！")
+	kltool_msge("你没有浏览本页的权限！")
 else
 '-----后台二次验证密码过期
 If clng(kltool_yanzheng)=1 then
@@ -148,35 +211,6 @@ if clng(kltool_logintimes)>=clng(kltool_admintimes) then Response.redirect""&klt
 end if
 end if
 End Function
-
-'定义底部
-sub kltool_end
-kltool_execution_endtime=timer()
-kltool_execution_time=FormatNumber((kltool_execution_endtime-kltool_execution_startime)*1000,3)
-if kltool_execution_time<1 then kltool_execution_time="0"&kltool_execution_time
-Response.write""&vbcrlf&"</div>"&vbcrlf&"<footet>"
-Response.write"<div class=""xk_quandibg"">"&vbcrlf&"<div class=""xk_quandi"">"&vbcrlf
-Response.write"<h1><a href=""/myfile.aspx?siteid="&siteid&""">地盘</a>|<a href=""/wapindex.aspx?siteid="&siteid&"&backurl="&kltool_path&""">首页</a>|<a href=""/bbs/userinfo.aspx?touserid="&userid&"&siteid="&siteid&""">空间</a>"
-if kltool_yunxu=1 then Response.Write"|<a href="""&kltool_path&"index.asp?siteid="&siteid&""">工具箱首页</a>" else Response.Write"|<a href=""/wapstyle/skin.aspx?siteid="&siteid&"&backurl="&kltool_path&""">切换</a>"
-Response.write"</h1>"&vbcrlf&"<p>"
-if kltool_yunxu=1 then Response.Write"柯林工具箱  2013-"&year(now)&"  版本"&kltool_version&"<br/>"&vbcrlf
-Response.write date()&" "&time()&" "&weekdayname(weekday(now))&" "&kltool_execution_time&"毫秒</p>"&vbcrlf
-Response.write"</div>"&vbcrlf&"</div>"&vbcrlf&"</footet>"&vbcrlf&"<aside class=""aside"" id=""aside"">"&vbcrlf&"<div class=""xk_userbg"">"&vbcrlf&"<div class=""xk_user"">"&vbcrlf&"<li>"&vbcrlf&"<a href=""/myfile.aspx?siteid="&siteid&""">"&vbcrlf&"<div>"&vbcrlf
-Response.write"<span class=""tx"">"&kltool_get_userheadimg(userid)&"</span>"&vbcrlf&"<span class=""name"">"&vbcrlf
-Response.write"<p1>"&kltool_get_usernickname(userid,1)&"</p1>"&vbcrlf
-Response.write"<p2>"&userid&"/"&kltool_get_usersex(userid)&"/金"&kltool_get_usermoney(userid,1)&"/经"&kltool_get_usermoney(userid,2)&"</p2>"&vbcrlf&"</span>"&vbcrlf&"</div>"&vbcrlf&"</a>"&vbcrlf&"</li>"&vbcrlf&"<y><a href=""/waplogout.aspx?siteid="&siteid&"""></a></y>"&vbcrlf&"</div>"&vbcrlf&"<div class=""xk_usercd"">"&vbcrlf
-Response.write"<li><a href=""/bbs/userinfo.aspx?siteid="&siteid&"&touserid="&userid&"&backurl="&kltool_path&""">空间</a></li>"&vbcrlf
-Response.write"<li><a href=""/bbs/book_list.aspx?action=search&siteid="&siteid&"&classid=0&key="&userid&"&type=pub"">帖子</a></li>"&vbcrlf
-Response.write"<li><a href=""/bbs/book_re_my.aspx?action=class&siteid="&siteid&"&classid=0&touserid="&userid&""">回帖</a></li>"&vbcrlf
-Response.write"<li><a href=""/rizhi/myrizhi.aspx?siteid="&siteid&"&touserid="&userid&"&backurl="&kltool_path&""">微博</a></li>"&vbcrlf
-Response.write"<li><a href=""/album/myalbum.aspx?siteid="&siteid&"&touserid="&userid&"&backurl="&kltool_path&""">相册</a></li>"&vbcrlf
-Response.write"</div>"&vbcrlf&"</div>"&vbcrlf&"  <div class=""nv"">"&vbcrlf&"    <ul>"&vbcrlf
-Response.write"      <li><a href=""/wapindex-"&siteid&"-0.html"">网站首页</a></li>"&vbcrlf
-Response.write"      <li><a href="""&kltool_path&"cdk/?siteid="&siteid&""">CDK兑换系统</a></li>"&vbcrlf
-Response.write"      <li><a href="""&kltool_path&"vip/?siteid="&siteid&""">自助开通vip</a></li>"&vbcrlf
-Response.write"      <li><a href="""&kltool_path&"svip/?siteid="&siteid&""">VIP每日抽奖</a></li>"&vbcrlf
-Response.write"    </ul>"&vbcrlf&"  </div>"&vbcrlf&"</aside>"&vbcrlf&"</body>"&vbcrlf&"</html>"
-end sub
 
 '部分字符替换
 function kltool_code(strContent)
@@ -202,7 +236,7 @@ if pagecount>1 then Response.Write"</div>"
 if things=2 then
 Response.Write"<div class=line2>共<b>"&page&"</b>/"&pagecount&"页/"&Count&"条 "
 if pagecount>1 then
-Response.Write"<form method=""post"" action="""&gopage&""">"
+Response.Write"<form method=""get"" action="""&gopage&""">"
 Response.Write"<input name=""siteid"" type=""hidden"" value="""&siteid&""">"
 if pagecount>1 and page<pagecount then page=""&page+1&"" else pgae=""&page-1&""
 Response.Write"<input name=""page"" type=""text"" size=""5"" value="""&page&""">"
@@ -213,42 +247,20 @@ end if
 end if
 end sub
 
-'-----错误提醒
-sub kltool_err_msg(things)
-if kltool_err_msg_way=1 then
-Response.Write("<script language=javascript>alert('出现一个提醒如下:\n"&things&"');history.go(-1);</script>")
-else
-Response.Write "<div class=""tip""><font color='red'>出现一个提醒如下:<br/>"&things&"</font></div>"&vbcrlf
-end if
-call kltool_end
-Response.End()
-End Sub
-'-----asp错误提示
-sub kltool_err
-if Err then
-Err.Clear
-if kltool_err_msg_way=1 then
-kltool_error="错误Number:"&Err.Number&"\n错误源:"&Err.Source&"\n错误信息:"&replace(Err.Description,"'","")
-call kltool_err_msg(kltool_error)
-else
-Response.Write replace(kltool_error,"\n","<br/>")
-end if
-end if
-end sub
 '-----录入操作日志
 Sub kltool_write_log(things)
-if things<>"" then
-set rs_kltool_log=Server.CreateObject("ADODB.Recordset")
-rs_kltool_log.open"select * from [kltool_log]",kltool,1,2
-rs_kltool_log.addnew
-rs_kltool_log("userid")=userid
-rs_kltool_log("things")=things
-rs_kltool_log("time")=now
-rs_kltool_log("uip")=kltool_userip
-rs_kltool_log.update
-rs_kltool_log.close
-set rs_kltool_log=nothing
-end if
+	if things<>"" then
+		set rs_kltool_log=Server.CreateObject("ADODB.Recordset")
+		rs_kltool_log.open"select * from [kltool_log]",kltool,1,2
+		rs_kltool_log.addnew
+		rs_kltool_log("userid")=userid
+		rs_kltool_log("things")=things
+		rs_kltool_log("time")=now
+		rs_kltool_log("uip")=kltool_userip
+		rs_kltool_log.update
+		rs_kltool_log.close
+		set rs_kltool_log=nothing
+	end if
 End Sub
 '时间差计算
 function kltool_DateDiff(dt1,dt2,dt3)
@@ -495,32 +507,32 @@ end if
 End Function
 '-----获取vip列表，things为表单name
 Sub kltool_get_viplist(things)
-Response.Write"<select name="""&things&""">"
-set rsviplist=Server.CreateObject("ADODB.Recordset")
-rsviplist.open "select * from [wap2_smallType] where siteid="&siteid&" and systype='card'",conn,1,1
-If rsviplist.eof Then
-Response.write"<option value=""0"">并没有VIP</option>"
-else
-	For i=1 To rsviplist.recordcount
-	If rsviplist.eof Then Exit For
-Response.Write"<option value="""&rsviplist("id")&""">"&rsviplist("id")&"</option>" 
-	rsviplist.movenext
-	Next
-end if
-Response.Write "</select><br/>"
-rsviplist.close
-set rsviplist=nothing
+	Response.Write"<select name="""&things&""">"
+	set rsviplist=Server.CreateObject("ADODB.Recordset")
+	rsviplist.open "select * from [wap2_smallType] where siteid="&siteid&" and systype='card'",conn,1,1
+		If rsviplist.eof Then
+			Response.write"<option value=""0"">并没有VIP</option>"
+		else
+			For i=1 To rsviplist.recordcount
+			If rsviplist.eof Then Exit For
+				Response.Write"<option value="""&rsviplist("id")&""">"&rsviplist("id")&"</option>" 
+			rsviplist.movenext
+			Next
+		end if
+	Response.Write "</select><br/>"
+	rsviplist.close
+	set rsviplist=nothing
 end sub
 '-----创建文件夹
 '-----path_str="upload/"&year(now)&"/"&month(now)&"/"&day(now)
 '-----call Create_Folder(path_str)
 sub Create_Folder(path_str)
-Set fso_f = Server.CreateObject("Scripting.FileSystemObject")
-path_str_split=split(path_str,"/")
-for i=0 to ubound(path_str_split)
-if i=0 and path_str_split(i)="" then cpath="/" else cpath=cpath&path_str_split(i)&"/"
-If not fso_f.folderExists(server.mappath(cpath)) then fso_f.CreateFolder server.mappath(cpath)
-next
-Set fso_f = nothing
+	Set fso_f = Server.CreateObject("Scripting.FileSystemObject")
+	path_str_split=split(path_str,"/")
+		for i=0 to ubound(path_str_split)
+			if i=0 and path_str_split(i)="" then cpath="/" else cpath=cpath&path_str_split(i)&"/"
+			If not fso_f.folderExists(server.mappath(cpath)) then fso_f.CreateFolder server.mappath(cpath)
+		next
+	Set fso_f = nothing
 end sub
 %>

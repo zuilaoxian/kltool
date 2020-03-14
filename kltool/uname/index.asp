@@ -1,11 +1,7 @@
-﻿<!--#include file="../inc/head.asp"-->
-<title>会员自助更改用户名</title>
+﻿<!--#include file="../inc/config.asp"-->
 <%
-conn.execute("select * from [uname]")
-if Err Then 
-err.Clear
-call kltool_err_msg("请等待站长配置本功能")
-end if
+kltool_head("会员自助更改用户名")
+kltool_sql("uname")
 
 money=clng(money)
 expr=clng(expr)
@@ -30,8 +26,6 @@ end if
 If Not rs.eof Then	
 	gopage="?lx="&lx&"&amp;"
 	Count=rs.recordcount
-	page=int(request("page"))
-	if page<=0 or page="" then page=1
 	pagecount=(count+pagesize-1)\pagesize	
 	if page>pagecount then page=pagecount
 	rs.move(pagesize*(page-1))
@@ -86,24 +80,24 @@ elseif pg="kt" then
 nname=Trim(request("nname"))
 content=request("content")
 nname=LCASE(nname)
-if len(nname)<3 then call kltool_err_msg("新用户名不能小于3个字符")
-if len(nname)>16 then call kltool_err_msg("新用户名不能超过16个字符")
-if nname=getusername then call kltool_err_msg("不能与原用户名相同")
+if len(nname)<3 then call kltool_msge("新用户名不能小于3个字符")
+if len(nname)>16 then call kltool_msge("新用户名不能超过16个字符")
+if nname=getusername then call kltool_msge("不能与原用户名相同")
 set rs=server.CreateObject("adodb.recordset")
 rs.open "select * from [user] where username='"&nname&"'",conn,1,1
-if not rs.eof then call kltool_err_msg("已存在此用户名")
+if not rs.eof then call kltool_msge("已存在此用户名")
 rs.close
 set rs=nothing
 
 set rs=server.CreateObject("adodb.recordset")
 rs.open "select * from [uname] where siteid="&siteid&" and userid="&userid&" and type1=0",conn,1,1
-if not rs.eof then call kltool_err_msg("你还有未审核的申请")
+if not rs.eof then call kltool_msge("你还有未审核的申请")
 rs.close
 set rs=nothing
 
 set rs=server.CreateObject("adodb.recordset")
 rs.open "select * from [uname] where siteid="&siteid&" and userid="&userid&" and type2=1",conn,1,2
-if not rs.eof then call kltool_err_msg("你还有已审核的申请未操作")
+if not rs.eof then call kltool_msge("你还有已审核的申请未操作")
 rs.addnew
 rs("siteid")=siteid
 rs("userid")=userid
@@ -120,7 +114,7 @@ set rs=nothing
 
 set rs=server.CreateObject("adodb.recordset")
 rs.open "select * from [quanxian]",kltool,1,1
-if rs.eof then call kltool_err_msg("查询内信对象失败\n未能发送审核内信给管理员")
+if rs.eof then call kltool_msge("查询内信对象失败\n未能发送审核内信给管理员")
 For i=1 To rs.recordcount
 If rs.eof Then Exit For
 gid=rs("userid")
@@ -142,7 +136,7 @@ rs.open"select * from [uname] where siteid="&siteid&" and id="&id,conn,1,1
 else
 rs.open"select * from [uname] where siteid="&siteid&" and userid="&userid&" and id="&id,conn,1,1
 end if
-if rs.eof then call kltool_err_msg("无此记录")
+if rs.eof then call kltool_msge("无此记录")
 uid=clng(rs("userid"))
 oname=rs("oname")
 nname=rs("nname")
@@ -204,7 +198,7 @@ page=request("page")
 lx=request("lx")
 set rs=server.CreateObject("adodb.recordset")
 rs.open"select * from [uname] where siteid="&siteid&" and userid="&userid&" and id="&id,conn,1,1
-if rs.eof then call kltool_err_msg("无此记录")
+if rs.eof then call kltool_msge("无此记录")
 uid=clng(rs("userid"))
 oname=rs("oname")
 nname=rs("nname")
@@ -220,19 +214,19 @@ time2=rs("time2")
 rs.close
 set rs=nothing
 
-if type2=2 then call kltool_err_msg("此申请已操作完毕\n请勿重复操作")
-if type2=3 then call kltool_err_msg("已经放弃本次申请\n请勿重复操作")
-if type1=0 then call kltool_err_msg("未审核无法修改")
-if type1=1 then call kltool_err_msg("审核未通过，无法修改")
+if type2=2 then call kltool_msge("此申请已操作完毕\n请勿重复操作")
+if type2=3 then call kltool_msge("已经放弃本次申请\n请勿重复操作")
+if type1=0 then call kltool_msge("未审核无法修改")
+if type1=1 then call kltool_msge("审核未通过，无法修改")
 
 if time2<>"" then time2=-dateDiff("d",time2,now())
 	if time2<0 then
 	conn.execute("update [uname] set type2=4 where siteid="&siteid&" and userid="&uid&" and id="&id)
-	call kltool_err_msg("已过期的申请无法操作")
+	call kltool_msge("已过期的申请无法操作")
 	end if
     set rs=server.CreateObject("adodb.recordset")
     rs.open"select * from [user] where siteid="&siteid&" and userid="&uid,conn,1,1
-    if rs.eof then call kltool_err_msg("无此ID")
+    if rs.eof then call kltool_msge("无此ID")
     name=rs("nickname")
     jin=rs("money")
     yan=rs("expr")
@@ -265,15 +259,15 @@ id=request("id")
 page=request("page")
 if page="" then page=1
 lx=request("lx")
-if kltool_yunxu<>1 then call kltool_err_msg("没有权限，无法进行删除操作")
+if kltool_yunxu<>1 then call kltool_msge("没有权限，无法进行删除操作")
 set rs=server.CreateObject("adodb.recordset")
 rs.open"select * from [uname] where siteid="&siteid&" and id="&id,conn,1,3
-if rs.eof then call kltool_err_msg("无此记录")
+if rs.eof then call kltool_msge("无此记录")
 rs.delete
 rs.close
 set rs=nothing
 Response.redirect"?siteid="&siteid&"&page="&page&"&lx="&lx
 
 end if
-call kltool_end
+kltool_end
 %>

@@ -1,13 +1,8 @@
-﻿<!--#include file="../inc/head.asp"-->
-<!--#include file="./Function.asp"-->
-<title>互动红包-红包记录</title>
+﻿<!--#include file="../inc/config.asp"-->
+<!--#include file="Function.asp"-->
 <%
-'数据库检测代码
-conn.execute("select * from [kltool_hb]")
-If Err Then 
-err.Clear
-call kltool_err_msg("请等待站长配置本功能")
-end if
+kltool_head("互动红包-红包记录")
+kltool_sql("kltool_hb")
 Response.Write"<div class=""tip"">"
 if kltool_yunxu=1 then Response.Write"<a href='admin1.asp?siteid="&siteid&"'>管理后台</a>&nbsp;"
 Response.Write"<a href=""./?siteid="&siteid&""">您的"&sitemoneyname&":"&money&"</a>"
@@ -74,8 +69,6 @@ rs.open sql,conn,1,1
 If Not rs.eof Then
 	gopage="?lx="&lx&"&amp;"
 	Count=rs.recordcount
-	page=int(request("page"))
-	if page<=0 or page="" then page=1
 	pagecount=(count+pagesize-1)\pagesize
 	if page>pagecount then page=pagecount
 	rs.move(pagesize*(page-1))
@@ -102,5 +95,5 @@ rs.close
 set rs=nothing
 
 end if
-call kltool_end
+kltool_end
 %>

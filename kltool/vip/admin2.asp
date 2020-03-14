@@ -1,11 +1,9 @@
-﻿<!--#include file="../inc/head.asp"-->
-<title>柯林工具箱-vip开通记录</title>
-<%call kltool_quanxian
-conn.execute("select * from [wap2_smallType_log]")
-If Err Then 
-err.Clear
-call kltool_err_msg("请先安装数据库字段")
-end if
+﻿<!--#include file="../inc/config.asp"-->
+<%
+kltool_head("柯林工具箱-vip开通记录")
+kltool_quanxian
+kltool_sql("wap2_smallType_log")
+
 Response.Write "<div class=tip><a href='admin1.asp?siteid="&siteid&"'>vip管理后台</a>/<a href='index.asp?siteid="&siteid&"'>前台查看</a></div>"
 pg=request("pg")
 if pg="" then
@@ -68,10 +66,8 @@ response.redirect "?siteid="&siteid&""
 
 end if
 If Not rs.eof Then
-gopage="?lx="&lx&"&amp;uid="&uid&"&amp;vyear="&vyear&"&amp;vmonth="&vmonth&"&amp;vday="&vday&"&amp;"
+	gopage="?lx="&lx&"&amp;uid="&uid&"&amp;vyear="&vyear&"&amp;vmonth="&vmonth&"&amp;vday="&vday&"&amp;"
 	Count=rs.recordcount
-	page=int(request("page"))
-	if page<=0 or page="" then page=1
 	pagecount=(count+pagesize-1)\pagesize
 	if page>pagecount then page=pagecount
 	rs.move(pagesize*(page-1))
@@ -111,11 +107,11 @@ set rs=nothing
 
 
 elseif pg="del" then
-ids=request("ids")
-conn.Execute("DELETE FROM [wap2_smallType_log] where id in("&ids&")")
-call kltool_write_log("(vip开通)删除了vip开通日志:"&ids&"")
-response.redirect "?siteid="&siteid&""
+	ids=request("ids")
+	conn.Execute("DELETE FROM [wap2_smallType_log] where id in("&ids&")")
+	call kltool_write_log("(vip开通)删除了vip开通日志:"&ids&"")
+	response.redirect "?siteid="&siteid&""
 
 end if
-call kltool_end
+kltool_end
 %>

@@ -1,22 +1,8 @@
-﻿<!--#include file="./inc/head.asp"-->
-<title>柯林工具箱！</title>
+﻿<!--#include file="inc/config.asp"-->
 <%
-call kltool_quanxian
-//组件检测函数
-function ObjTest(strObj,str)
-  on error resume next
-  set TestObj=server.CreateObject (strObj)
-	If -2147221005 <> Err then
-if str=1 then ObjTest =strObj&"：支持<br/>"&vbcrlf else ObjTest = True
-	else
-ObjTest=strObj&"：不支持<br/>"&vbcrlf
-'ObjTest=ObjTest&"错误号:"&Err.Number&"<br/>"&vbcrlf
-'ObjTest=ObjTest&"错误源:"&Err.Source&"<br/>"&vbcrlf
-'ObjTest=ObjTest&"错误信息:"&Err.Description&"<hr>"&vbcrlf
-if str=1 then ObjTest=ObjTest else ObjTest=false
-	end if
-  set TestObj=nothing
-End function
+kltool_head("柯林工具箱")
+kltool_quanxian
+
 if ObjTest("Scripting.FileSystemObject",0)=False then response.write "<div class=""tip"">FSO文件系统(文件操作):<br/>"&ObjTest("Scripting.FileSystemObject",1)&"</div>"&vbcrlf
 if ObjTest("Persits.Jpeg",0)=False then response.write "<div class=""tip"">Jpeg图片处理(图片操作):<br/>"&ObjTest("Persits.Jpeg",1)&"</div>"&vbcrlf
 if ObjTest("Microsoft.XMLHTTP",0)=False then response.write "<div class=""tip"">Http 组件(并非很重要):<br/>"&ObjTest("Microsoft.XMLHTTP",1)&"</div>"&vbcrlf
@@ -27,9 +13,7 @@ set rs=server.CreateObject("adodb.recordset")
 rs.open "select * from [kltool] where kltool_show=1 order by kltool_order",kltool,1,1
 If Not rs.eof Then
 	gopage="?"
-	Count=rs.recordcount
-	page=int(request("page"))
-	if page<=0 or page="" then page=1		
+	Count=rs.recordcount	
 	pagecount=(count+pagesize-1)\pagesize	
 	if page>pagecount then page=pagecount
 	rs.move(pagesize*(page-1))
@@ -59,7 +43,7 @@ Response.write"</div>"
 if id<>"" and Isnumeric(id) then
 set rs=server.CreateObject("adodb.recordset")
 rs.open "select * from [kltool] where id="&id,kltool,1,1
-if not rs.eof then' call kltool_err_msg("错误的记录")
+if not rs.eof then
 Response.write kltool_code(rs("kltool_title"))
 Response.write kltool_code(rs("kltool_content"))
 Response.write"<span id='pic2' style='display:none'>"
@@ -121,8 +105,7 @@ rs.update
 rs.close
 set rs=nothing
 if action="1" then call kltool_write_log("(功能)添加:"&k1) else call kltool_write_log("(功能)修改:"&k1)
-call kltool_err_msg("成功")
-
+kltool_msg("成功")
 end if
-call kltool_end
+kltool_end
 %>

@@ -1,11 +1,9 @@
-﻿<!--#include file="../inc/head.asp"-->
+﻿<!--#include file="../inc/config.asp"-->
 <title>柯林工具箱-用户名自助更改插件</title>
-<%call kltool_quanxian
-conn.execute("select * from [uname]")
-If Err Then 
-err.Clear
-call kltool_err_msg("请先安装数据库字段")
-end if
+<%
+call kltool_quanxian
+kltool_head("柯林工具箱-用户名自助更改插件")
+kltool_sql("uname")
 
 Response.write "<div class=""tip""><a href='index.asp?siteid="&siteid&"'>前台查看</a></div>"
 pg=request("pg")
@@ -32,8 +30,6 @@ end if
 If Not rs.eof Then
 	gopage="?lx="&lx&"&amp;"
 	Count=rs.recordcount
-	page=int(request("page"))
-	if page<=0 or page="" then page=1
 	pagecount=(count+pagesize-1)\pagesize
 	if page>pagecount then page=pagecount
 	rs.move(pagesize*(page-1))
@@ -114,7 +110,7 @@ page=request("page")
 lx=request("lx")
 set rs=server.CreateObject("adodb.recordset")
 rs.open"select * from [uname] where siteid="&siteid&" and id="&id,conn,1,1
-if rs.eof then call kltool_err_msg("无此记录")
+if rs.eof then call kltool_msge("无此记录")
 uid=rs("userid")
 oname=rs("oname")
 nname=rs("nname")
@@ -155,16 +151,16 @@ if request("shou")<>"" then shou=clng(request("shou"))
 if request("jin")<>"" then jin=clng(request("jin"))
 if request("yan")<>"" then yan=clng(request("yan"))
 if request("time2")<>"" then time2=clng(request("time2"))
-if time2<>"" and not Isnumeric(time2) then call kltool_err_msg("天数必须是数字")
+if time2<>"" and not Isnumeric(time2) then call kltool_msge("天数必须是数字")
 if shou=2 then
-if jin<>"" and not Isnumeric(jin) then call kltool_err_msg("收费金额请填写数字")
-if yan<>"" and not Isnumeric(yan) then call kltool_err_msg("收费经验请填写数字")
-if jin="" and yan="" then call kltool_err_msg("收费后请填写一项")
+if jin<>"" and not Isnumeric(jin) then call kltool_msge("收费金额请填写数字")
+if yan<>"" and not Isnumeric(yan) then call kltool_msge("收费经验请填写数字")
+if jin="" and yan="" then call kltool_msge("收费后请填写一项")
 end if
 
 set rs=server.CreateObject("adodb.recordset")
 rs.open"select * from [uname] where siteid="&siteid&" and id="&id,conn,1,2
-if rs.eof then call kltool_err_msg("无此记录")
+if rs.eof then call kltool_msge("无此记录")
 rs("type1")=type1
 if type1=2 then rs("type2")=1
 rs("shou")=shou
@@ -197,12 +193,12 @@ if page="" then page=1
 lx=request("lx")
 set rs=server.CreateObject("adodb.recordset")
 rs.open"select * from [uname] where siteid="&siteid&" and id="&id,conn,1,3
-if rs.eof then call kltool_err_msg("无此记录")
+if rs.eof then call kltool_msge("无此记录")
 rs.delete
 rs.close
 set rs=nothing
 Response.redirect"?siteid="&siteid&"&page="&page&"&lx="&lx
 
 end if
-call kltool_end
+kltool_end
 %>

@@ -1,6 +1,9 @@
-﻿<!--#include file="../inc/head.asp"-->
+﻿<!--#include file="../inc/config.asp"-->
 <!--#include file="Function.asp"-->
-<title>柯林工具箱-远程图片本地化</title>
+<%
+call kltool_quanxian
+kltool_head("柯林工具箱-远程图片本地化")
+%>
         <style> 
         .black_overlay{ 
             display: none;
@@ -32,91 +35,87 @@
         }
     </style>
 <%
-call kltool_quanxian
 pg=request("pg")
 if pg="" then
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [wap_picture] where userid="&siteid&" order by id desc",conn,1,1
-If Not rs.eof Then
-gopage="?"
-Count=rs.recordcount
-page=int(request("page"))
-if page<=0 or page="" then page=1
-pagecount=(count+pagesize-1)\pagesize
-if page>pagecount then page=pagecount
-rs.move(pagesize*(page-1))
-call kltool_page(1)
-For i=1 To PageSize
-If rs.eof Then Exit For
-if (i mod 2)=0 then Response.write "<div class=line1>" else Response.write "<div class=line2>"
-%>
-<%=rs("id")%>
-<a href="javascript:void(0)" onclick="document.getElementById('light<%=rs("id")%>').style.display='block';document.getElementById('fade<%=rs("id")%>').style.display='block';return ajaxQuerySetDom('<%=rs("id")%>','../inc/key.asp?action=picture&','q','result<%=rs("id")%>');"><%=rs("book_title")%></a>
-<div id="fade<%=rs("id")%>" class="black_overlay" onclick ="document.getElementById('light<%=rs("id")%>').style.display='none';document.getElementById('fade<%=rs("id")%>').style.display='none'"></div>
-<div id="light<%=rs("id")%>" class="white_content">
-<br/><span id="result<%=rs("id")%>">载入中…</span>
-</div>
-<%
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [wap_picture] where userid="&siteid&" order by id desc",conn,1,1
+	If Not rs.eof Then
+	gopage="?"
+	Count=rs.recordcount
+	pagecount=(count+pagesize-1)\pagesize
+	if page>pagecount then page=pagecount
+	rs.move(pagesize*(page-1))
+	call kltool_page(1)
+	For i=1 To PageSize
+	If rs.eof Then Exit For
+	if (i mod 2)=0 then Response.write "<div class=line1>" else Response.write "<div class=line2>"
+	%>
+	<%=rs("id")%>
+	<a href="javascript:void(0)" onclick="document.getElementById('light<%=rs("id")%>').style.display='block';document.getElementById('fade<%=rs("id")%>').style.display='block';return ajaxQuerySetDom('<%=rs("id")%>','../inc/key.asp?action=picture&','q','result<%=rs("id")%>');"><%=rs("book_title")%></a>
+	<div id="fade<%=rs("id")%>" class="black_overlay" onclick ="document.getElementById('light<%=rs("id")%>').style.display='none';document.getElementById('fade<%=rs("id")%>').style.display='none'"></div>
+	<div id="light<%=rs("id")%>" class="white_content">
+	<br/><span id="result<%=rs("id")%>">载入中…</span>
+	</div>
+	<%
 
-%>
-<span class="right"><a href="?pg=yes&id=<%=rs("id")%>&page=<%=page%>">
-<%if instr(rs("book_img"),"http://")>0 then Response.write"A"
-if instr(rs("book_file"),"http://")>0 then Response.write"B"
-%>
-</a></span>
-</div>
-<%
-rs.movenext
-Next
-call kltool_page(2)
-else
-Response.write "<div class=tip>暂时没有记录！</div>"
-end if
-rs.close
-set rs=nothing
+	%>
+	<span class="right"><a href="?pg=yes&id=<%=rs("id")%>&page=<%=page%>">
+	<%if instr(rs("book_img"),"http://")>0 then Response.write"A"
+	if instr(rs("book_file"),"http://")>0 then Response.write"B"
+	%>
+	</a></span>
+	</div>
+	<%
+	rs.movenext
+	Next
+	call kltool_page(2)
+	else
+	Response.write "<div class=tip>暂时没有记录！</div>"
+	end if
+	rs.close
+	set rs=nothing
 
 '-------------------------------------------
 elseif pg="yes" then
-Server.ScriptTimeOut = 9999
-id=request("id")
-page=request("page")
-'----路径
-pic_path1="/picture/"
-pic_path2="upload/"&siteid&"/"&year(now)&"/"&month(now)&"/"&day(now)&"/"&id&"/"
-'----路径创建
-call Create_Folder(pic_path1&pic_path2)
+	Server.ScriptTimeOut = 9999
+	id=request("id")
+	'----路径
+	pic_path1="/picture/"
+	pic_path2="upload/"&siteid&"/"&year(now)&"/"&month(now)&"/"&day(now)&"/"&id&"/"
+	'----路径创建
+	call Create_Folder(pic_path1&pic_path2)
 
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [wap_picture] where id="&id,conn,1,1
-If Not rs.eof Then
-picfile=rs("book_file")
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [wap_picture] where id="&id,conn,1,1
+	If Not rs.eof Then
+	picfile=rs("book_file")
 
-'-----图片组本地化
-	picstr = Split(picfile,"|")
-	for i=0 to ubound(picstr)
-if instr(picstr(i),"http")>0 then
-	picfileNameSplit = Split(picstr(i),"/")
-	picName = picfileNameSplit(Ubound(picfileNameSplit))
-	call downFile(picstr(i),pic_path1&pic_path2)
-	piccontent=replace(rs("book_file"),picstr(i),pic_path2&picName)
-	conn.execute("UPDATE [wap_picture] SET book_file='"&piccontent&"' where id="&id)
-end if
-	next
-picimg=rs("book_img")
-	if picimg="" then picimg=picstr(0) else picimg=picstr(1)
-	'----缩略图本地化
-	if instr(picimg,"http")>0 then call downFile(picimg,pic_path1&pic_path2)
-	'----文件名获取
-		fileNameSplit = Split(picimg,"/")
-		fileName = fileNameSplit(Ubound(fileNameSplit))
-	'----缩略图缩放
-	call CreatePic(pic_path1&pic_path2&fileName,pic_path1&pic_path2&"s_"&fileName)
-	'----缩略图数据修改
-	conn.execute("UPDATE [wap_picture] SET book_img='"&pic_path2&"s_"&fileName&"' where id="&id)
+	'-----图片组本地化
+		picstr = Split(picfile,"|")
+		for i=0 to ubound(picstr)
+	if instr(picstr(i),"http")>0 then
+		picfileNameSplit = Split(picstr(i),"/")
+		picName = picfileNameSplit(Ubound(picfileNameSplit))
+		call downFile(picstr(i),pic_path1&pic_path2)
+		piccontent=replace(rs("book_file"),picstr(i),pic_path2&picName)
+		conn.execute("UPDATE [wap_picture] SET book_file='"&piccontent&"' where id="&id)
 	end if
-rs.close
-set rs=nothing
-Response.write "<div class=tip>成功本地化图片</div>"
+		next
+	picimg=rs("book_img")
+		if picimg="" then picimg=picstr(0) else picimg=picstr(1)
+		'----缩略图本地化
+		if instr(picimg,"http")>0 then call downFile(picimg,pic_path1&pic_path2)
+		'----文件名获取
+			fileNameSplit = Split(picimg,"/")
+			fileName = fileNameSplit(Ubound(fileNameSplit))
+		'----缩略图缩放
+		call CreatePic(pic_path1&pic_path2&fileName,pic_path1&pic_path2&"s_"&fileName)
+		'----缩略图数据修改
+		conn.execute("UPDATE [wap_picture] SET book_img='"&pic_path2&"s_"&fileName&"' where id="&id)
+		end if
+	rs.close
+	set rs=nothing
+	Response.write "<div class=tip>成功本地化图片</div>"
 end if
 call kltool_end
 %>

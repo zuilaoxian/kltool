@@ -1,7 +1,4 @@
-﻿<!--#include file="./conn.asp"-->
-<!--#include file="./Function.asp"-->
-<!--#include file="../api/conn.asp"-->
-<!--#include file="../api/userconfig.asp"-->
+﻿<!--#include file="config.asp"-->
 <%
 Function kltool_key_reg(q)
 if not Isnumeric(q) then

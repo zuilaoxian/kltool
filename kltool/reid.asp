@@ -1,6 +1,7 @@
-﻿<!--#include file="./inc/head.asp"-->
-<title>柯林工具箱-会员转移</title>
-<%call kltool_quanxian
+﻿<!--#include file="inc/config.asp"-->
+<%
+kltool_quanxian
+kltool_head("柯林工具箱-会员转移")
 pg=request("pg")
 if pg="" then
 %>
@@ -25,12 +26,12 @@ elseif pg="yes1" then
 uid1=request("uid1")
 uid2=request("uid2")
 
-if uid1="" or uid2="" then call kltool_err_msg("ID不能为空")
-if not Isnumeric(uid1) or not Isnumeric(uid2) or uid1=uid2 then call kltool_err_msg("ID必须为数字，且不能相同")
-if uid1=siteid or uid2=siteid then call kltool_err_msg("ID不能为1000")
+if uid1="" or uid2="" then call kltool_msge("ID不能为空")
+if not Isnumeric(uid1) or not Isnumeric(uid2) or uid1=uid2 then call kltool_msge("ID必须为数字，且不能相同")
+if int(uid1)=siteid or uid2=siteid then call kltool_msge("ID不能为1000")
 
 set rs=conn.execute("select userid from [user] where siteid="&siteid&" and userid="&uid1)
-If rs.eof Then call kltool_err_msg("源ID不存在")
+If rs.eof Then call kltool_msge("源ID不存在")
 rs.close
 set rs=nothing
 
@@ -65,5 +66,5 @@ elseif pg="yes2" then
 <div class="tip">转移结果</div>
 <%
 end if
-call kltool_end
+kltool_end
 %>

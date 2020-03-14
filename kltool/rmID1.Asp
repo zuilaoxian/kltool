@@ -1,9 +1,9 @@
-﻿<!--#include file="./inc/head.asp"-->
-<!--#include file="./inc/keycdksc.asp"-->
-<!--#include file="./inc/kltool_rndnick_s.asp"-->
-<title>批量注册会员</title>
+﻿<!--#include file="inc/config.asp"-->
+<!--#include file="inc/keycdksc.asp"-->
+<!--#include file="inc/kltool_rndnick_s.asp"-->
 <%
-call kltool_quanxian
+kltool_head("柯林工具箱-批量注册会员")
+kltool_quanxian
 pg=request("pg")
 if pg="" then
 Response.write"<div class=""line2"">请填写信息</div>"
@@ -47,8 +47,8 @@ ssid=request("ssid")
 name=request("name")
 lvl=request("lvl")
 sx=request("sx")
-if uids="" or uid=""then call kltool_err_msg("各项不能为空")
-if not Isnumeric(uids) or not Isnumeric(uid) or not Isnumeric(ssid) then call kltool_err_msg("ID和网站ID必须是数字")
+if uids="" or uid=""then call kltool_msge("各项不能为空")
+if not Isnumeric(uids) or not Isnumeric(uid) or not Isnumeric(ssid) then call kltool_msge("ID和网站ID必须是数字")
 	uid2=CInt(uid)+CInt(uids)-1
 conn.execute("SET IDENTITY_INSERT [USER] ON")
 	For i=uid To uid2
@@ -59,11 +59,11 @@ conn.execute("SET IDENTITY_INSERT [USER] ON")
 	rs("userid")=i
 	rs("siteid")=ssid
 	rs("username")=i
-if name="" then
-rs("nickname")=kltool_rndnick_s
-else
-rs("nickname")=name
-end if
+	if name="" then
+		rs("nickname")=kltool_rndnick_s
+	else
+		rs("nickname")=name
+	end if
 	rs("password")=Generate_Key
 	rs("managerlvl")=lvl
 if sx="1" then rs("headimg")=""&RndNumber(30,1)&".gif" else rs("headimg")=""&RndNumber(64,31)&".gif" end if
@@ -75,7 +75,7 @@ if sx="1" then rs("headimg")=""&RndNumber(30,1)&".gif" else rs("headimg")=""&Rnd
 	next
 conn.execute("SET IDENTITY_INSERT [USER] OFF")
 call kltool_write_log("注册了"&uids&"个ID："&uid&"-"&uid2)
-call kltool_err_msg("批量注册了"&uids&"个ID："&uid&"-"&uid2)
+kltool_msg("批量注册了"&uids&"个ID："&uid&"-"&uid2)
 end if
 call kltool_end
 %>

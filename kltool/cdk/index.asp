@@ -1,16 +1,8 @@
-﻿<!--#include file="../inc/head.asp"-->
-<title>CDK兑换系统</title>
+﻿<!--#include file="../inc/config.asp"-->
 <%
-conn.execute("select * from [cdk]")
-If Err Then 
-err.Clear
-call kltool_err_msg("请先等待站长配置")
-end if
-set rs=conn.execute("select endTime from [user] where siteid="&siteid&" and userid="&userid)
-jieshu=rs("endTime")
-rs.close
-set rs=nothing
-
+kltool_head("CDK兑换系统")
+kltool_sql("cdk")
+jieshu=endTime
 Response.write "<div class=line1>您的"&sitemoneyname&":"&money&"/经验:"&expr&"</div>"
 if kltool_yunxu=1 then Response.Write "<div class=tip><a href='admin1.asp?siteid="&siteid&"'>后台管理</a></div>"
 Response.Write "<div class=title><a href='?siteid="&siteid&"&amp;pg=mycdk'>我的CDK</a>　<a href='shop.asp?siteid="&siteid&"'>CDK商城</a></div>"
@@ -32,7 +24,7 @@ clx=request("clx")
 cdk=request("cdk")
 set rs=Server.CreateObject("ADODB.Recordset")
 rs.open"select * from [cdk] where cdk='"&cdk&"' and chushou=2",conn,1,1
-if rs.eof then call kltool_err_msg("CDK:["&cdk&"] 不存在，请核对")
+if rs.eof then call kltool_msge("CDK:["&cdk&"] 不存在，请核对")
 lx=Clng(rs("lx"))
 sy=Clng(rs("sy"))
 jinbi=Clng(rs("jinbi"))
@@ -46,8 +38,8 @@ chushou=clng(rs("chushou"))
 rs.close
 set rs=nothing
 
-if uid<>"" and uid<>clng(userid) then call kltool_err_msg("CDK:["&cdk&"] 不属于你，不可以兑换")
-if sy=2 then call kltool_err_msg("CDK:["&cdk&"] 已被使用")
+if uid<>"" and uid<>clng(userid) then call kltool_msge("CDK:["&cdk&"] 不属于你，不可以兑换")
+if sy=2 then call kltool_msge("CDK:["&cdk&"] 已被使用")
 response.write "<div class=line1>你使用了CDK:["&cdk&"]</div>"
 	if lx=1 then
 	conn.Execute("update [user] set money=money+"&jinbi&" where userid="&userid)
@@ -89,7 +81,7 @@ response.write "<div class=line1>你使用了CDK:["&cdk&"]</div>"
 	arrstr=Split(moneyname,"|")
 	For i=0 To UBound(arrstr)
 	if arrstr(i)=xg then
-	call kltool_err_msg("您已经拥有此勋章！")
+	kltool_msge("您已经拥有此勋章！")
 	Exit For
 	end if
 	next
@@ -175,21 +167,21 @@ Response.Write "<div class=line2><input type='submit' value='转增' onClick=""C
 elseif pg="zengsong1"  then
 id=request("id")
 uid=request("uid")
-if uid="" then call kltool_err_msg("错误,id不能为空")
-if not Isnumeric(uid) then call kltool_err_msg("id必须是数字")
-if clng(uid)=clng(userid) then call kltool_err_msg("这本来就是你的CDK好吧")
+if uid="" then call kltool_msge("错误,id不能为空")
+if not Isnumeric(uid) then call kltool_msge("id必须是数字")
+if clng(uid)=clng(userid) then call kltool_msge("这本来就是你的CDK好吧")
 
 set rs=conn.execute("select userid from [user] where userid="&uid)
-If rs.eof Then call kltool_err_msg("错误,ID:"&uid&"不存在，请核对")
+If rs.eof Then call kltool_msge("错误,ID:"&uid&"不存在，请核对")
 rs.close
 set rs=nothing
 
 set rs=server.CreateObject("adodb.recordset")
 rs.open "select * from [cdk] where id="&id&" and userid="&userid&" and chushou=2",conn,1,2
-if rs.eof then call kltool_err_msg("错误,CDK不存在")
+if rs.eof then call kltool_msge("错误,CDK不存在")
 zcdk=rs("cdk")
-if clng(rs("zs"))=2 then call kltool_err_msg("错误,此cdk不允许转增")
-if clng(rs("sy"))=2 then call kltool_err_msg("对不起，已使用过的CDK无法转增")
+if clng(rs("zs"))=2 then call kltool_msge("错误,此cdk不允许转增")
+if clng(rs("sy"))=2 then call kltool_msge("对不起，已使用过的CDK无法转增")
 rs("userid")=uid
 rs.update
 rs.close

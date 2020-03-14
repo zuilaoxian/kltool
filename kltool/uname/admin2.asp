@@ -1,6 +1,7 @@
-﻿<!--#include file="../inc/head.asp"-->
-<title>用户名更改插件-安装</title>
-<%call kltool_quanxian
+﻿<!--#include file="../inc/config.asp"-->
+<%
+kltool_head("用户名更改插件-安装")
+kltool_quanxian
 pg=request("pg")
 if pg="" then
 elseif pg="az" then
@@ -39,5 +40,5 @@ call kltool_write_log("(用户名更改)删除数据库字段")
 response.redirect "admin1.asp?siteid="&siteid
 
 end if
-call kltool_end
+kltool_end
 %>

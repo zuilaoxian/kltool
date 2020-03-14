@@ -1,7 +1,7 @@
-﻿<!--#include file="../inc/head.asp"-->
-<title>柯林工具箱-功能管理</title>
+﻿<!--#include file="../inc/config.asp"-->
 <%
-call kltool_quanxian
+kltool_head("柯林工具箱-功能管理")
+kltool_quanxian
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [kltool]",kltool,1,1
 	If Not rs.eof Then
@@ -64,8 +64,8 @@ set rs=nothing
 end if
 next
 call kltool_write_log("(功能)排序显隐管理")
-call kltool_err_msg("成功")
+call kltool_msg("成功")
 end if
 
-call kltool_end
+kltool_end
 %>

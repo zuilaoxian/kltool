@@ -1,11 +1,9 @@
-﻿<!--#include file="../inc/head.asp"-->
-<title>柯林工具箱-CDK管理</title>
-<%call kltool_quanxian
-conn.execute("select * from [cdk]")
-If Err Then 
-err.Clear
-call kltool_err_msg("请先安装数据库字段")
-end if
+﻿<!--#include file="../inc/config.asp"-->
+<%
+kltool_head("柯林工具箱-CDK管理")
+kltool_quanxian
+kltool_sql("cdk")
+
 Response.write "<div class=title><a href='?siteid="&siteid&"'>全部CDK</a>/<a href='?siteid="&siteid&"&amp;lx=sy'>未使用</a>/<a href='?siteid="&siteid&"&amp;lx=sy1'>已使用</a>/<a href='admin1.asp?siteid="&siteid&"'>生产后台</a>/<a href='index.asp?siteid="&siteid&"'>前台</a></div>"
 
 Response.write "<div class=tip>→<a href='?siteid="&siteid&"&amp;lx=lx1'>金</a>/<a href='?siteid="&siteid&"&amp;lx=lx2'>经</a>/<a href='?siteid="&siteid&"&amp;lx=lx3'>双</a>/<a href='?siteid="&siteid&"&amp;lx=lx4'>身</a>/<a href='?siteid="&siteid&"&amp;lx=lx5'>积</a>/<a href='?siteid="&siteid&"&amp;lx=lx6'>勋</a>/<a href='?siteid="&siteid&"&amp;lx=lx7'>售</a></div>"
@@ -41,7 +39,6 @@ end if
 If Not rs.eof Then	
 	gopage="?lx="&lx&"&amp;uid="&uid&"&amp;"
 	Count=rs.recordcount
-	page=int(request("page"))
 	if page<=0 or page="" then page=1
 	pagecount=(count+pagesize-1)\pagesize	
 	if page>pagecount then page=pagecount
@@ -114,40 +111,40 @@ rs.close
 set rs=nothing
 '''''''''''''''''''''''''
 elseif pg="xg" then
-id=request("id")
-lx=request("lx")
-page=request("page")
-Response.Write "<div class=tip>发给指定id</div>"
-Response.Write "<form method='post' action='?'>"
-Response.Write "<input type='hidden' name='siteid' value='"&siteid&"'>"
+	id=request("id")
+	lx=request("lx")
+	page=request("page")
+	Response.Write "<div class=tip>发给指定id</div>"
+	Response.Write "<form method='post' action='?'>"
+	Response.Write "<input type='hidden' name='siteid' value='"&siteid&"'>"
 
-Response.Write "<input type='hidden' name='pg' value='xg1'>"
-Response.Write "<input type='hidden' name='id' value='"&id&"'>"
-Response.Write "<input type='hidden' name='page' value='"&page&"'>"
-Response.Write "<input type='hidden' name='lx' value='"&lx&"'>"
-Response.Write "<div class=line1><input type='text' name='uid' value=''></div>"
-Response.Write "<div class=line2><input type='submit' value='发放' name='g'></div>"
+	Response.Write "<input type='hidden' name='pg' value='xg1'>"
+	Response.Write "<input type='hidden' name='id' value='"&id&"'>"
+	Response.Write "<input type='hidden' name='page' value='"&page&"'>"
+	Response.Write "<input type='hidden' name='lx' value='"&lx&"'>"
+	Response.Write "<div class=line1><input type='text' name='uid' value=''></div>"
+	Response.Write "<div class=line2><input type='submit' value='发放' name='g'></div>"
 
 '''''''''''''''''''''''''
 elseif pg="xg1" then
-uid=request("uid")
-id=request("id")
-lx=request("lx")
-page=request("page")
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [cdk] where id="&id,conn,1,2
-if rs.eof then call kltool_err_msg("没有此CDK")
-cdk=rs("cdk")
-rs("userid")=uid
-rs("chushou")=2
-rs("jiage")=null
-rs.update
-rs.close
-set rs=nothing
-'发信息给目标id
-call kltool_write_log("(cdk管理)发cdk("&cdk&")给"&kltool_get_usernickname(uid,1)&"("&uid&")")
-conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values('"&siteid&"','"&siteid&"','系统','来自CDK的发放信息','系统大神发放了一个CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]&pg=mycdk]前往查看[/url]','"&uid&"','1','1','"&date()&" "&time()&"','0')")
-Response.redirect"?siteid="&siteid&"&lx="&lx&"&page="&page&""
+	uid=request("uid")
+	id=request("id")
+	lx=request("lx")
+	page=request("page")
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [cdk] where id="&id,conn,1,2
+	if rs.eof then call kltool_msge("没有此CDK")
+	cdk=rs("cdk")
+	rs("userid")=uid
+	rs("chushou")=2
+	rs("jiage")=null
+	rs.update
+	rs.close
+	set rs=nothing
+	'发信息给目标id
+	call kltool_write_log("(cdk管理)发cdk("&cdk&")给"&kltool_get_usernickname(uid,1)&"("&uid&")")
+	conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values('"&siteid&"','"&siteid&"','系统','来自CDK的发放信息','系统大神发放了一个CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]&pg=mycdk]前往查看[/url]','"&uid&"','1','1','"&date()&" "&time()&"','0')")
+	Response.redirect"?siteid="&siteid&"&lx="&lx&"&page="&page&""
 ''''''''''''''''''''''''''
 elseif pg="sc" then
 id=request("id")

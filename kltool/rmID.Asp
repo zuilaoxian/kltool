@@ -1,7 +1,7 @@
-﻿<!--#include file="./inc/head.asp"-->
-<title>柯林工具箱-注册任意ID</title>
+﻿<!--#include file="./inc/config.asp"-->
 <%
-call kltool_quanxian
+kltool_head("柯林工具箱-注册任意ID")
+kltool_quanxian
 pg=request("pg")
 if pg="" then
 %>
@@ -44,11 +44,11 @@ kltool_nickname=request("kltool_nickname")
 kltool_password=request("kltool_password")
 kltool_lvl=request("kltool_lvl")
 kltool_sex=request("kltool_sex")
-if kltool_userid="" or kltool_username="" or kltool_nickname="" or kltool_password="" then call kltool_err_msg("各项不能为空")
-if not (Isnumeric(kltool_userid) or Isnumeric(kltool_siteid))then call kltool_err_msg("ID和网站ID必须是数字")
+if kltool_userid="" or kltool_username="" or kltool_nickname="" or kltool_password="" then call kltool_msge("各项不能为空")
+if not (Isnumeric(kltool_userid) or Isnumeric(kltool_siteid))then call kltool_msge("ID和网站ID必须是数字")
 
 set rs=conn.execute("select userid from [user] where userid="&kltool_userid)
-if not (rs.bof and rs.eof) then call kltool_err_msg("此ID已存在")
+if not (rs.bof and rs.eof) then call kltool_msge("此ID已存在")
 rs.close
 set rs=nothing
 conn.execute("SET IDENTITY_INSERT [USER] ON INSERT INTO [user] (userid,siteid,username,nickname,password,managerlvl,sex) VALUES ('"&kltool_userid&"','"&kltool_siteid&"','"&kltool_username&"','"&kltool_nickname&"','"&MD5(kltool_password)&"','"&kltool_lvl&"','"&kltool_sex&"') SET IDENTITY_INSERT [USER] OFF")
@@ -65,9 +65,9 @@ elseif kltool_sex="1" then
 xb="男"
 end if
 call kltool_write_log("注册了ID:"&kltool_userid)
-call kltool_err_msg("注册成功!\n注册ID:"&kltool_userid&"\n所属网站:"&kltool_siteid&"\n用户名:"&kltool_username&"\n昵称:"&kltool_nickname&"\n密码:"&kltool_password&"\n权限:"&qx&"\n性别："&xb)
+kltool_msg("注册成功!\n注册ID:"&kltool_userid&"\n所属网站:"&kltool_siteid&"\n用户名:"&kltool_username&"\n昵称:"&kltool_nickname&"\n密码:"&kltool_password&"\n权限:"&qx&"\n性别："&xb)
 end if
 Response.write"<div class=""tip"">小提示：</div>"
 Response.write"<div class=""line2"">用户ID，注册后不可修改，可删除后重新注册<br/>网站ID，一般为1000，多用户网站请根据情况填写<br/>用户名，一般为英文数字<br/>昵称，可以用汉字<br/>密码，可用英文数字或符号<br/></div><div class=""line1"">若网站起始ID为10000，建议只注册10000以内的ID，若注册了10000以上的ID，比如15000，那么起始ID将被直接修改为15000</div>"
-call kltool_end
+kltool_end
 %>

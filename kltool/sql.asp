@@ -1,6 +1,7 @@
-﻿<!--#include file="./inc/head.asp"-->
-<title>数据库在线备份还原</title>
-<%call kltool_quanxian
+﻿<!--#include file="inc/config.asp"-->
+<%
+kltool_head("柯林工具箱-数据库在线备份还原")
+kltool_quanxian
 set rs=server.CreateObject("adodb.recordset")
 rs.open "select * from [yanzheng]",kltool,1,1
 If not rs.eof Then mydb=rs("mydb")
@@ -11,6 +12,10 @@ call Create_Folder(filepath)
 filename=year(now())&"-"&month(now())&"-"&day(now())&"-"&hour(now())&"-"&minute(now())&"-"&second(now())&".bak"
 pg=request("pg")
 if pg="" then
+if ObjTest("SQLDMO.SQLServer",0)=False then
+	response.write "<div class=""tip"">SQLDMO.SQLServer 组件(很重要):<br/>"&ObjTest("SQLDMO.SQLServer",1)&"</div>"&vbcrlf
+	kltool_msge("无法使用备份数据库功能，因为必要组件或功能不支持")
+end if
 %>
 <title>数据库在线备份</title>
 <div class="line2">请填写信息</div>
@@ -84,16 +89,17 @@ elseif pg="mydb" then%>
 <input type="submit" class="btn" value="确定" onClick="ConfirmDel('是否确定？');return false">
 </form>
 </div>
-<% elseif pg="mydb1" then
-db1=request("db1")
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [yanzheng] where id=1",kltool,1,2
-rs("mydb")=db1
-rs.update
-rs.close
-set rs=nothing
-call kltool_write_log("(数据库)修改备份文件夹："&db1)
-response.redirect "?siteid="&siteid&"&pg=mydb"
+<%
+elseif pg="mydb1" then
+	db1=request("db1")
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [yanzheng] where id=1",kltool,1,2
+	rs("mydb")=db1
+	rs.update
+	rs.close
+	set rs=nothing
+	call kltool_write_log("(数据库)修改备份文件夹："&db1)
+	response.redirect "?siteid="&siteid&"&pg=mydb"
 ''''''''''''''''''''''''''''''''
 elseif pg="yes" then
         dbpath = trim(Request.Form("dbpath"))
@@ -120,7 +126,7 @@ call Create_Folder(db)
                 bak.Files=Server.MapPath(dbpath)
                 bak.SQLBackup srv
                 if err.number>0 then
-                    response.write err.number&"<font color=""red""><br>"
+                    response.write "<font color=""red"">错误：<br/>"&err.number&"<br>"
                     response.write err.description&"</font>"
                 else
                     Response.Write "<div class=tip>你的数据库已经备份成功</div>"
@@ -174,5 +180,5 @@ elseif pg="hy" then
             End If
         End If
 end if
-call kltool_end
+kltool_end
 %>

@@ -1,5 +1,11 @@
-﻿<!--#include file="../inc/head.asp"-->
-<title>头像剪切上传</title>
+﻿<!--#include file="../inc/config.asp"-->
+<%
+kltool_head("头像剪切上传")
+if ObjTest("MSXML2.DOMDocument",0)=False then
+	response.write "<div class=""tip"">MSXML2.DOMDocument 组件:<br/>"&ObjTest("MSXML2.DOMDocument",1)&"</div>"&vbcrlf
+	kltool_msge("无法使用此功能，因为必要组件或功能不支持")
+end if
+%>
     <link rel="stylesheet" type="text/css" href="webapp/cropper.min.css">
     <link rel="stylesheet" type="text/css" href="webapp/mui.min.css">
     <script type="text/javascript" src="webapp/jquery-1.11.1.min.js"></script>
@@ -126,7 +132,8 @@ function display(obj)
         
     </div>
     <div style="width:50%; margin:50px auto;">
-<%picexe="jpg"	'图片格式
+<%
+picexe="jpg"	'图片格式
 picname=Getname()&GetnameR()&"."&picexe	'结果图将命名%>
 <form method="post" action="?">
 <input name="pg" type="hidden" value="up">
@@ -169,5 +176,5 @@ Set stm=Nothing
 conn.execute("update [user] set headimg='"&picpath&"' where siteid="&siteid&" and userid="&userid)
 end if
 end if
-call kltool_end
+kltool_end
 %>

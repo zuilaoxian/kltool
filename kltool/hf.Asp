@@ -1,15 +1,33 @@
-﻿<!--#include file="./inc/head.asp"-->
-<title>柯林工具箱-恢复功能指向</title>
-<%call kltool_quanxian
-pg=request("pg")
-if pg="" then
+﻿<!--#include file="inc/config.asp"-->
+<%
+kltool_head("柯林工具箱-恢复功能指向")
+kltool_quanxian
+action=Request.QueryString("action")
+select case action
+	case ""
+		call index()
+	case else
+		call huifu()
+end select
+
+
+sub index()
 response.write"<div class=line1>恢复插件功能指向</div>"
-response.write"<div class=line2>点击【<a href='?siteid="&siteid&"&amp;pg=yes' onClick=""ConfirmDel('是否确定？');return false"">恢复插件功能指向</a>】</div>"
+response.write"<div class=line2>点击【<a href='?siteid="&siteid&"&amp;action=yes' onClick=""ConfirmDel('是否确定？');return false"">恢复插件功能指向</a>】</div>"
 response.write"<div class=content>如果点击栏目跳到柯林总站，请使用此功能(无法恢复自定义功能)</div>"
-elseif pg="yes" then
-conn.execute(" update [systype] set typepath='article/index.aspx' where typeid='4' update [systype] set typepath='picture/index.aspx' where typeid='7' update [systype] set typepath='download/index.aspx' where typeid='13' update [systype] set typepath='bbs/index.aspx' where typeid='16' update [systype] set typepath='null/index.aspx' where typeid='25' update [systype] set typepath='guessbook/index.aspx' where typeid='49' update [systype] set typepath='link/index.aspx' where typeid='62' update [systype] set typepath='search/index.aspx' where typeid='65' update [systype] set typepath='version.aspx' where typeid='80' update [systype] set typepath='fun/index.asp' where typeid='104' update [systype] set typepath='clan/index.aspx' where typeid='105' update [systype] set typepath='album/index.aspx' where typeid='106' update [systype] set typepath='yuehui/index.aspx' where typeid='107' update [systype] set typepath='NongChang/index.asp' where typeid='109' update [systype] set typepath='zhidao/index.asp' where typeid='110' update [systype] set typepath='XinZhang/index.aspx' where typeid='111' update [systype] set typepath='rizhi/index.aspx' where typeid='112' update [systype] set typepath='utility/chengyu/index.aspx' where typeid='113' update [systype] set typepath='utility/mobile/index.aspx' where typeid='114' update [systype] set typepath='utility/ip/index.aspx' where typeid='115' update [systype] set typepath='utility/id/index.asp' where typeid='116' update [systype] set typepath='video/index.aspx' where typeid='117' update [systype] set typepath='ring/index.aspx' where typeid='118' update [systype] set typepath='utility/phone/index.aspx' where typeid='119' update [systype] set typepath='utility/post/index.aspx' where typeid='120' update [systype] set typepath='chat/index.aspx' where typeid='121' update [systype] set typepath='shop/index.aspx' where typeid='122' update [systype] set typepath='utility/baike/index.aspx' where typeid='123' update [systype] set typepath='utility/weather/index.aspx' where typeid='124' update [systype] set typepath='paimai/index.aspx' where typeid='125' update [systype] set typepath='hotel/index.aspx' where typeid='126' update [systype] set typepath='airplane/index.aspx' where typeid='127' update [systype] set typepath='wml/index.aspx' where typeid='128' update [systype] set typepath='card/index.aspx' where typeid='129' update [systype] set typepath='class/index.aspx' where typeid='130' update [systype] set typepath='visiteCount/index.aspx' where typeid='131' update [systype] set typepath='gongqiu/index.aspx' where typeid='132' update [systype] set typepath='Utility/qiche/index.aspx' where typeid='133' update [systype] set typepath='Utility/fangzi/index.aspx' where typeid='134' update [systype] set typepath='Utility/tiZhong/index.asp' where typeid='136' update [systype] set typepath='guangbo/index.aspx' where typeid='137' update [systype] set typepath='myaccount/index.aspx' where typeid='138' update [systype] set typepath='games/index.aspx' where typeid='139' update [systype] set typepath='novel/index.aspx' where typeid='140' update [systype] set typepath='wabao/index.aspx' where typeid='141' update [systype] set typepath='Signin/index.aspx' where typeid='142' update [systype] set typepath='FormEdit/index.aspx' where typeid='143' update [systype] set typepath='action/index.aspx' where typeid='144' update [systype] set typepath='adlink/index.aspx' where typeid='98' ")
-call kltool_err_msg("恢复成功")
+end sub
+
+sub huifu()
+
+str=array(array("article/index.aspx","4"),array("picture/index.aspx","7"),array("download/index.aspx","13"),array("bbs/index.aspx","16"),array("null/index.aspx","25"),array("guessbook/index.aspx","49"),array("link/index.aspx","62"),array("search/index.aspx","65"),array("version.aspx","80"),array("fun/index.asp","104"),array("clan/index.aspx","105"),array("album/index.aspx","106"),array("yuehui/index.aspx","107"),array("NongChang/index.asp","109"),array("zhidao/index.asp","110"),array("XinZhang/index.aspx","111"),array("rizhi/index.aspx","112"),array("utility/chengyu/index.aspx","113"),array("utility/mobile/index.aspx","114"),array("utility/ip/index.aspx","115"),array("utility/id/index.asp","116"),array("video/index.aspx","117"),array("ring/index.aspx","118"),array("utility/phone/index.aspx","119"),array("utility/post/index.aspx","120"),array("chat/index.aspx","121"),array("shop/index.aspx","122"),array("utility/baike/index.aspx","123"),array("utility/weather/index.aspx","124"),array("paimai/index.aspx","125"),array("hotel/index.aspx","126"),array("airplane/index.aspx","127"),array("wml/index.aspx","128"),array("card/index.aspx","129"),array("class/index.aspx","130"),array("visiteCount/index.aspx","131"),array("gongqiu/index.aspx","132"),array("Utility/qiche/index.aspx","133"),array("Utility/fangzi/index.aspx","134"),array("Utility/tiZhong/index.asp","136"),array("guangbo/index.aspx","137"),array("myaccount/index.aspx","138"),array("games/index.aspx","139"),array("novel/index.aspx","140"),array("wabao/index.aspx","141"),array("Signin/index.aspx","142"),array("FormEdit/index.aspx","143"),array("action/index.aspx","144"),array("adlink/index.aspx","98"))
+
+kltool_msg("恢复成功<br>")
+for I=0 to ubound(str)
+conn.execute("update [systype] set typepath='" & str(I)(0) & "' where typeid="& str(I)(1))
+response.write ""& str(I)(1) &" - " & str(I)(0) & "<br>" & vbCrLf
+next
 call kltool_write_log("恢复了插件功能指向")
-end if
+end sub
+
 call kltool_end
 %>

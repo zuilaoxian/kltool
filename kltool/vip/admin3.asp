@@ -1,6 +1,8 @@
-﻿<!--#include file="../inc/head.asp"-->
+﻿<!--#include file="../inc/config.asp"-->
 <title>Vip自助开通-安装</title>
-<%call kltool_quanxian
+<%
+kltool_head("vip每日抽奖")
+call kltool_quanxian
 pg=request("pg")
 if pg="" then
 elseif pg="az" then
@@ -30,5 +32,5 @@ response.redirect "admin1.asp?siteid="&siteid
 call kltool_write_log("(vip开通)删除数据库字段") 
 
 end if
-call kltool_end
+kltool_end
 %>

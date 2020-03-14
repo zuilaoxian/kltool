@@ -1,6 +1,6 @@
-﻿<!--#include file="head.asp"-->
-<title>柯林工具箱-验证</title>
+﻿<!--#include file="inc/config.asp"-->
 <%
+kltool_head("柯林工具箱-验证")
 if clng(kltool_logintimes)<clng(kltool_admintimes) then Response.redirect""&kltool_path&"?siteid="&siteid
 pg=request("pg")
 if pg="" then
@@ -49,5 +49,5 @@ Response.redirect"?siteid="&siteid
 end if
 
 end if
-call kltool_end
+kltool_end
 %>

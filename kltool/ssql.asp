@@ -1,6 +1,7 @@
-﻿<!--#include file="./inc/head.asp"-->
-<title>柯林工具箱-sql语句执行</title>
-<%call kltool_quanxian
+﻿<!--#include file="inc/config.asp"-->
+<%
+kltool_head("柯林工具箱-sql语句执行")
+kltool_quanxian
 pg=request("pg")
 if pg="" then
 %>
@@ -16,7 +17,7 @@ if pg="" then
 <%
 elseif pg="yes1" then
 sql=request("sql")
-if sql="" then call kltool_err_msg("不能为空")
+if sql="" then call kltool_msge("不能为空")
 conn.execute(""&sql&"")
 closeconn()
 call kltool_write_log("(sql执行)"&sql)
@@ -32,5 +33,5 @@ elseif pg="yes2" then
 <div class="tip">本插件无法显示查询内容，不可做查询操作，柯林api文件会阻截，安全狗也会拦截，如果会使用的站长请提前设置好</div>
 
 <%
-call kltool_end
+kltool_end
 %>

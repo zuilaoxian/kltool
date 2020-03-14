@@ -1,12 +1,10 @@
-﻿<!--#include file="../inc/head.asp"-->
-<title>柯林工具箱-VIP抽奖后台</title>
-<%call kltool_quanxian
-conn.execute("select * from [vip_lx]")
-conn.execute("select * from [vip_jp]")
-if Err Then 
-err.Clear
-call kltool_err_msg("请先安装数据库字段")
-end if
+﻿<!--#include file="../inc/config.asp"-->
+<%
+kltool_head("柯林工具箱-VIP抽奖后台")
+kltool_quanxian
+kltool_sql("vip_lx")
+kltool_sql("vip_jp")
+
 Response.Write"<div class=""line1""><a href=""?siteid="&siteid&""">抽奖记录</a>/<a href=""?siteid="&siteid&"&pg=jp"">设定奖品</a>/<a href=""?siteid="&siteid&"&pg=sf"">设定身份</a>/<a href=""./index.asp?siteid="&siteid&""">前台查看</a></div>"
 pg=request("pg")
 if pg="" then
@@ -76,8 +74,6 @@ end if
 If Not rs.eof then
 gopage="?lx="&lx&"&amp;uid="&uid&"&amp;vyear="&vyear&"&amp;vmonth="&vmonth&"&amp;vday="&vday&"&amp;"
 	Count=rs.recordcount	
-	page=int(request("page"))
-	if page<=0 or page="" then page=1		
 	pagecount=(count+pagesize-1)\pagesize	
 	if page>pagecount then page=pagecount
 	rs.move(pagesize*(page-1))
@@ -106,166 +102,162 @@ rs.close
 set rs=nothing
 ''''''''''''''''''''''''''''''''''''''''''
 elseif pg="jp" then
-Response.Write"<div class=""title"">最小值-最大值-是否参与抽奖</div>"
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select top 8 * from [vip_jp]",conn,1,1
-If Not rs.eof Then
-	gopage="?pg=jp&amp;"
-	Count=rs.recordcount
-	page=int(request("page"))
-	if page<=0 or page="" then page=1	
-	pagecount=(count+pagesize-1)\pagesize	
-	if page>pagecount then page=pagecount
-	rs.move(pagesize*(page-1))
-call kltool_page(1)
-	For i=1 To PageSize
-	If rs.eof Then Exit For
-Response.Write"<div class=line2>"&rs("lx")&"."
-lx=clng(rs("lx"))
-if lx=1 then
-jp=""&sitemoneyname&""
-elseif lx=2 then
-jp="经验"
-elseif lx=3 then
-jp=""&sitemoneyname&"和经验"
-elseif lx=4 then
-jp="vip延期(天)"
-elseif lx=5 then
-jp="在线积时(秒)"
-elseif lx=6 then
-jp="空间人气"
-elseif lx=7 then
-jp="人民币(元)"
-elseif lx=8 then
-jp="银行存款"
-end if
-Response.Write"奖品类型:"&jp&"</div>"
-Response.Write"<form method='post' action='?siteid="&siteid&"&amp;pg=jpxg'>"
- Response.Write"<div class=line1><input type='text' name='jp1' value='"&rs("jp1")&"' size='6'>"
- Response.Write"<input type='text' name='jp2' value='"&rs("jp2")&"' size='8'>"
+	Response.Write"<div class=""title"">最小值-最大值-是否参与抽奖</div>"
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select top 8 * from [vip_jp]",conn,1,1
+	If Not rs.eof Then
+		gopage="?pg=jp&amp;"
+		Count=rs.recordcount	
+		pagecount=(count+pagesize-1)\pagesize	
+		if page>pagecount then page=pagecount
+		rs.move(pagesize*(page-1))
+	call kltool_page(1)
+		For i=1 To PageSize
+		If rs.eof Then Exit For
+	Response.Write"<div class=line2>"&rs("lx")&"."
+	lx=clng(rs("lx"))
+	if lx=1 then
+	jp=""&sitemoneyname&""
+	elseif lx=2 then
+	jp="经验"
+	elseif lx=3 then
+	jp=""&sitemoneyname&"和经验"
+	elseif lx=4 then
+	jp="vip延期(天)"
+	elseif lx=5 then
+	jp="在线积时(秒)"
+	elseif lx=6 then
+	jp="空间人气"
+	elseif lx=7 then
+	jp="人民币(元)"
+	elseif lx=8 then
+	jp="银行存款"
+	end if
+	Response.Write"奖品类型:"&jp&"</div>"
+	Response.Write"<form method='post' action='?siteid="&siteid&"&amp;pg=jpxg'>"
+	 Response.Write"<div class=line1><input type='text' name='jp1' value='"&rs("jp1")&"' size='6'>"
+	 Response.Write"<input type='text' name='jp2' value='"&rs("jp2")&"' size='8'>"
 
-xy=rs("xy")
-if xy="1" then xyz="显示" else xyz="隐藏"
- Response.Write"<select name='xy'><option value='"&rs("xy")&"'>"&xyz&"</option><option value='1'>1-显示</option><option value='0'>0-隐藏</option></select>"
-Response.Write"<input type='hidden' name='vid' value='"&rs("lx")&"'>"
-Response.Write"<input type='submit' value='修改' name='submit'></form></div>"
+	xy=rs("xy")
+	if xy="1" then xyz="显示" else xyz="隐藏"
+	 Response.Write"<select name='xy'><option value='"&rs("xy")&"'>"&xyz&"</option><option value='1'>1-显示</option><option value='0'>0-隐藏</option></select>"
+	Response.Write"<input type='hidden' name='vid' value='"&rs("lx")&"'>"
+	Response.Write"<input type='submit' value='修改' name='submit'></form></div>"
 
-	rs.movenext
- 	Next
-call kltool_page(2)
-else
-Response.Write"<div class=""tip"">暂时没有奖品类型记录！</div>"
-end if
-rs.close
-set rs=nothing
+		rs.movenext
+		Next
+	call kltool_page(2)
+	else
+	Response.Write"<div class=""tip"">暂时没有奖品类型记录！</div>"
+	end if
+	rs.close
+	set rs=nothing
 ''''''''''''''''''''''''''''''''''''''''''
 elseif pg="jpxg" then
-jp1=request("jp1")
-jp2=request("jp2")
-xy=request("xy")
-vid=request("vid")
-if jp1="" or jp2="" then response.redirect "?siteid="&siteid&"&pg=jp"
-if not Isnumeric(jp1) or not Isnumeric(jp2) then response.redirect "?siteid="&siteid&"&pg=jp"
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [vip_jp] where lx="&vid,conn,1,2
-if rs.eof then response.redirect "?siteid="&siteid&"&pg=jp"
-rs("jp1")=jp1
-rs("jp2")=jp2
-rs("xy")=xy
-rs.update
-rs.close
-set rs=nothing
+	jp1=request("jp1")
+	jp2=request("jp2")
+	xy=request("xy")
+	vid=request("vid")
+	if jp1="" or jp2="" then response.redirect "?siteid="&siteid&"&pg=jp"
+	if not Isnumeric(jp1) or not Isnumeric(jp2) then response.redirect "?siteid="&siteid&"&pg=jp"
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [vip_jp] where lx="&vid,conn,1,2
+	if rs.eof then response.redirect "?siteid="&siteid&"&pg=jp"
+	rs("jp1")=jp1
+	rs("jp2")=jp2
+	rs("xy")=xy
+	rs.update
+	rs.close
+	set rs=nothing
 
-vid=clng(request("vid"))
-if vid=1 then
-jpname=""&sitemoneyname&""
-elseif vid=2 then
-jpname="经验"
-elseif vid=3 then
-jpname=""&sitemoneyname&"和经验"
-elseif vid=4 then
-jpname="vip延期(天)"
-elseif vid=5 then
-jpname="在线积时(秒)"
-elseif vid=6 then
-jpname="空间人气"
-elseif vid=7 then
-jpname="人民币(元)"
-elseif vid=8 then
-jpname="银行存款"
-end if
-if xy=1 then jpxy=",启用" else jpxy=",停用"
-call kltool_write_log("(vip每日抽奖)设置:"&jpname&",范围("&jp1&"-"&jp2&")"&jpxy)
-response.redirect "?siteid="&siteid&"&pg=jp"
-''''''''''''''''''''''''''''''''''''''''''
-elseif pg="sf" then
-Response.Write"<form method='post' action='?siteid="&siteid&"'>"
-Response.Write"<input name='pg' type='hidden' value='sftj'>"
-set rs=Server.CreateObject("ADODB.Recordset")
-rs.open "select * from [wap2_smallType] where siteid="&siteid&" and systype='card'",conn,1,1
-Response.Write"<div class=line2>选择:"
-call kltool_get_viplist("vip")
-Response.Write"</select><input type='text'  name='sci' value='' size='15' placeholder='可抽奖次数'>"
-Response.Write"<input type='submit' value='Add'></form>&nbsp;<a href='/bbs/smalltypelist.aspx?siteid="&siteid&"&systype=card'>查看编号</a></div>"
+	vid=clng(request("vid"))
+	if vid=1 then
+	jpname=""&sitemoneyname&""
+	elseif vid=2 then
+	jpname="经验"
+	elseif vid=3 then
+	jpname=""&sitemoneyname&"和经验"
+	elseif vid=4 then
+	jpname="vip延期(天)"
+	elseif vid=5 then
+	jpname="在线积时(秒)"
+	elseif vid=6 then
+	jpname="空间人气"
+	elseif vid=7 then
+	jpname="人民币(元)"
+	elseif vid=8 then
+	jpname="银行存款"
+	end if
+	if xy=1 then jpxy=",启用" else jpxy=",停用"
+	call kltool_write_log("(vip每日抽奖)设置:"&jpname&",范围("&jp1&"-"&jp2&")"&jpxy)
+	response.redirect "?siteid="&siteid&"&pg=jp"
+	''''''''''''''''''''''''''''''''''''''''''
+	elseif pg="sf" then
+	Response.Write"<form method='post' action='?siteid="&siteid&"'>"
+	Response.Write"<input name='pg' type='hidden' value='sftj'>"
+	set rs=Server.CreateObject("ADODB.Recordset")
+	rs.open "select * from [wap2_smallType] where siteid="&siteid&" and systype='card'",conn,1,1
+	Response.Write"<div class=line2>选择:"
+	call kltool_get_viplist("vip")
+	Response.Write"</select><input type='text'  name='sci' value='' size='15' placeholder='可抽奖次数'>"
+	Response.Write"<input type='submit' value='Add'></form>&nbsp;<a href='/bbs/smalltypelist.aspx?siteid="&siteid&"&systype=card'>查看编号</a></div>"
 
 
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [vip_lx]",conn,1,1
-If Not rs.eof Then
-	gopage="?pg=sf&amp;"
-	Count=rs.recordcount
-	page=int(request("page"))
-	if page<=0 or page="" then page=1	
-	pagecount=(count+pagesize-1)\pagesize	
-	if page>pagecount then page=pagecount
-	rs.move(pagesize*(page-1))
-call kltool_page(1)
-	For i=1 To PageSize
-	If rs.eof Then Exit For
-Response.Write"<div class=""line2"">"&rs("svip")&"."&kltool_get_vip(rs("svip"),1)
-Response.Write"[次数:"&rs("sci")&"]-<a href='?siteid="&siteid&"&amp;vip="&rs("svip")&"&amp;pg=sfsc'>del</a>-</div>"
-	rs.movenext
- 	Next
-call kltool_page(2)
-else
-Response.Write"<div class=""tip"">暂时没有身份类型记录！</div>"
-end if
-rs.close
-set rs=nothing
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [vip_lx]",conn,1,1
+	If Not rs.eof Then
+		gopage="?pg=sf&amp;"
+		Count=rs.recordcount
+		pagecount=(count+pagesize-1)\pagesize	
+		if page>pagecount then page=pagecount
+		rs.move(pagesize*(page-1))
+	call kltool_page(1)
+		For i=1 To PageSize
+		If rs.eof Then Exit For
+	Response.Write"<div class=""line2"">"&rs("svip")&"."&kltool_get_vip(rs("svip"),1)
+	Response.Write"[次数:"&rs("sci")&"]-<a href='?siteid="&siteid&"&amp;vip="&rs("svip")&"&amp;pg=sfsc'>del</a>-</div>"
+		rs.movenext
+		Next
+	call kltool_page(2)
+	else
+	Response.Write"<div class=""tip"">暂时没有身份类型记录！</div>"
+	end if
+	rs.close
+	set rs=nothing
 ''''''''''''''''''''''''''''''''''''''''''
 elseif pg="sftj" then
-vip=clng(request("vip"))
-sci=clng(request("sci"))
-if vip="" or sci="" then call kltool_err_msg("抽奖次数不能为空")
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [vip_lx] where svip="&vip,conn,1,1
-if not rs.eof then
-conn.Execute("update [vip_lx] set sci="&sci&" where svip="&vip)
-else
-conn.Execute("insert into [vip_lx] (svip,sci)values("&vip&","&sci&")")
-end if
-rs.close
-set rs=nothing
-call kltool_write_log("(vip每日抽奖)设置:vip("&kltool_get_vip(vip,1)&")每日抽奖次数("&sci&")")
-response.redirect "?siteid="&siteid&"&pg=sf"
-''''''''''''''''''''''''''''''''''''''''''
-elseif pg="sfsc" then
-vip=clng(request("vip"))
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [vip_lx] where svip="&vip,conn,1,2
-if rs.eof then call kltool_err_msg("不存在的记录")
-rs.delete
-rs.close
-set rs=nothing
-call kltool_write_log("(vip每日抽奖)删除:vip("&kltool_get_vip(vip,1)&")抽奖权限")
-response.redirect "?siteid="&siteid&"&pg=sf"
+	vip=clng(request("vip"))
+	sci=clng(request("sci"))
+	if vip="" or sci="" then call kltool_msge("抽奖次数不能为空")
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [vip_lx] where svip="&vip,conn,1,1
+	if not rs.eof then
+	conn.Execute("update [vip_lx] set sci="&sci&" where svip="&vip)
+	else
+	conn.Execute("insert into [vip_lx] (svip,sci)values("&vip&","&sci&")")
+	end if
+	rs.close
+	set rs=nothing
+	call kltool_write_log("(vip每日抽奖)设置:vip("&kltool_get_vip(vip,1)&")每日抽奖次数("&sci&")")
+	response.redirect "?siteid="&siteid&"&pg=sf"
+	''''''''''''''''''''''''''''''''''''''''''
+	elseif pg="sfsc" then
+	vip=clng(request("vip"))
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [vip_lx] where svip="&vip,conn,1,2
+	if rs.eof then call kltool_msge("不存在的记录")
+	rs.delete
+	rs.close
+	set rs=nothing
+	call kltool_write_log("(vip每日抽奖)删除:vip("&kltool_get_vip(vip,1)&")抽奖权限")
+	response.redirect "?siteid="&siteid&"&pg=sf"
 
-elseif pg="cjscdx" then
-ids=request("ids")
-conn.Execute("DELETE FROM [vip_log] where id in("&ids&")")
-call kltool_write_log("(vip每日抽奖)删除:抽奖记录("&ids&")")
-response.redirect "?siteid="&siteid
+	elseif pg="cjscdx" then
+	ids=request("ids")
+	conn.Execute("DELETE FROM [vip_log] where id in("&ids&")")
+	call kltool_write_log("(vip每日抽奖)删除:抽奖记录("&ids&")")
+	response.redirect "?siteid="&siteid
 ''''''''''''''''''''''''''''''''''''''''''
 end if
-call kltool_end
+kltool_end
 %>
