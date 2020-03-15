@@ -2,11 +2,6 @@
 <%
 kltool_head("柯林工具箱")
 kltool_quanxian
-
-if ObjTest("Scripting.FileSystemObject",0)=False then response.write "<div class=""tip"">FSO文件系统(文件操作):<br/>"&ObjTest("Scripting.FileSystemObject",1)&"</div>"&vbcrlf
-if ObjTest("Persits.Jpeg",0)=False then response.write "<div class=""tip"">Jpeg图片处理(图片操作):<br/>"&ObjTest("Persits.Jpeg",1)&"</div>"&vbcrlf
-if ObjTest("Microsoft.XMLHTTP",0)=False then response.write "<div class=""tip"">Http 组件(并非很重要):<br/>"&ObjTest("Microsoft.XMLHTTP",1)&"</div>"&vbcrlf
-//
 pg=Request("pg")
 if pg="" then
 set rs=server.CreateObject("adodb.recordset")

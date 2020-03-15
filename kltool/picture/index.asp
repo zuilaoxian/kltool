@@ -3,6 +3,11 @@
 <%
 call kltool_quanxian
 kltool_head("柯林工具箱-远程图片本地化")
+
+if ObjTest("Persits.Jpeg",0)=False then kltool_msge("<div class=""tip"">Asp Jpeg图片处理(图片操作):<br/>"&ObjTest("Persits.Jpeg",1)&"</div>"&vbcrlf)
+
+if ObjTest("Microsoft.XMLHTTP",0)=False then kltool_msge("<div class=""tip"">Http 组件(并非很重要):<br/>"&ObjTest("Microsoft.XMLHTTP",1)&"</div>"&vbcrlf)
+
 %>
         <style> 
         .black_overlay{ 

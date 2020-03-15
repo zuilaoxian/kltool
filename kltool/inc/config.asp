@@ -1,25 +1,17 @@
 ﻿<%
-On Error Resume Next
 kltool_execution_startime=timer()
-'-----路径检测
-Function kltool_path
-kltool_path=Left(Request.ServerVariables("script_name"),InStrRev(Request.ServerVariables("script_name"),"/"))
-kltool_folder="admin|bbs|cdk|hb|money|mydb|picture|svip|vip|uname|tx|inc"
-kltool_folder_split=split(kltool_folder,"|")
-for i=0 to ubound(kltool_folder_split)
-kltool_path=replace(kltool_path,kltool_folder_split(i)&"/","")
-next
-end function
-'-----提醒
-sub kltool_msg(str)
-	Response.Write "<div class=""tip""><font color='red'>出现一个提醒如下:<br/>"&replace(str,"\n","<br/>")&"</font></div>"&vbcrlf
-End Sub
-'-----提醒2,截断输出
-sub kltool_msge(str)
-	kltool_msg(str)
-	kltool_end
+On Error Resume Next
+
+if ObjTest("Scripting.FileSystemObject",0)=False then
+	kltool_msg("<div class=""tip"">FSO文件系统(文件操作):<br/>"&ObjTest("Scripting.FileSystemObject",1)&"</div>"&vbcrlf)
 	Response.End()
-End Sub
+end if
+
+if ObjTest("adodb.recordset",0)=False then
+	kltool_msg("<div class=""tip"">adodb系统,数据库操作:<br/>"&ObjTest("Scripting.FileSystemObject",1)&"</div>"&vbcrlf)
+	Response.End()
+end if
+
 '-----连接工具箱数据库
 '数据库文件
 klmdb=kltool_path&"datakltool/#kltool.mdb"
@@ -38,6 +30,7 @@ kltool.open connstr
 If Err Then
 	Err.Clear
 	kltool_msge("DBQ ERROR ! 工具箱数据库错误")
+	Response.End()
 end if
 sub closekltool()
 	 kltool.close
@@ -81,7 +74,8 @@ set conn=Server.CreateObject("ADODB.Connection")
 conn.open "PROVIDER=SQLOLEDB;DATA SOURCE="&KL_SQL_SERVERIP&";UID="&KL_SQL_UserName&";PWD="&KL_SQL_PassWord&";DATABASE="&KL_Main_DatabaseName
 if Err then
    Err.Clear
-   kltool_msge("kelink数据库错误.")
+   kltool_msg("kelink数据库连接错误")
+   Response.End()
 End if
 '关数据库
 sub closeConn()
@@ -131,7 +125,7 @@ Function kltool_sql(str)
 	set rs=conn.execute("select * from "&str)
 	If Err Then 
 		err.Clear
-		kltool_msge("请先配置此功能")
+		kltool_msge("请管理员配置此功能")
 	end if
 End Function
 '-----
@@ -149,7 +143,8 @@ if Request.QueryString("page") then
 	end if
 end if
 if page<=0 or page="" then page=1	
-if pagesize<=0 or pagesize="" then pagesize=15	
+if pagesize<=0 or pagesize="" then pagesize=15
+
 '-----顶部左上角logo
 kltool_logo=""&kltool_path&"inc/2017-1-20.png"
 '-----顶部左上角logo-普通会员显示
@@ -161,6 +156,10 @@ kltool_version="2017-1-20"
 kltool_admin_log_del=2
 
 '-----防止部分空间未登录也可以看到页面
-if not kltool_login then kltool_msge("没有登录的你\n看不到我")
+if not kltool_login then
+	kltool_msge("没有登录的你\n看不到我")
+   kltool_msg("kelink数据库连接错误")
+   Response.End()
+end if
 %>
 <!--#include file="function.asp"-->

@@ -1,4 +1,36 @@
 <%
+'-----查询部分设置
+set rs=server.CreateObject("adodb.recordset")
+rs.open "select * from [yanzheng] where id=1",kltool,1,1
+If not rs.eof then
+kltool_yanzheng=rs("yanzheng")
+kltool_admintimes=rs("timelong")
+kltool_listsize=rs("listsize")
+kltool_listsize2=rs("listsize2")
+end if
+rs.close
+set rs=nothing
+
+'-----路径检测
+Function kltool_path
+kltool_path=Left(Request.ServerVariables("script_name"),InStrRev(Request.ServerVariables("script_name"),"/"))
+kltool_folder="admin|bbs|cdk|hb|money|mydb|picture|svip|vip|uname|tx|inc"
+kltool_folder_split=split(kltool_folder,"|")
+for i=0 to ubound(kltool_folder_split)
+kltool_path=replace(kltool_path,kltool_folder_split(i)&"/","")
+next
+end function
+'-----提醒
+sub kltool_msg(str)
+	Response.Write "<div class=""tip""><font color='red'>出现一个提醒如下:<br/>"&replace(str,"\n","<br/>")&"</font></div>"&vbcrlf
+End Sub
+'-----提醒2,截断输出
+sub kltool_msge(str)
+	kltool_msg(str)
+	kltool_end
+	Response.End()
+End Sub
+'-----顶部内容
 Function kltool_head(str)
 %>
 <!DOCTYPE html><html>
@@ -52,7 +84,7 @@ if kltool_yanzheng=1 and kltool_logintimes<kltool_admintimes then Response.write
 </div>
 <%
 End Function
-'-----定义底部
+'-----底部内容
 Function kltool_end
 kltool_execution_endtime=timer()
 kltool_execution_time=FormatNumber((kltool_execution_endtime-kltool_execution_startime)*1000,3)
@@ -102,18 +134,6 @@ Function RndNumber(MaxNum,MinNum)
 	RndNumber=int((MaxNum-MinNum+1)*rnd+MinNum)
 	RndNumber=RndNumber
 End Function
-'-----查询部分设置
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [yanzheng] where id=1",kltool,1,1
-If not rs.eof then
-kltool_yanzheng=rs("yanzheng")
-kltool_admintimes=rs("timelong")
-kltool_listsize=rs("listsize")
-kltool_listsize2=rs("listsize2")
-end if
-rs.close
-set rs=nothing
-
 '-----查询操作权限
 Function kltool_yunxu
 kltool_yunxu=0
