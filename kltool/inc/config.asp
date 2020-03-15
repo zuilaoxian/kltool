@@ -18,7 +18,7 @@ klmdb=kltool_path&"datakltool/#kltool.mdb"
 '检测工具箱数据库是否存在
 set fso = server.CreateObject("Scripting.FileSystemObject")
 if not fso.FileExists(server.mappath(klmdb)) then
-	kltool_msg("not find DB file !\n柯林工具箱数据文件不存在")
+	kltool_msg("not find DB file !\n柯林工具箱数据文件不存在<br/>"&klmdb)
 	Response.End()
 end if
 set fso=nothing
@@ -114,20 +114,22 @@ siteid=clng(siteid)
       end if
 	siters.close()
 	set siters=nothing
+'-----查询部分设置
+set rs=server.CreateObject("adodb.recordset")
+rs.open "select * from [yanzheng] where id=1",kltool,1,1
+If not rs.eof then
+kltool_yanzheng=rs("yanzheng")
+kltool_admintimes=rs("timelong")
+kltool_listsize=rs("listsize")
+kltool_listsize2=rs("listsize2")
+end if
+rs.close
+set rs=nothing
 '-----取币名
-	set rs=conn.execute("select * from [user] where userid="&siteid)
-		sitemoneyname=rs("sitemoneyname")
-	rs.close
-	set rs=nothing
-'-----数据表检测
-Function kltool_sql(str)
-	On Error Resume Next
-	set rs=conn.execute("select * from "&str)
-	If Err Then 
-		err.Clear
-		kltool_msge("请管理员配置此功能")
-	end if
-End Function
+set rs=conn.execute("select * from [user] where userid="&siteid)
+	sitemoneyname=rs("sitemoneyname")
+rs.close
+set rs=nothing
 '-----
 dim pagesize,page
 pagesize=15
@@ -149,8 +151,6 @@ if pagesize<=0 or pagesize="" then pagesize=15
 kltool_logo=""&kltool_path&"inc/2017-1-20.png"
 '-----顶部左上角logo-普通会员显示
 if kltool_yunxu<>1 then kltool_logo=""&kltool_path&"inc/2017-1-20.png"
-'-----版本
-kltool_version="2017-1-20"
 
 '-----管理员操作日志【删除】开关，1允许，其他否(默认其他，推荐其他)
 kltool_admin_log_del=2

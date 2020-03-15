@@ -5,28 +5,28 @@ kltool_quanxian
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [kltool]",kltool,1,1
 	If Not rs.eof Then
-Response.Write"<form method='post' action='?'>"
-Response.Write"<input type='hidden' name='siteid' value='"&siteid&"'>"
-Response.Write"<input type='hidden' name='pg' value='xg'>"
-	For i=1 To rs.recordcount
-	If rs.eof Then Exit For
-Response.write"<div class=""line1"">"
-Response.write"<a href="""&kltool_path&"index.asp?siteid="&siteid&"&pg=action&page="&page&"&id="&rs("id")&""">"&rs("kltool_name")&"</a>"
-Response.Write"<span class='right'>排序号<input type='text' name='k1' value='"&rs("kltool_order")&"' size='5'>"
-Response.write"显隐<select name='k2'>"
-Response.write"<option value='1'"
-if rs("kltool_show")="1" then Response.write" selected"
-Response.write">显示</option>"
-Response.write"<option value='2'"
-if rs("kltool_show")="2" then Response.write" selected"
-Response.write">隐藏</option>"
-Response.write"</select></span></div>"
-	rs.movenext
- 	Next
-Response.Write"<input type='submit' value='确定' name='g' onClick='ConfirmDel('是否确定？');return false'></form>"
-else
-Response.write"<div class=tip>暂时没有记录！</div>"
-end if
+		Response.Write"<form method='post' action='?'>"
+		Response.Write"<input type='hidden' name='siteid' value='"&siteid&"'>"
+		Response.Write"<input type='hidden' name='pg' value='xg'>"
+			For i=1 To rs.recordcount
+			If rs.eof Then Exit For
+				Response.write"<div class=""line1"">"
+				Response.write"<a href="""&kltool_path&"index.asp?siteid="&siteid&"&pg=action&page="&page&"&id="&rs("id")&""">"&rs("kltool_name")&"</a>"
+				Response.Write"<span class='right'>排序号<input type='text' name='k1' value='"&rs("kltool_order")&"' size='5'>"
+				Response.write"显隐<select name='k2'>"
+				Response.write"<option value='1'"
+				if rs("kltool_show")="1" then Response.write" selected"
+				Response.write">显示</option>"
+				Response.write"<option value='2'"
+				if rs("kltool_show")="2" then Response.write" selected"
+				Response.write">隐藏</option>"
+				Response.write"</select></span></div>"
+			rs.movenext
+			Next
+		Response.Write"<input type='submit' value='确定' name='g' onClick='ConfirmDel('是否确定？');return false'></form>"
+	else
+		Response.write"<div class=tip>暂时没有记录！</div>"
+	end if
 	rs.close
 	set rs=nothing
 '-----

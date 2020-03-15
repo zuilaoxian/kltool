@@ -1,15 +1,13 @@
 <%
-'-----查询部分设置
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [yanzheng] where id=1",kltool,1,1
-If not rs.eof then
-kltool_yanzheng=rs("yanzheng")
-kltool_admintimes=rs("timelong")
-kltool_listsize=rs("listsize")
-kltool_listsize2=rs("listsize2")
-end if
-rs.close
-set rs=nothing
+'-----数据表检测
+Function kltool_sql(str)
+	On Error Resume Next
+	set rs=conn.execute("select * from "&str)
+	If Err Then 
+		err.Clear
+		kltool_msge("请管理员配置此功能")
+	end if
+End Function
 
 '-----路径检测，常量无法赋值，以此来实现无限极目录
 Function kltool_path
@@ -17,9 +15,9 @@ kltool_path=Left(Request.ServerVariables("script_name"),InStrRev(Request.ServerV
 kltool_folder=array("admin","bbs","cdk","hb","money","mydb","picture","svip","vip","uname","tx","inc")
 str1=split(kltool_path,"/")
 str2=str1(ubound(str1)-1)
-for each i in kltool_folder
-	if i=str2 then
-		kltool_path=left(kltool_path,InStrRev(kltool_path,i)-1)
+for each ipath in kltool_folder
+	if ipath=str2 then
+		kltool_path=left(kltool_path,InStrRev(kltool_path,ipath)-1)
 		exit for
 	end if
 next
@@ -98,8 +96,8 @@ Response.write"<div class=""xk_quandibg"">"&vbcrlf&"<div class=""xk_quandi"">"&v
 Response.write"<h1><a href=""/myfile.aspx?siteid="&siteid&""">地盘</a>|<a href=""/wapindex.aspx?siteid="&siteid&"&backurl="&kltool_path&""">首页</a>|<a href=""/bbs/userinfo.aspx?touserid="&userid&"&siteid="&siteid&""">空间</a>"
 if kltool_yunxu=1 then Response.Write"|<a href="""&kltool_path&"index.asp?siteid="&siteid&""">工具箱首页</a>" else Response.Write"|<a href=""/wapstyle/skin.aspx?siteid="&siteid&"&backurl="&kltool_path&""">切换</a>"
 Response.write"</h1>"&vbcrlf&"<p>"
-if kltool_yunxu=1 then Response.Write"柯林工具箱  2013-"&year(now)&"  版本"&kltool_version&"<br/>"&vbcrlf
-Response.write date()&" "&time()&" "&weekdayname(weekday(now))&" "&kltool_execution_time&"毫秒</p>"&vbcrlf
+if kltool_yunxu=1 then Response.Write"柯林工具箱  @2013-"&year(now)&"<br/>"&vbcrlf
+Response.write year(now)&"-"&month(now)&"-"&day(now)&" "&time()&" "&weekdayname(weekday(now))&" "&kltool_execution_time&"毫秒</p>"&vbcrlf
 Response.write"</div>"&vbcrlf&"</div>"&vbcrlf&"</footet>"&vbcrlf&"<aside class=""aside"" id=""aside"">"&vbcrlf&"<div class=""xk_userbg"">"&vbcrlf&"<div class=""xk_user"">"&vbcrlf&"<li>"&vbcrlf&"<a href=""/myfile.aspx?siteid="&siteid&""">"&vbcrlf&"<div>"&vbcrlf
 Response.write"<span class=""tx"">"&kltool_get_userheadimg(userid)&"</span>"&vbcrlf&"<span class=""name"">"&vbcrlf
 Response.write"<p1>"&kltool_get_usernickname(userid,1)&"</p1>"&vbcrlf
@@ -252,22 +250,33 @@ end function
 '上一页 下一页 跳转
 sub kltool_page(things)
 if pagecount>1 then Response.Write"<div class=line1>"
-if page>1 then Response.Write"<a href='"&gopage&"siteid="&siteid&"'>[首页]</a> "
-if page>1 then Response.Write"<a href='"&gopage&"page="&page-1&"&amp;siteid="&siteid&"'>[上页]</a> "
-if page<pagecount then Response.Write"<a href='"&gopage&"page="&page+1&"&amp;siteid="&siteid&"'>[下页]</a> "
-if page>=1 and page<pagecount then Response.Write"<a href='"&gopage&"page="&pagecount&"&amp;siteid="&siteid&"'>[尾页]</a>"
-if pagecount>1 then Response.Write"</div>"
-if things=2 then
-Response.Write"<div class=line2>共<b>"&page&"</b>/"&pagecount&"页/"&Count&"条 "
-if pagecount>1 then
-Response.Write"<form method=""get"" action="""&gopage&""">"
-Response.Write"<input name=""siteid"" type=""hidden"" value="""&siteid&""">"
-if pagecount>1 and page<pagecount then page=""&page+1&"" else pgae=""&page-1&""
-Response.Write"<input name=""page"" type=""text"" size=""5"" value="""&page&""">"
-Response.Write"<input name=""g"" type=""submit"" value=""跳转""></form></div>"
-else
-Response.Write"</div>"
-end if
+	if page>1 then Response.Write"<a href='"&gopage&"siteid="&siteid&"&pagesize="&pagesize&"'>[首页]</a> "
+	if page>1 then Response.Write"<a href='"&gopage&"page="&page-1&"&amp;siteid="&siteid&"&pagesize="&pagesize&"'>[上页]</a> "
+	if page<pagecount then Response.Write"<a href='"&gopage&"page="&page+1&"&amp;siteid="&siteid&"&pagesize="&pagesize&"'>[下页]</a> "
+	if page>=1 and page<pagecount then Response.Write"<a href='"&gopage&"page="&pagecount&"&amp;siteid="&siteid&"&pagesize="&pagesize&"'>[尾页]</a>"
+	if pagecount>1 then Response.Write"</div>"
+	if things=2 then
+	Response.Write"<div class=line2>第<b>"&page&"</b>页 共"&pagecount&"页/"&Count&"条 "
+	if pagecount>1 then
+	Response.Write"<form method=""get"" action=""?"">"
+		gopage=replace(gopage,"&amp;","&")
+		gopage_arr=Split(gopage,"?")
+		gopage_arr1=gopage_arr(1)
+		if gopage_arr1<>"" then gopage_arr2=Split(gopage_arr1,"&") else gopage_arr2=Split(gopage,"&")
+		for igopage=0 to Ubound(gopage_arr2)
+			if gopage_arr2(igopage)<>"" and gopage_arr2(igopage)<>"page" and gopage_arr2(igopage)<>"pagesize" then
+				gopage_arr3=Split(gopage_arr2(igopage),"=")
+				Response.Write"<input name="""&gopage_arr3(0)&""" type=""hidden"" value="""&gopage_arr3(1)&""">"
+			end if
+		next
+	Response.Write"<input name=""siteid"" type=""hidden"" value="""&siteid&""">"
+	Response.Write"<input name=""pagesize"" type=""hidden"" size=""5"" value="""&pagesize&""">"
+	if pagecount>1 and page<pagecount then page=""&page+1&"" else pgae=""&page-1&""
+	Response.Write"<input name=""page"" type=""text"" size=""5"" value="""&page&""">"
+	Response.Write"<input name=""g"" type=""submit"" value=""跳转""></form></div>"
+	else
+	Response.Write"</div>"
+	end if
 end if
 end sub
 
