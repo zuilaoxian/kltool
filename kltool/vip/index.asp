@@ -53,7 +53,6 @@ if pg="" then
 elseif pg="kt" then
 	my=clng(request("my"))
 	id=clng(request("id"))
-	page=clng(request("page"))
 
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [wap2_smallType] where siteid="&siteid&" and id="&id,conn,1,1

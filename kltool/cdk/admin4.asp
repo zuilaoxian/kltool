@@ -66,7 +66,6 @@ if pg="" then
 
 	end if
 	If Not rs.eof Then
-		PageSize=10
 		gopage="?lx="&lx&"&amp;uid="&uid&"&amp;vyear="&vyear&"&amp;vmonth="&vmonth&"&amp;vday="&vday&"&amp;"
 		Count=rs.recordcount
 		pagecount=(count+pagesize-1)\pagesize

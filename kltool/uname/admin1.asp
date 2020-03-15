@@ -106,7 +106,6 @@ if pg="" then
 
 elseif pg="kt" then
 	id=request("id")
-	page=request("page")
 	lx=request("lx")
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open"select * from [uname] where siteid="&siteid&" and id="&id,conn,1,1
@@ -143,7 +142,6 @@ elseif pg="kt" then
 elseif pg="yes" then
 	id=request("id")
 	uid=request("uid")
-	page=request("page")
 	lx=request("lx")
 	content=request("content")
 	type1=clng(request("type1"))
@@ -188,7 +186,6 @@ elseif pg="yes" then
 
 elseif pg="sc" then
 	id=request("id")
-	page=request("page")
 	if page="" then page=1
 	lx=request("lx")
 	set rs=server.CreateObject("adodb.recordset")

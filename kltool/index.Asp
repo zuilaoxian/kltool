@@ -77,7 +77,6 @@ elseif pg="action" then
 '-----
 elseif pg="yes" then
 	id=request("id")
-	if page="" then page=1
 	action=request("action")
 	k1=request("k1")
 	k2=request("k2")

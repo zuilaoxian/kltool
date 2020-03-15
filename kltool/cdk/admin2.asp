@@ -112,11 +112,9 @@ if pg="" then
 elseif pg="xg" then
 	id=request("id")
 	lx=request("lx")
-	page=request("page")
 	Response.Write "<div class=tip>发给指定id</div>"
 	Response.Write "<form method='post' action='?'>"
 	Response.Write "<input type='hidden' name='siteid' value='"&siteid&"'>"
-
 	Response.Write "<input type='hidden' name='pg' value='xg1'>"
 	Response.Write "<input type='hidden' name='id' value='"&id&"'>"
 	Response.Write "<input type='hidden' name='page' value='"&page&"'>"
@@ -129,7 +127,6 @@ elseif pg="xg1" then
 	uid=request("uid")
 	id=request("id")
 	lx=request("lx")
-	page=request("page")
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [cdk] where id="&id,conn,1,2
 	if rs.eof then call kltool_msge("没有此CDK")
@@ -148,7 +145,6 @@ elseif pg="xg1" then
 elseif pg="sc" then
 	id=request("id")
 	lx=request("lx")
-	page=request("page")
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [cdk] where id="&id,conn,1,2
 	if rs.eof then call kltool_msge("没有此CDK")
@@ -162,7 +158,6 @@ elseif pg="sc" then
 	elseif pg="cdksc" then
 	cid=request("cid")
 	lx=request("lx")
-	page=request("page")
 	conn.Execute("delete from [cdk] Where id in("&cid&")")
 	call kltool_write_log("(cdk管理)批量删除CDK："&cid)
 	Response.redirect"?siteid="&siteid&"&page="&page&"&lx="&lx
@@ -170,7 +165,6 @@ elseif pg="sc" then
 elseif pg="zt" then
 	id=request("id")
 	lx=request("lx")
-	page=request("page")
 	set rs=conn.Execute("SELECT * from [cdk] Where id="&id)
 	sy=clng(rs("sy"))
 	cdk=rs("cdk")
@@ -188,7 +182,6 @@ elseif pg="zt" then
 elseif pg="zs" then
 	id=request("id")
 	lx=request("lx")
-	page=request("page")
 	set rs=conn.Execute("SELECT * from [cdk] Where id="&id)
 	cdk=rs("cdk")
 	zs=clng(rs("zs"))

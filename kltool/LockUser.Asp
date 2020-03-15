@@ -114,8 +114,6 @@ elseif pg="ck" then
 '''''''''''''''''''''''''''''''''''''''''''''''''''
 elseif pg="jc" then
 	id=request("id")
-	page=request("page")
-	if page="" then page=1
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [user_lock] where siteid="&siteid&" and id="&id,conn,1,2
 	if rs.eof then call kltool_msge("此ID不存在")

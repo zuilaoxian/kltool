@@ -226,8 +226,6 @@ elseif pg="yes2" then
 	If Not rs.eof Then
 		gopage="?pg=yes2&amp;hbly="&yes2_hbly&"&amp;"
 		Count=rs.recordcount
-		page=int(request("page"))
-		if page<=0 or page="" then page=1
 		pagecount=(count+pagesize-1)\pagesize
 		if page>pagecount then page=pagecount
 		rs.move(pagesize*(page-1))

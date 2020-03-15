@@ -33,7 +33,6 @@ Function kltool_bbs_tclassid(uid)
 End Function
 '-----
 pg=request("pg")
-
 	if pg="" then
 	uid=request("uid")
 	cid=request("cid")
@@ -71,7 +70,6 @@ pg=request("pg")
 	If Not rs.eof Then
 		gopage="?cid="&cid&"&amp;uid="&uid&"&amp;"
 		Count=rs.recordcount
-		page=int(request("page"))
 		pagecount=(count+pagesize-1)\pagesize
 		if page>pagecount then page=pagecount
 		rs.move(pagesize*(page-1))

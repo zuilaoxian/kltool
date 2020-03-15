@@ -35,7 +35,6 @@ if pg="" then
 ''''''''''''''''''''''''''''
 elseif pg="sc" then
 	wid=request("wid")
-	page=request("page")
 	if wid=1 then call kltool_msge("无法删除")
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [DomainName] where id="&wid,conn,1,1
@@ -50,7 +49,6 @@ elseif pg="sc" then
 ''''''''''''''''''''''''''''
 elseif pg="xg" then
 	wid=request("wid")
-	page=request("page")
 	if wid=1 then call kltool_msge("无法修改")
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [DomainName] where id="&wid,conn,1,1
@@ -78,7 +76,6 @@ elseif pg="xg1" then
 	ym=request("ym")
 	wid=request("wid")
 	hid=request("hid")
-	page=request("page")
 	if ym="" or hid="" then call kltool_msge("域名或转向不能为空")
 	if wid=1 then call kltool_msge("无法修改")
 	if Isnumeric(hid) then

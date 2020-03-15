@@ -128,7 +128,6 @@ elseif pg="kt" then
 '----详细界面
 elseif pg="lu" then
 	id=request("id")
-	page=request("page")
 	lx=request("lx")
 	set rs=server.CreateObject("adodb.recordset")
 	if yunxu=1 then
@@ -194,7 +193,6 @@ elseif pg="lu" then
 elseif pg="in" then
 	inu=request("inu")
 	id=request("id")
-	page=request("page")
 	lx=request("lx")
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open"select * from [uname] where siteid="&siteid&" and userid="&userid&" and id="&id,conn,1,1
@@ -256,7 +254,6 @@ elseif pg="in" then
 
 elseif pg="sc" then
 	id=request("id")
-	page=request("page")
 	if page="" then page=1
 	lx=request("lx")
 	if kltool_yunxu<>1 then call kltool_msge("没有权限，无法进行删除操作")

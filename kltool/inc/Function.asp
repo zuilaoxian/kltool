@@ -11,13 +11,17 @@ end if
 rs.close
 set rs=nothing
 
-'-----路径检测
+'-----路径检测，常量无法赋值，以此来实现无限极目录
 Function kltool_path
 kltool_path=Left(Request.ServerVariables("script_name"),InStrRev(Request.ServerVariables("script_name"),"/"))
-kltool_folder="admin|bbs|cdk|hb|money|mydb|picture|svip|vip|uname|tx|inc"
-kltool_folder_split=split(kltool_folder,"|")
-for i=0 to ubound(kltool_folder_split)
-kltool_path=replace(kltool_path,kltool_folder_split(i)&"/","")
+kltool_folder=array("admin","bbs","cdk","hb","money","mydb","picture","svip","vip","uname","tx","inc")
+str1=split(kltool_path,"/")
+str2=str1(ubound(str1)-1)
+for each i in kltool_folder
+	if i=str2 then
+		kltool_path=left(kltool_path,InStrRev(kltool_path,i)-1)
+		exit for
+	end if
 next
 end function
 '-----提醒

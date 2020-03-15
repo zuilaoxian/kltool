@@ -62,7 +62,6 @@ elseif pg="xg" then
 	rs.close
 	set rs=nothing
 	if int(y)=1 then Response.redirect""&kltool_path&"login.asp?siteid="&siteid else response.redirect "?siteid="&siteid
-'-----
 elseif pg="log" then
 	Response.write "<div class=""title""><a href=""?siteid="&siteid&""">返回验证管理</a>/<a href='?pg=log&amp;siteid="&siteid&"&lx=1'>登录日志</a>/<a href='?pg=log&amp;siteid="&siteid&"&lx=2'>操作日志</a></div>"
 	lx=clng(request("lx"))
@@ -104,10 +103,8 @@ elseif pg="log" then
 	end if
 	rs.close
 	set rs=nothing
-'''''''''''''''''''''''''''''''''''
 elseif pg="del_log" then
 	cid=request("cid")
-	page=request("page")
 	lx=request("lx")
 	if kltool_admin_log_del<>1 then call kltool_msge("不允许删除操作日志\n请在"&kltool_path&"inc/config.asp中配置")
 	kltool.Execute("delete from [kltool_log] Where id in("&cid&")")

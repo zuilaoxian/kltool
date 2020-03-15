@@ -48,7 +48,6 @@ if pg="" then
 	end if
 	rs.close
 	set rs=nothing
-''''''''''''''''''''''''''''''
 elseif pg="tj" then
 	uid=request("uid")
 	if not Isnumeric(uid) then call kltool_msge("id必须是数字")
@@ -66,8 +65,6 @@ elseif pg="tj" then
 	rs.close
 	set rs=nothing
 	call kltool_write_log("(权限)新增工具箱操作人："&kltool_get_usernickname(uid,1)&"("&uid&")")
-	response.redirect "?siteid="&siteid
-'''''''''''''''''''''''''''''''''''
 elseif pg="sc" then
 	uid=request("uid")
 	if clng(uid)=siteid then call kltool_msge("无法删除此记录")
@@ -78,8 +75,7 @@ elseif pg="sc" then
 	rs.close
 	set rs=nothing
 	call kltool_write_log("(权限)删除工具箱操作人："&kltool_get_usernickname(uid,1)&"("&uid&")")
-	response.redirect "?siteid="&siteid
 end if
-
+if pg<>"" then response.redirect "?siteid="&siteid
 kltool_end
 %>
