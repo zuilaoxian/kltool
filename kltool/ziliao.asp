@@ -1,15 +1,16 @@
-﻿<!--#include file="./inc/head.asp"-->
-<title>柯林工具箱-会员会员资料</title>
-<%call kltool_quanxian
+﻿<!--#include file="inc/config.asp"-->
+<%
+kltool_head("柯林工具箱-会员会员资料")
+kltool_quanxian
 pg=request("pg")
 if pg="" then
 uid=request("uid")
-if uid="" then call kltool_err_msg("不能为空")
+if uid="" then call kltool_msge("不能为空")
 sql="select * from [user] where "
 if Isnumeric(uid) then sql=sql&"userid="&uid else sql=sql&"username='"&uid&"'"
 set rs=server.CreateObject("adodb.recordset")
 rs.open sql,conn,1,1
-If rs.eof Then call kltool_err_msg("查无此ID")
+If rs.eof Then call kltool_msge("查无此ID")
 %>
 <div class="line1">
 <form method="post" action="?">
@@ -151,5 +152,5 @@ call kltool_write_log("(会员资料)修改了"&kltool_get_usernickname(uid,1)&"
 response.redirect "?siteid="&siteid&"&uid="&uid
 
 end if
-call kltool_end
+kltool_end
 %>
