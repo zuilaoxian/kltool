@@ -41,17 +41,17 @@ if pg="" then
 		If rs.eof Then Exit For
 	lx=clng(rs("lx"))
 	if lx=1 then
-	clx=""&sitemoneyname&""
+		clx=""&sitemoneyname&""
 	elseif lx=2 then
-	clx="经验"
+		clx="经验"
 	elseif lx=3 then
-	clx=""&sitemoneyname&"+经验"
+		clx=""&sitemoneyname&"+经验"
 	elseif lx=4 then
-	clx="Vip"
+		clx="Vip"
 	elseif lx=5 then
-	clx="积时"
+		clx="积时"
 	elseif lx=6 then
-	clx="勋章"
+		clx="勋章"
 	end if
 
 	if i mod 2 = 0 then Response.Write"<div class=""line1"">" else Response.Write"<div class=""line2"">"
@@ -68,7 +68,7 @@ if pg="" then
 	call kltool_page(2)
 	end if
 	rs.close
-set rs=nothing
+	set rs=nothing
 '---出售页
 elseif pg="shop" then
 	lx=request("lx")
@@ -132,19 +132,19 @@ elseif pg="shop" then
 
 	set rs=server.CreateObject("adodb.recordset")
 	if lx="" then
-	rs.open "select * from [cdk]",conn,1,1
+		rs.open "select * from [cdk]",conn,1,1
 	elseif lx="lx1" then
-	rs.open "select * from [cdk] where lx=1 and chushou=1",conn,1,1
+		rs.open "select * from [cdk] where lx=1 and chushou=1",conn,1,1
 	elseif lx="lx2" then
-	rs.open "select * from [cdk] where lx=2 and chushou=1",conn,1,1
+		rs.open "select * from [cdk] where lx=2 and chushou=1",conn,1,1
 	elseif lx="lx3" then
-	rs.open "select * from [cdk] where lx=3 and chushou=1",conn,1,1
+		rs.open "select * from [cdk] where lx=3 and chushou=1",conn,1,1
 	elseif lx="lx4" then
-	rs.open "select * from [cdk] where lx=4 and chushou=1",conn,1,1
+		rs.open "select * from [cdk] where lx=4 and chushou=1",conn,1,1
 	elseif lx="lx5" then
-	rs.open "select * from [cdk] where lx=5 and chushou=1",conn,1,1
+		rs.open "select * from [cdk] where lx=5 and chushou=1",conn,1,1
 	elseif lx="lx6" then
-	rs.open "select * from [cdk] where lx=6 and chushou=1",conn,1,1
+		rs.open "select * from [cdk] where lx=6 and chushou=1",conn,1,1
 	end if
 	If Not rs.eof Then
 		PageSize=10
@@ -163,19 +163,19 @@ elseif pg="shop" then
 	Response.write "</div><div class=line2>"
 	clx=""&rs("lx")&""
 	if clx=1 then
-	Response.write "此CDK奖励为:"&sitemoneyname&""&rs("jinbi")&""
+		Response.write "此CDK奖励为:"&sitemoneyname&""&rs("jinbi")&""
 	elseif clx=2 then
-	Response.write "此CDK奖励为:经验"&rs("jingyan")&""
+		Response.write "此CDK奖励为:经验"&rs("jingyan")&""
 	elseif clx=3 then
-	Response.write "此CDK奖励为:"&sitemoneyname&""&rs("jinbi")&",经验"&rs("jingyan")&""
+		Response.write "此CDK奖励为:"&sitemoneyname&""&rs("jinbi")&",经验"&rs("jingyan")&""
 	elseif clx=4 then
-	Response.write "此CDK奖励为:"&rs("sff")&"个月VIP"&kltool_get_vip(rs("sf"),1)
+		Response.write "此CDK奖励为:"&rs("sff")&"个月VIP"&kltool_get_vip(rs("sf"),1)
 	elseif clx=5 then
-	Response.write "此CDK奖励为:"&rs("lg")&"秒积时"
+		Response.write "此CDK奖励为:"&rs("lg")&"秒积时"
 	elseif clx=6 then
-	Response.write "此CDK奖励为:勋章奖励"&kltool_get_xunzhang(rs("xg"))
+		Response.write "此CDK奖励为:勋章奖励"&kltool_get_xunzhang(rs("xg"))
 	end if
-	Response.write "</div>"
+		Response.write "</div>"
 	if rs("chushou")="1" then Response.write "<div class=line2>　出售中　价格:"&rs("jiage")&"　<a href='?siteid="&siteid&"&amp;pg=shoping&amp;id="&rs("id")&"'>购买</a></div>"
 		rs.movenext
 		Next
@@ -307,17 +307,17 @@ elseif pg="gou" then
 		If rs.eof Then Exit For
 	lx=clng(rs("lx"))
 	if lx=1 then
-	clx=""&sitemoneyname&"类CDK"
+		clx=""&sitemoneyname&"类CDK"
 	elseif lx=2 then
-	clx="经验类CDK"
+		clx="经验类CDK"
 	elseif lx=3 then
-	clx=""&sitemoneyname&"+经验类CDK"
+		clx=""&sitemoneyname&"+经验类CDK"
 	elseif lx=4 then
-	clx="Vip类CDK"
+		clx="Vip类CDK"
 	elseif lx=5 then
-	clx="积时类CDK"
+		clx="积时类CDK"
 	elseif lx=6 then
-	clx="勋章类CDK"
+		clx="勋章类CDK"
 	end if
 	Response.write"<div class=""line1"">"&rs("id")&"."&clx&":VIP会员优惠"&clng(rs("yh"))&"%</div>"
 	Response.write"<div class=""line2"">　可购数:"&clng(rs("sl"))&"　vip可购数"&clng(rs("vsl"))&"</div>"

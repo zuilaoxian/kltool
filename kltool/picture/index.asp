@@ -122,5 +122,5 @@ elseif pg="yes" then
 	set rs=nothing
 	Response.write "<div class=tip>成功本地化图片</div>"
 end if
-call kltool_end
+kltool_end
 %>

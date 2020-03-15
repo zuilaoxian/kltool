@@ -136,31 +136,31 @@ Function RndNumber(MaxNum,MinNum)
 End Function
 '-----查询操作权限
 Function kltool_yunxu
-kltool_yunxu=0
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [quanxian] where userid="&userid,kltool,1,1
-If not rs.eof then kltool_yunxu=1
-rs.close
-set rs=nothing
+	kltool_yunxu=0
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [quanxian] where userid="&userid,kltool,1,1
+	If not rs.eof then kltool_yunxu=1
+	rs.close
+	set rs=nothing
 End Function
 
 '-----查询验证时间
 Function kltool_logintimes
-if clng(kltool_yanzheng)=1 and session("kltool_logintime")<>"" then kltool_logintimes=kltool_DateDiff(session("kltool_logintime"),now(),"n") else kltool_logintimes=kltool_admintimes+1
+	if clng(kltool_yanzheng)=1 and session("kltool_logintime")<>"" then kltool_logintimes=kltool_DateDiff(session("kltool_logintime"),now(),"n") else kltool_logintimes=kltool_admintimes+1
 End Function
 
 '-----用户IP获取
 Function kltool_userip
-kltool_userip = Request.ServerVariables("HTTP_X_FORWARDED_FOR") 
-If kltool_userip="" Then kltool_userip=Request.ServerVariables("REMOTE_ADDR")
+	kltool_userip = Request.ServerVariables("HTTP_X_FORWARDED_FOR") 
+	If kltool_userip="" Then kltool_userip=Request.ServerVariables("REMOTE_ADDR")
 End Function
 
 '-----用户登录状态判断
 Function kltool_login
-kltool_login=false
-if userid<>"" and userid>0 then
-if sidtimeout=sessionid then kltool_login=true
-end if
+	kltool_login=false
+	if userid<>"" and userid>0 then
+		if sidtimeout=sessionid then kltool_login=true
+	end if
 end Function
 
 '-----函数名:getname

@@ -50,7 +50,6 @@ elseif pg="tj" then
 	rs.close
 	set rs=nothing
 	call kltool_write_log("(帖子)新增回复语:"&content)
-	response.redirect "?siteid="&siteid&"&page="&page
 '-----
 elseif pg="sc" then
 	set rs=server.CreateObject("adodb.recordset")
@@ -60,25 +59,23 @@ elseif pg="sc" then
 	rs.close
 	set rs=nothing
 	call kltool_write_log("(帖子)删除回复语:"&content)
-	response.redirect "?siteid="&siteid&"&page="&page
 '-----
 elseif pg="xy" then
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [kltool_re] where id="&id,kltool,1,2
-	if rs.eof then call kltool_msge("不存在此记录")
+	if rs.eof then call kltool_msge("不存在的记录")
 	content=rs("content")
 	if clng(rs("xy"))=1 then
-	rs("xy")=2
-	call kltool_write_log("(帖子)停用回复语:"&content)
+		rs("xy")=2
+		call kltool_write_log("(帖子)停用回复语:"&content)
 	else
-	rs("xy")=1
-	call kltool_write_log("(帖子)启用回复语:"&content)
+		rs("xy")=1
+		call kltool_write_log("(帖子)启用回复语:"&content)
 	end if
 	rs.update
 	rs.close
 	set rs=nothing
-	response.redirect "?siteid="&siteid&"&page="&page
 end if
-
+ if pg<>"" then response.redirect "?siteid="&siteid&"&page="&page
 kltool_end
 %>

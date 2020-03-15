@@ -145,36 +145,36 @@ picname=Getname()&GetnameR()&"."&picexe	'结果图将命名%>
 <%
 pg=Request("pg")
 if pg="up" then
-content=Request("txt")
-picname=Request("picname")
-picpath=Server.MapPath("ximg")
-picpath=replace(picpath,Server.MapPath("/"),"")
-picpath=replace(picpath,"\","/")
-arr_picpath=Split(picpath,"/")
-For i = 0 To UBound(arr_picpath)
-if arr_picpath(i)<>"" then pic_path=pic_path&arr_picpath(i)&"/"
-Next
-picpath=pic_path&picname
-if content="" then Response.redirect"?"
-content=unescape(content)
-content=replace(content,"data:image/jpeg;base64,","")
-if content<>"" then
-Dim xml : Set xml=Server.CreateObject("MSXML2.DOMDocument")	'MSXML2.DOMDocument/Microsoft.XMLHTTP
-Dim stm : Set stm=Server.CreateObject("ADODB.Stream") 
-xml.resolveExternals=false
-xml.loadXML("<?xml version=""1.0"" encoding=""gb2312""?><data><![CDATA["&content&"]]></data>")	'加载xml文件中的内容，使用xml解析出
-xml.documentElement.setAttribute"xmlns:dt","urn:schemas-microsoft-com:datatypes"
-xml.documentElement.dataType ="bin.base64"
-stm.Type=1	'adTypeBinary
-stm.Open
-stm.Write xml.documentElement.nodeTypedValue
-stm.SaveToFile Server.MapPath("/"&picpath)	'文件保存到指定路径
-response.Write"成功保存并设置为头像<br/><img src='/"&picpath&"'>"
-stm.Close
-Set xml=Nothing  
-Set stm=Nothing
-conn.execute("update [user] set headimg='"&picpath&"' where siteid="&siteid&" and userid="&userid)
-end if
+	content=Request("txt")
+	picname=Request("picname")
+	picpath=Server.MapPath("ximg")
+	picpath=replace(picpath,Server.MapPath("/"),"")
+	picpath=replace(picpath,"\","/")
+	arr_picpath=Split(picpath,"/")
+	For i = 0 To UBound(arr_picpath)
+		if arr_picpath(i)<>"" then pic_path=pic_path&arr_picpath(i)&"/"
+	Next
+	picpath=pic_path&picname
+	if content="" then Response.redirect"?"
+	content=unescape(content)
+	content=replace(content,"data:image/jpeg;base64,","")
+	if content<>"" then
+		Dim xml : Set xml=Server.CreateObject("MSXML2.DOMDocument")	'MSXML2.DOMDocument/Microsoft.XMLHTTP
+		Dim stm : Set stm=Server.CreateObject("ADODB.Stream") 
+		xml.resolveExternals=false
+		xml.loadXML("<?xml version=""1.0"" encoding=""gb2312""?><data><![CDATA["&content&"]]></data>")	'加载xml文件中的内容，使用xml解析出
+		xml.documentElement.setAttribute"xmlns:dt","urn:schemas-microsoft-com:datatypes"
+		xml.documentElement.dataType ="bin.base64"
+		stm.Type=1	'adTypeBinary
+		stm.Open
+		stm.Write xml.documentElement.nodeTypedValue
+		stm.SaveToFile Server.MapPath("/"&picpath)	'文件保存到指定路径
+		response.Write"成功保存并设置为头像<br/><img src='/"&picpath&"'>"
+		stm.Close
+		Set xml=Nothing  
+		Set stm=Nothing
+		conn.execute("update [user] set headimg='"&picpath&"' where siteid="&siteid&" and userid="&userid)
+	end if
 end if
 kltool_end
 %>

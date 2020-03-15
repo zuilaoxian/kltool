@@ -33,38 +33,38 @@ end if
 pg=request("pg")
 '-----
 if pg="xg" then
-k1=request("k1")
-k2=request("k2")
-k1=replace(k1,chr(32),"")
-k2=replace(k2,chr(32),"")
-k1_Split=Split(k1,",")
-k2_Split=Split(k2,",")
+	k1=request("k1")
+	k2=request("k2")
+	k1=replace(k1,chr(32),"")
+	k2=replace(k2,chr(32),"")
+	k1_Split=Split(k1,",")
+	k2_Split=Split(k2,",")
 
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [kltool]",kltool,1,1
-	for i=1 to rs.recordcount
-	count=count&rs("id")&","
-	rs.movenext
-	Next
-rs.close
-set rs=nothing
-count_Split=Split(count,",")
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [kltool]",kltool,1,1
+		for i=1 to rs.recordcount
+		count=count&rs("id")&","
+		rs.movenext
+		Next
+	rs.close
+	set rs=nothing
+	count_Split=Split(count,",")
 
-for i=0 to ubound(count_Split)
-if count_Split(i)<>"" and Isnumeric(count_Split(i)) then
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [kltool] where id="&count_Split(i),kltool,1,2
-	if not rs.bof then
-	rs("kltool_order")=k1_Split(i)
-	rs("kltool_show")=k2_Split(i)
-	rs.update
+	for i=0 to ubound(count_Split)
+	if count_Split(i)<>"" and Isnumeric(count_Split(i)) then
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [kltool] where id="&count_Split(i),kltool,1,2
+		if not rs.bof then
+		rs("kltool_order")=k1_Split(i)
+		rs("kltool_show")=k2_Split(i)
+		rs.update
+		end if
+	rs.close
+	set rs=nothing
 	end if
-rs.close
-set rs=nothing
-end if
-next
-call kltool_write_log("(功能)排序显隐管理")
-call kltool_msg("成功")
+	next
+	call kltool_write_log("(功能)排序显隐管理")
+	kltool_msg("成功")
 end if
 
 kltool_end

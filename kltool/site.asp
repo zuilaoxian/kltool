@@ -108,5 +108,5 @@ elseif pg="tj" then
 	call kltool_write_log("(域名)添加了新的域名指向："&ym)
 	response.redirect "?siteid="&siteid
 end if
-call kltool_end
+kltool_end
 %>

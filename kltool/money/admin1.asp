@@ -65,7 +65,6 @@ elseif pg="cz" then
 	rs.close
 	set rs=nothing
 	call kltool_write_log("(网站币互转)设置了ID为"&vip&"的vip("&kltool_get_vip(vip,1)&")的转换价格("&m1&":"&m2&")")
-	response.redirect "?siteid="&siteid
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 elseif pg="cz1" then
 	m1=request("m1")
@@ -78,7 +77,6 @@ elseif pg="cz1" then
 	rs.close
 	set rs=nothing
 	call kltool_write_log("(网站币互转)设置了无vip或无匹配vip时的转换价格("&m1&":"&m2&")")
-	response.redirect "?siteid="&siteid
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 elseif pg="del" then
 	vip=request("vip")
@@ -88,9 +86,8 @@ elseif pg="del" then
 	rs.close
 	set rs=nothing
 	call kltool_write_log("(网站币互转)删除了ID为"&vip&"的vip("&kltool_get_vip(vip,1)&")的转换价格")
-	response.redirect "?siteid="&siteid
-
 
 end if
+if pg<>"" then response.redirect "?siteid="&siteid
 kltool_end
 %>

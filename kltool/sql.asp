@@ -12,7 +12,7 @@ call Create_Folder(filepath)
 filename=year(now())&"-"&month(now())&"-"&day(now())&"-"&hour(now())&"-"&minute(now())&"-"&second(now())&".bak"
 pg=request("pg")
 if pg="" then
-if ObjTest("SQLDMO.SQLServer",0)=False then kltool_msge("<div class=""tip"">"&ObjTest("SQLDMO.SQLServer",1)&"</div>"&vbcrlf&"无法使用备份数据库功能，因为必要组件或功能不支持")
+	if ObjTest("SQLDMO.SQLServer",0)=False then kltool_msge("<div class=""tip"">"&ObjTest("SQLDMO.SQLServer",1)&"</div>"&vbcrlf&"无法使用备份数据库功能，因为必要组件或功能不支持")
 %>
 <title>数据库在线备份</title>
 <div class="line2">请填写信息</div>

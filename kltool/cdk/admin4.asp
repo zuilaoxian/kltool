@@ -78,17 +78,17 @@ if pg="" then
 		If rs.eof Then Exit For
 	lx=rs("lx")
 	if lx="1" then
-	clx=""&sitemoneyname&""
+		clx=""&sitemoneyname&""
 	elseif lx="2" then
-	clx="经验"
+		clx="经验"
 	elseif lx="3" then
-	clx=""&sitemoneyname&"+经验"
+		clx=""&sitemoneyname&"+经验"
 	elseif lx="4" then
-	clx="vip"
+		clx="vip"
 	elseif lx="5" then
-	clx="积时"
+		clx="积时"
 	elseif lx="6" then
-	clx="勋章"
+		clx="勋章"
 	end if
 
 	if i mod 2 = 0 then response.write"<div class=""line1"">" else response.write"<div class=""line2"">"

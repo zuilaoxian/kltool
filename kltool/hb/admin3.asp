@@ -5,7 +5,6 @@ kltool_quanxian
 pg=request("pg")
 if pg="" then
 elseif pg="az" then
-
 	conn.Execute("CREATE TABLE [dbo].[kltool_hb] (ID int IDENTITY (1,1) not null PRIMARY key)")
 	conn.Execute("ALTER TABLE [kltool_hb] ADD [hb_userid] bigint")
 	conn.Execute("ALTER TABLE [kltool_hb] ADD [hb_ly] varchar(50)")
@@ -35,19 +34,16 @@ elseif pg="az" then
 	conn.Execute("ALTER TABLE [kltool_hb_log] ADD [hb_ly] varchar(50)")
 	conn.Execute("ALTER TABLE [kltool_hb_log] ADD [hb_money] bigint")
 	conn.Execute("ALTER TABLE [kltool_hb_log] ADD [hb_date] datetime")
-
 	call kltool_write_log("(互动红包插件)安装数据库字段")
-	response.redirect "admin1.asp?siteid="&siteid
+	
 
 	'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-	elseif pg="del" then
+elseif pg="del" then
 	conn.Execute("DROP TABLE [kltool_hb]")
 	conn.Execute("DROP TABLE [kltool_hb_set]")
 	conn.Execute("DROP TABLE [kltool_hb_log]")
-
 	call kltool_write_log("(互动红包插件)删除数据库字段")
-	response.redirect "admin1.asp?siteid="&siteid
-
 end if
+response.redirect "admin1.asp?siteid="&siteid
 kltool_end
 %>

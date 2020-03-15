@@ -29,5 +29,5 @@ next
 call kltool_write_log("恢复了插件功能指向")
 end sub
 
-call kltool_end
+kltool_end
 %>

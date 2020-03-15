@@ -66,16 +66,16 @@ conn.execute("SET IDENTITY_INSERT [USER] ON")
 	end if
 	rs("password")=Generate_Key
 	rs("managerlvl")=lvl
-if sx="1" then rs("headimg")=""&RndNumber(30,1)&".gif" else rs("headimg")=""&RndNumber(64,31)&".gif" end if
+	if sx="1" then rs("headimg")=""&RndNumber(30,1)&".gif" else rs("headimg")=""&RndNumber(64,31)&".gif" end if
 	rs("sex")=sx
 	rs.update
 	end if
 	rs.close
 	set rs=nothing
 	next
-conn.execute("SET IDENTITY_INSERT [USER] OFF")
-call kltool_write_log("注册了"&uids&"个ID："&uid&"-"&uid2)
-kltool_msg("批量注册了"&uids&"个ID："&uid&"-"&uid2)
+	conn.execute("SET IDENTITY_INSERT [USER] OFF")
+	call kltool_write_log("注册了"&uids&"个ID："&uid&"-"&uid2)
+	kltool_msg("批量注册了"&uids&"个ID："&uid&"-"&uid2)
 end if
-call kltool_end
+kltool_end
 %>

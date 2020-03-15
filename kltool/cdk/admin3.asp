@@ -49,8 +49,8 @@ elseif pg="az" then
 	conn.Execute("DROP TABLE [cdk]")
 	conn.Execute("DROP TABLE [cdk_set]")
 	conn.Execute("DROP TABLE [cdk_log]")
-	call kltool_msge("成功删除cdk数据库字段")
+	call kltool_msg("成功删除cdk数据库字段")
 	call kltool_write_log("(cdk系统)删除数据库字段")
 end if
-call kltool_end
+kltool_end
 %>

@@ -5,7 +5,7 @@ if clng(kltool_logintimes)<clng(kltool_admintimes) then Response.redirect""&klto
 pg=request("pg")
 if pg="" then
 %>
-<div class=content>
+<div class="content">
 <form method="post" action="?">
 <input name="siteid" type="hidden" value="<%=siteid%>">
 <input name="pg" type="hidden" value="login">
@@ -18,35 +18,35 @@ if pg="" then
 </div>
 <%
 elseif pg="login" then
-kelink_loginpass=request("kelink_loginpass")
-set rs=Server.CreateObject("ADODB.Recordset")
-rs.open"select password,siteid from [user] where siteid="&siteid&" and userid="&userid,conn,1,1
-if MD5(kelink_loginpass)=rs("password") or UCase(MD5(kelink_loginpass))=rs("password") then 
-session("kltool_logintime")=now
-rs.close
-set rs=nothing
-'----
-set rs=Server.CreateObject("ADODB.Recordset")
-rs.open"select * from [kltool_log]",kltool,1,2
-rs.addnew
-rs("userid")=userid
-rs("time")=now
-rs("uip")=kltool_userip
-if kltool_yunxu=1 then
-rs("zt")=1
-else
-rs("zt")=0
-end if
-rs.update
-rs.close
-set rs=nothing
-'---正确，跳转首页
-Response.redirect""&kltool_path&"index.asp?siteid="&siteid
-else
-'---错误，回到本页
-session("kltool_logintime")=""
-Response.redirect"?siteid="&siteid
-end if
+	kelink_loginpass=request("kelink_loginpass")
+	set rs=Server.CreateObject("ADODB.Recordset")
+	rs.open"select password,siteid from [user] where siteid="&siteid&" and userid="&userid,conn,1,1
+	if MD5(kelink_loginpass)=rs("password") or UCase(MD5(kelink_loginpass))=rs("password") then 
+		session("kltool_logintime")=now
+		rs.close
+		set rs=nothing
+		'----
+		set rs=Server.CreateObject("ADODB.Recordset")
+		rs.open"select * from [kltool_log]",kltool,1,2
+		rs.addnew
+		rs("userid")=userid
+		rs("time")=now
+		rs("uip")=kltool_userip
+			if kltool_yunxu=1 then
+				rs("zt")=1
+			else
+				rs("zt")=0
+			end if
+		rs.update
+		rs.close
+		set rs=nothing
+	'---正确，跳转首页
+		Response.redirect""&kltool_path&"index.asp?siteid="&siteid
+	else
+	'---错误，回到本页
+		session("kltool_logintime")=""
+		Response.redirect"?siteid="&siteid
+	end if
 
 end if
 kltool_end

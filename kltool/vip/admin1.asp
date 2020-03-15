@@ -5,7 +5,7 @@ kltool_quanxian
 conn.execute("select jinbi,jinyan,xian from [wap2_smallType]")
 If Err Then 
 	err.Clear
-	call kltool_msge("请先安装数据库字段")
+	kltool_msge("请先安装数据库字段")
 end if
 
 Response.write "<div class=""tip""><a href='admin2.asp?siteid="&siteid&"'>vip开通日志查看</a>/<a href='index.asp?siteid="&siteid&"'>前台查看</a></div>"

@@ -11,9 +11,9 @@ Response.Write"<div class=line2><a href='?siteid="&siteid&"&amp;lx=day'>今日�
 set rs=server.CreateObject("adodb.recordset")
 rs.open "select * from [vip_lx] where svip="&SessionTimeout,conn,1,1
 if rs.bof and rs.eof then
-Response.Write "<div class=tip>sorry，你没有抽奖权限</div>"
+	Response.Write "<div class=tip>sorry，你没有抽奖权限</div>"
 else
-sci=clng(rs("sci"))
+	sci=clng(rs("sci"))
 end if
 rs.close
 set rs=nothing
@@ -194,21 +194,21 @@ elseif pg="jp" then
 		If rs.eof Then Exit For
 	lx=clng(rs("lx"))
 	if lx=1 then
-	jp=""&sitemoneyname&""
+		jp=""&sitemoneyname&""
 	elseif lx=2 then
-	jp="经验"
+		jp="经验"
 	elseif lx=3 then
-	jp=""&sitemoneyname&"和经验"
+		jp=""&sitemoneyname&"和经验"
 	elseif lx=4 then
-	jp="vip延期(天)"
+		jp="vip延期(天)"
 	elseif lx=5 then
-	jp="在线积时(秒)"
+		jp="在线积时(秒)"
 	elseif lx=6 then
-	jp="空间人气"
+		jp="空间人气"
 	elseif lx=7 then
-	jp="人民币(元)"
+		jp="人民币(元)"
 	elseif lx=8 then
-	jp="银行存款"
+		jp="银行存款"
 	end if
 	Response.write "<div class=line2>"&i&".奖品类型:"&jp&"</div>"
 	Response.write "<div class=line1>　"&rs("jp1")&"-"&rs("jp2")&"</div>"

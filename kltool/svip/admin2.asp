@@ -25,22 +25,20 @@ conn.Execute("ALTER TABLE [vip_jp] ADD [jp2] bigint")
 conn.Execute("ALTER TABLE [vip_jp] ADD [xy] bigint")
 
 for i=1 to 9
-set rs=conn.Execute("select * from [vip_jp] where lx="&i)
-if rs.bof then
-conn.Execute("INSERT INTO [vip_jp] (lx) VALUES ('"&i&"')")
-end if
-next
+	set rs=conn.Execute("select * from [vip_jp] where lx="&i)
+		if rs.bof then conn.Execute("INSERT INTO [vip_jp] (lx) VALUES ('"&i&"')")
+	next
+	rs.close
+	set rs=nothing
 call kltool_write_log("(vip每日抽奖)安装数据库字段")
-response.redirect "admin1.asp?siteid="&siteid
-
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 elseif pg="del" then
 conn.Execute("DROP TABLE [vip_lx]")
 conn.Execute("DROP TABLE [vip_log]")
 conn.Execute("DROP TABLE [vip_jp]")
 call kltool_write_log("(vip每日抽奖)删除数据库字段")
-response.redirect "admin1.asp?siteid="&siteid
 
 end if
+response.redirect "admin1.asp?siteid="&siteid
 kltool_end
 %>

@@ -229,5 +229,5 @@ elseif pg="vipxg" then
 	call kltool_write_log("(会员管理)修改"&idd&"的vip为"&vip1&"("&kltool_get_vip(vip1,1)&"),时长："&my&"(为空表示永久,id1000默认永久)")
 	Response.redirect"?siteid="&siteid&"&page="&request("page")&"&lx="&request("lx")
 end if
-call kltool_end
+kltool_end
 %>

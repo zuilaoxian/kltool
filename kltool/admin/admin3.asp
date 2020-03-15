@@ -1,7 +1,7 @@
 ﻿<!--#include file="../inc/config.asp"-->
 <%
 kltool_head("柯林工具箱-验证管理")
-call kltool_quanxian
+kltool_quanxian
 pg=request("pg")
 if pg="" then
 	if userid=siteid then response.write"<div class=""title""><a href='?pg=log&amp;siteid="&siteid&"&lx=1'>登录日志</a>/<a href='?pg=log&amp;siteid="&siteid&"&lx=2'>操作日志</a></div>"
@@ -116,5 +116,5 @@ elseif pg="del_log" then
 	response.redirect "?siteid="&siteid&"&pg=log&page="&page&"&lx="&lx
 end if
 
-call kltool_end
+kltool_end
 %>

@@ -17,7 +17,7 @@ set rs=server.CreateObject("adodb.recordset")
 rs.open "select * from [class] where userid="&siteid&" and typeid=16",conn,1,1
 Response.write "<div class=line><select name='cid'><option value='0'>所有栏目</option>"
 Do While Not RS.EOF
-Response.Write "<option value='"&rs("classid")&"'>"&rs("classid")&"-"&rs("classname")&"</option>" 
+	Response.Write "<option value='"&rs("classid")&"'>"&rs("classid")&"-"&rs("classname")&"</option>" 
 RS.MoveNext 
 Loop 
 rs.close

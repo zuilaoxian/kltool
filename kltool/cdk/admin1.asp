@@ -133,17 +133,17 @@ elseif pg="c3" then
 	set rs=nothing
 	lx=clng(lx)
 	if lx="1" then
-	clx=""&sitemoneyname&"奖励:"&jinbi
+		clx=""&sitemoneyname&"奖励:"&jinbi
 	elseif lx="2" then
-	clx="经验奖励:"&jingyan
+		clx="经验奖励:"&jingyan
 	elseif lx="3" then
-	clx=""&sitemoneyname&"+经验:"&jinbi&"/"&jingyan
+		clx=""&sitemoneyname&"+经验:"&jinbi&"/"&jingyan
 	elseif lx="4" then
-	clx="身份:"&kltool_get_vip(sf,1)
+		clx="身份:"&kltool_get_vip(sf,1)
 	elseif lx="5" then
-	clx="积时:"&lg
+		clx="积时:"&lg
 	elseif lx="6" then
-	clx="勋章:"&kltool_get_xunzhang(xg)
+		clx="勋章:"&kltool_get_xunzhang(xg)
 	end if
 
 	call kltool_write_log("(cdk生产)生产"&cdk&"个cdk,类型:"&clx)
@@ -157,8 +157,6 @@ elseif pg="c4"then
 	If Not rs.eof Then
 		gopage="?pg=c8&amp;"
 		Count=rs.recordcount
-		page=int(request("page"))
-		if page<=0 or page="" then page=1
 		pagecount=(count+pagesize-1)\pagesize
 		if page>pagecount then page=pagecount
 		rs.move(pagesize*(page-1))
@@ -184,8 +182,6 @@ elseif pg="c5" then
 	If Not rs.eof Then
 		gopage="?pg=c5&amp;"
 		Count=rs.recordcount
-		page=int(request("page"))
-		if page<=0 or page="" then page=1
 		pagecount=(count+pagesize-1)\pagesize	
 		if page>pagecount then page=pagecount
 		rs.move(pagesize*(page-1))
@@ -249,17 +245,17 @@ elseif pg="c6" then
 		If rs.eof Then Exit For
 	lx=rs("lx")
 	if lx="1" then
-	clx=""&sitemoneyname&"奖励"
+		clx=""&sitemoneyname&"奖励"
 	elseif lx="2" then
-	clx="经验奖励"
+		clx="经验奖励"
 	elseif lx="3" then
-	clx=""&sitemoneyname&"+经验"
+		clx=""&sitemoneyname&"+经验"
 	elseif lx="4" then
-	clx="身份奖励"
+		clx="身份奖励"
 	elseif lx="5" then
-	clx="积时奖励"
+		clx="积时奖励"
 	elseif lx="6" then
-	clx="勋章奖励"
+		clx="勋章奖励"
 	end if
 	%>
 	<form method="post" action="?">
@@ -295,17 +291,17 @@ elseif pg="c7" then
 
 	lx=clng(request("cid"))
 	if lx="1" then
-	clx=""&sitemoneyname&"奖励"
+		clx=""&sitemoneyname&"奖励"
 	elseif lx="2" then
-	clx="经验奖励"
+		clx="经验奖励"
 	elseif lx="3" then
-	clx=""&sitemoneyname&"+经验"
+		clx=""&sitemoneyname&"+经验"
 	elseif lx="4" then
-	clx="身份奖励"
+		clx="身份奖励"
 	elseif lx="5" then
-	clx="积时奖励"
+		clx="积时奖励"
 	elseif lx="6" then
-	clx="勋章奖励"
+		clx="勋章奖励"
 	end if
 
 	call kltool_write_log("(cdk商城)设置:"&clx&",(优惠/可购/vip可购)("&request("cyh")&"/"&request("csl")&"/"&request("cvsl")&")")
@@ -316,5 +312,5 @@ elseif pg="c7" then
 
 
 end if
-call kltool_end
+kltool_end
 %>

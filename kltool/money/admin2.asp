@@ -111,5 +111,5 @@ elseif pg="del" then
 	response.redirect "?siteid="&siteid&""
 
 end if
-call kltool_end
+kltool_end
 %>

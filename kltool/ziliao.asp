@@ -79,77 +79,77 @@ rs.close
 set rs=nothing	
 
 elseif pg="yes" then
-uid=clng(request("uid"))
-name=request("name")
-nick=request("nick")
-pass=request("password")
-sx1=request("sx1")
-mo=request("mo")
-bankmoney=request("bankmoney")
-exp1=request("exp1")
-RMB1=request("RMB1")
-re=request("re")
-lt=request("lt")
-lvl=request("lvl")
-Lock=request("Lock")
-Zone=request("Zone")
-wid=request("wid")
+	uid=clng(request("uid"))
+	name=request("name")
+	nick=request("nick")
+	pass=request("password")
+	sx1=request("sx1")
+	mo=request("mo")
+	bankmoney=request("bankmoney")
+	exp1=request("exp1")
+	RMB1=request("RMB1")
+	re=request("re")
+	lt=request("lt")
+	lvl=request("lvl")
+	Lock=request("Lock")
+	Zone=request("Zone")
+	wid=request("wid")
 
-set rs=Server.CreateObject("ADODB.Recordset")
-rs.open"select * from [user] where userid="&uid&"",conn,1,2
-if name<>"" then rs("username")=name
-if nick<>"" then rs("nickname")=nick
-if sx1<>"" then rs("sex")=sx1
-	if pass<>"" then
-	password=MD5(pass)
-	if uid<>siteid then rs("password")=password
+	set rs=Server.CreateObject("ADODB.Recordset")
+	rs.open"select * from [user] where userid="&uid&"",conn,1,2
+	if name<>"" then rs("username")=name
+	if nick<>"" then rs("nickname")=nick
+	if sx1<>"" then rs("sex")=sx1
+		if pass<>"" then
+		password=MD5(pass)
+		if uid<>siteid then rs("password")=password
+		end if
+	if mo<>"" then rs("money")=mo
+	if bankmoney<>"" then rs("mybankmoney")=bankmoney
+	if exp1<>"" then rs("expR")=exp1
+	if RMB1<>"" then rs("RMB")=RMB1
+	if re<>"" then rs("remark")=re
+	if lt<>"" then rs("LoginTimes")=lt
+	if uid<>siteid then
+	if wid<>"" and isnumeric(wid) then rs("siteid")=wid
+	if lvl<>"" then rs("managerlvl")=lvl
+	if lock<>"" then rs("LockUser")=Lock
 	end if
-if mo<>"" then rs("money")=mo
-if bankmoney<>"" then rs("mybankmoney")=bankmoney
-if exp1<>"" then rs("expR")=exp1
-if RMB1<>"" then rs("RMB")=RMB1
-if re<>"" then rs("remark")=re
-if lt<>"" then rs("LoginTimes")=lt
-if uid<>siteid then
-if wid<>"" and isnumeric(wid) then rs("siteid")=wid
-if lvl<>"" then rs("managerlvl")=lvl
-if lock<>"" then rs("LockUser")=Lock
-end if
-if Zone<>"" then rs("ZoneCount")=Zone
-rs.update
-rs.close
-set rs=nothing
+	if Zone<>"" then rs("ZoneCount")=Zone
+	rs.update
+	rs.close
+	set rs=nothing
 
-user_msg=""
-if name<>"" then user_msg=user_msg&"用户名:"&name&"。"
-if nick<>"" then user_msg=user_msg&"昵称:"&nick&"。"
-if cint(sx1)=1 then sex="男" else sex="女"
-if sx1<>"" then user_msg=user_msg&"性别:"&sex&"。"
-if mo<>"" then user_msg=user_msg&sitemoneyname&":"&mo&"。"
-if bankmoney<>"" then user_msg=user_msg&"存款:"&bankmoney&"。"
-if exp1<>"" then user_msg=user_msg&"经验:"&exp1&"。"
-if RMB1<>"" then  user_msg=user_msg&"RMB:"&RMB1&"。"
-if re<>"" then user_msg=user_msg&"签名:"&re&"。"
-if lt<>"" then user_msg=user_msg&"积时:"&lt&"。"
-if uid<>siteid and wid<>"" then user_msg=user_msg&"归属站:"&wid&"。"
-klvl=cint(lvl)
-if klvl=0 Then 
-lvl="超管"
-elseif klvl=1 Then 
-lvl="副管"
-elseif klvl=2 Then 
-lvl="普通会员"
-elseif klvl=3 Then 
-lvl="总编"
-elseif klvl=4 Then 
-lvl="总版"
-end if
-if lvl<>"" then user_msg=user_msg&"权限:"&lvl&"。"
-if cint(lock)=0 then lock="正常" else lock="锁定"
-if lock<>"" then user_msg=user_msg&"状态:"&lock&"。"
-if Zone<>"" then user_msg=user_msg&"空间人气:"&Zone&"。"
-call kltool_write_log("(会员资料)修改了"&kltool_get_usernickname(uid,1)&"("&uid&")的资料:"&user_msg)
-response.redirect "?siteid="&siteid&"&uid="&uid
+	user_msg=""
+	if name<>"" then user_msg=user_msg&"用户名:"&name&"。"
+	if nick<>"" then user_msg=user_msg&"昵称:"&nick&"。"
+	if cint(sx1)=1 then sex="男" else sex="女"
+	if sx1<>"" then user_msg=user_msg&"性别:"&sex&"。"
+	if mo<>"" then user_msg=user_msg&sitemoneyname&":"&mo&"。"
+	if bankmoney<>"" then user_msg=user_msg&"存款:"&bankmoney&"。"
+	if exp1<>"" then user_msg=user_msg&"经验:"&exp1&"。"
+	if RMB1<>"" then  user_msg=user_msg&"RMB:"&RMB1&"。"
+	if re<>"" then user_msg=user_msg&"签名:"&re&"。"
+	if lt<>"" then user_msg=user_msg&"积时:"&lt&"。"
+	if uid<>siteid and wid<>"" then user_msg=user_msg&"归属站:"&wid&"。"
+	klvl=cint(lvl)
+	if klvl=0 Then 
+	lvl="超管"
+	elseif klvl=1 Then 
+	lvl="副管"
+	elseif klvl=2 Then 
+	lvl="普通会员"
+	elseif klvl=3 Then 
+	lvl="总编"
+	elseif klvl=4 Then 
+	lvl="总版"
+	end if
+	if lvl<>"" then user_msg=user_msg&"权限:"&lvl&"。"
+	if cint(lock)=0 then lock="正常" else lock="锁定"
+	if lock<>"" then user_msg=user_msg&"状态:"&lock&"。"
+	if Zone<>"" then user_msg=user_msg&"空间人气:"&Zone&"。"
+	call kltool_write_log("(会员资料)修改了"&kltool_get_usernickname(uid,1)&"("&uid&")的资料:"&user_msg)
+	response.redirect "?siteid="&siteid&"&uid="&uid
 
 end if
 kltool_end
