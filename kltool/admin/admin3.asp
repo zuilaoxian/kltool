@@ -61,7 +61,7 @@ elseif pg="xg" then
 	rs.update
 	rs.close
 	set rs=nothing
-	if int(y)=1 then Response.redirect""&kltool_path&"inc/login.asp?siteid="&siteid else response.redirect "?siteid="&siteid
+	if int(y)=1 then Response.redirect""&kltool_path&"login.asp?siteid="&siteid else response.redirect "?siteid="&siteid
 '-----
 elseif pg="log" then
 	Response.write "<div class=""title""><a href=""?siteid="&siteid&""">返回验证管理</a>/<a href='?pg=log&amp;siteid="&siteid&"&lx=1'>登录日志</a>/<a href='?pg=log&amp;siteid="&siteid&"&lx=2'>操作日志</a></div>"

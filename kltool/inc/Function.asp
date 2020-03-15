@@ -226,8 +226,8 @@ if clng(kltool_yunxu)<>1 then
 else
 '-----后台二次验证密码过期
 If clng(kltool_yanzheng)=1 then
-if session("kltool_logintime")="" then Response.redirect""&kltool_path&"inc/login.asp?siteid="&siteid
-if clng(kltool_logintimes)>=clng(kltool_admintimes) then Response.redirect""&kltool_path&"inc/login.asp?siteid="&siteid
+if session("kltool_logintime")="" then Response.redirect""&kltool_path&"login.asp?siteid="&siteid
+if clng(kltool_logintimes)>=clng(kltool_admintimes) then Response.redirect""&kltool_path&"login.asp?siteid="&siteid
 end if
 end if
 End Function

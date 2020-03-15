@@ -158,8 +158,7 @@ kltool_admin_log_del=2
 '-----防止部分空间未登录也可以看到页面
 if not kltool_login then
 	kltool_msge("没有登录的你\n看不到我")
-   kltool_msg("kelink数据库连接错误")
-   Response.End()
+	Response.End()
 end if
 %>
 <!--#include file="function.asp"-->
