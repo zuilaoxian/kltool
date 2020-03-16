@@ -1,4 +1,18 @@
 <%
+function kltool_GetRow(sql,dbconn)
+	set rs=server.CreateObject("adodb.recordset")
+	if dbconn=1 then rs.open sql,kltool,1,1 else rs.open sql,conn,1,1
+	If Not rs.eof Then
+		count=rs.recordcount
+		pagecount=(count+pagesize-1)\pagesize
+		if page>pagecount then page=pagecount
+		rs.move(pagesize*(page-1))
+		kltool_GetRow=array(count,pagecount,rs.GetRows(pagesize))
+	end if
+	rs.close
+	set rs=nothing
+end function
+
 '-----数据表检测
 Function kltool_sql(str)
 	On Error Resume Next
@@ -249,34 +263,40 @@ end function
 
 '上一页 下一页 跳转
 sub kltool_page(things)
-if pagecount>1 then Response.Write"<div class=line1>"
-	if page>1 then Response.Write"<a href='"&gopage&"siteid="&siteid&"&pagesize="&pagesize&"'>[首页]</a> "
-	if page>1 then Response.Write"<a href='"&gopage&"page="&page-1&"&amp;siteid="&siteid&"&pagesize="&pagesize&"'>[上页]</a> "
-	if page<pagecount then Response.Write"<a href='"&gopage&"page="&page+1&"&amp;siteid="&siteid&"&pagesize="&pagesize&"'>[下页]</a> "
-	if page>=1 and page<pagecount then Response.Write"<a href='"&gopage&"page="&pagecount&"&amp;siteid="&siteid&"&pagesize="&pagesize&"'>[尾页]</a>"
-	if pagecount>1 then Response.Write"</div>"
+if pagecount>1 then
+	Response.Write"<div class=line1>"
+	
+	if page>1 then
+		Response.Write"<a href='"&gopage&"siteid="&siteid&"&pagesize="&pagesize&"'>[首页]</a> "
+		Response.Write"<a href='"&gopage&"page="&page-1&"&amp;siteid="&siteid&"&pagesize="&pagesize&"'>[上页]</a> "
+	end if
+	if page<pagecount then
+		Response.Write"<a href='"&gopage&"page="&page+1&"&amp;siteid="&siteid&"&pagesize="&pagesize&"'>[下页]</a> "
+		Response.Write"<a href='"&gopage&"page="&pagecount&"&amp;siteid="&siteid&"&pagesize="&pagesize&"'>[尾页]</a>"
+	end if
+	
 	if things=2 then
-	Response.Write"<div class=line2>第<b>"&page&"</b>页 共"&pagecount&"页/"&Count&"条 "
-	if pagecount>1 then
+	Response.Write"</div><div class=line2>第<b>"&page&"</b>页 共"&pagecount&"页/"&Count&"条 "
 	Response.Write"<form method=""get"" action=""?"">"
 		gopage=replace(gopage,"&amp;","&")
 		gopage_arr=Split(gopage,"?")
 		gopage_arr1=gopage_arr(1)
 		if gopage_arr1<>"" then gopage_arr2=Split(gopage_arr1,"&") else gopage_arr2=Split(gopage,"&")
-		for igopage=0 to Ubound(gopage_arr2)
-			if gopage_arr2(igopage)<>"" and gopage_arr2(igopage)<>"page" and gopage_arr2(igopage)<>"pagesize" then
-				gopage_arr3=Split(gopage_arr2(igopage),"=")
-				Response.Write"<input name="""&gopage_arr3(0)&""" type=""hidden"" value="""&gopage_arr3(1)&""">"
-			end if
-		next
+		if Ubound(gopage_arr2)>0 then
+			for igopage=0 to Ubound(gopage_arr2)
+				if gopage_arr2(igopage)<>"" and gopage_arr2(igopage)<>"page" and gopage_arr2(igopage)<>"pagesize" then
+					gopage_arr3=Split(gopage_arr2(igopage),"=")
+					Response.Write"<input name="""&gopage_arr3(0)&""" type=""hidden"" value="""&gopage_arr3(1)&""">"
+				end if
+			next
+		end if
 	Response.Write"<input name=""siteid"" type=""hidden"" value="""&siteid&""">"
 	Response.Write"<input name=""pagesize"" type=""hidden"" size=""5"" value="""&pagesize&""">"
-	if pagecount>1 and page<pagecount then page=""&page+1&"" else pgae=""&page-1&""
+	if page<pagecount then page=""&page+1&"" else pgae=""&page-1&""
 	Response.Write"<input name=""page"" type=""text"" size=""5"" value="""&page&""">"
 	Response.Write"<input name=""g"" type=""submit"" value=""跳转""></form></div>"
-	else
-	Response.Write"</div>"
 	end if
+	Response.Write"</div>"
 end if
 end sub
 

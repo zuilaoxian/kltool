@@ -2,49 +2,8 @@
 <%
 kltool_head("删除会员")
 kltool_quanxian
-pg=request("pg")
-if pg="" then
-%>
-<div class="tip">方式1：单个删除</div>
-<div class="content">
-<form method="post" action="?">
-<input name="siteid" type="hidden" value="<%=siteid%>">
-<input name="pg" type="hidden" value="yes1">
-<input name="lx" type="hidden" value="1">
-请输入要删除的ID<br/>
-<input name="uid" type="text" size="20" value=""><br/>
-<input name="g" type="submit" value="马上删除" onClick="ConfirmDel('是否确定？删除后无法恢复');return false"><br/>
-</form>
-</div>
-
-<div class="tip">方式2：顺序多个删除</div>
-<div class="content">
-<form method="post" action="?">
-<input name="siteid" type="hidden" value="<%=siteid%>">
-<input name="pg" type="hidden" value="yes1">
-<input name="lx" type="hidden" value="2">
-从ID<br/>
-<input name="uid" type="text" size="20" value=""><br/>
-删除到ID<br/>
-<input name="uid2" type="text" size="20" value=""><br/>
-<input name="g" type="submit" value="马上删除" onClick="ConfirmDel('是否确定？删除后无法恢复');return false"><br/>
-</form>
-</div>
-
-<div class="tip">方式3：乱序多个删除</div>
-<div class="content">
-<form method="post" action="?">
-<input name="siteid" type="hidden" value="<%=siteid%>">
-<input name="pg" type="hidden" value="yes1">
-<input name="lx" type="hidden" value="3">
-要删除的ID，多个用,隔开<br/>
-<input name="uid" type="text" size="20" value=""><br/>
-<input name="g" type="submit" value="马上删除" onClick="ConfirmDel('是否确定？删除后无法恢复');return false"><br/>
-</form>
-</div>
-<%
-elseif pg="yes1" then
-	lx=cint(request("lx"))
+lx=clng(request("lx"))
+if lx<>"" then
 	uid=request("uid")
 	uid2=request("uid2")
 	if uid="" then call kltool_msge("ID不能为空")
@@ -81,8 +40,43 @@ elseif pg="yes1" then
 	kltool_msg(ms)
 end if
 
+%>
+<div class="tip">方式1：单个删除</div>
+<div class="content">
+<form method="post" action="?">
+<input name="siteid" type="hidden" value="<%=siteid%>">
+<input name="lx" type="hidden" value="1">
+请输入要删除的ID<br/>
+<input name="uid" type="text" size="20" value=""><br/>
+<input name="g" type="submit" value="马上删除" onClick="ConfirmDel('是否确定？删除后无法恢复');return false"><br/>
+</form>
+</div>
+
+<div class="tip">方式2：顺序多个删除</div>
+<div class="content">
+<form method="post" action="?">
+<input name="siteid" type="hidden" value="<%=siteid%>">
+<input name="lx" type="hidden" value="2">
+从ID<br/>
+<input name="uid" type="text" size="20" value=""><br/>
+删除到ID<br/>
+<input name="uid2" type="text" size="20" value=""><br/>
+<input name="g" type="submit" value="马上删除" onClick="ConfirmDel('是否确定？删除后无法恢复');return false"><br/>
+</form>
+</div>
+
+<div class="tip">方式3：乱序多个删除</div>
+<div class="content">
+<form method="post" action="?">
+<input name="siteid" type="hidden" value="<%=siteid%>">
+<input name="lx" type="hidden" value="3">
+要删除的ID，多个用,隔开<br/>
+<input name="uid" type="text" size="20" value=""><br/>
+<input name="g" type="submit" value="马上删除" onClick="ConfirmDel('是否确定？删除后无法恢复');return false"><br/>
+</form>
+</div>
+<%
 Response.write"<div class=""tip"">提醒：</div>"
 Response.write"<div class=""line2"">删除后不可恢复,请勿胡乱删除会员，帖子、站内信等不删除</div>"
-
 kltool_end
 %>

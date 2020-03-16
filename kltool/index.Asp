@@ -4,29 +4,21 @@ kltool_head("柯林工具箱")
 kltool_quanxian
 pg=Request("pg")
 if pg="" then
-	set rs=server.CreateObject("adodb.recordset")
-	rs.open "select * from [kltool] where kltool_show=1 order by kltool_order",kltool,1,1
-	If Not rs.eof Then
+	str=kltool_GetRow("select * from [kltool] where kltool_show=1 order by kltool_order",1)
+	if str then
 		gopage="?"
-		Count=rs.recordcount	
-		pagecount=(count+pagesize-1)\pagesize	
-		if page>pagecount then page=pagecount
-		rs.move(pagesize*(page-1))
-	call kltool_page(1)
-		For i=1 To PageSize 
-		If rs.eof Then Exit For
-	if (i mod 2)=0 then Response.write "<div class=""line2"">" else Response.write "<div class=""line1"">"
-	Response.write page*PageSize+i-PageSize&"."
-	Response.write"<a href=""?siteid="&siteid&"&pg=action&page="&page&"&id="&rs("id")&""">"&rs("kltool_name")&"</a>"
-	Response.write "</div>"
-		rs.movenext
+		count=str(0)
+		pagecount=str(1)
+		kltool_page(1)
+		for i=0 to ubound(str(2),2)
+			if (i mod 2)=0 then Response.write "<div class=""line2"">" else Response.write "<div class=""line1"">"
+			Response.write""&page*PageSize+i-PageSize+1&"."
+			Response.write"<a href=""?siteid="&siteid&"&pg=action&id="&str(2)(0,i)&""">"&str(2)(1,i)&"</a></div>"
 		Next
-	call kltool_page(2)
-		else
-		Response.write"<div class=""tip"">暂时没有记录！</div>"
-		end if
-	rs.close
-	set rs=nothing
+		kltool_page(2)
+	else
+		Response.write "<div class=""tip"">暂时没有记录！</div>"
+	end if
 '-----
 elseif pg="action" then
 	id=request("id")
@@ -82,11 +74,12 @@ elseif pg="yes" then
 	k2=request("k2")
 	k3=request("k3")
 	k4=request("k4")
-
 	if action="1" then
-	sql="select * from [kltool]"
+		sql="select * from [kltool]"
+		yestr="(功能)添加:"&k1
 	else
-	sql="select * from [kltool] where id="&id
+		sql="select * from [kltool] where id="&id
+		yestr="(功能)修改:"&k1
 	end if
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open sql,kltool,1,2
@@ -98,7 +91,7 @@ elseif pg="yes" then
 	rs.update
 	rs.close
 	set rs=nothing
-	if action="1" then call kltool_write_log("(功能)添加:"&k1) else call kltool_write_log("(功能)修改:"&k1)
+	kltool_write_log(yestr)
 	kltool_msg("成功")
 end if
 kltool_end
