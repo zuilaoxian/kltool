@@ -21,6 +21,7 @@ elseif pg="az" then
 	conn.Execute("ALTER TABLE [cdk] ADD [zs] bigint")
 	conn.Execute("ALTER TABLE [cdk] ADD [chushou] bigint")
 	conn.Execute("ALTER TABLE [cdk] ADD [jiage] bigint")
+	conn.Execute("ALTER TABLE [cdk] ADD [usetime] datetime")
 
 	conn.Execute("CREATE TABLE [dbo].[cdk_set] (ID int IDENTITY (1,1) not null PRIMARY key)")
 	conn.Execute("ALTER TABLE [cdk_set] ADD [yh] bigint")

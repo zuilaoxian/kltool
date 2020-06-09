@@ -15,9 +15,53 @@ if pg="" then
 	Response.Write "<form method='post' action='?siteid="&siteid&"&amp;pg=dh'>"
 	Response.Write "<div class=line1>输入要兑换的cdk：</div>"
 	Response.Write "<div class=line2><input name='cdk' type='text' size='20' value='' id='q'>"
-	Response.Write "<a onClick=""return ajaxQuerySetDom(document.getElementById('q').value,'../inc/key.asp?action=cdk&','q','result')"">校验</a><span id=""result""></span>"
+	Response.Write "<a onClick=""return ajaxQuerySetDom(document.getElementById('q').value,'../inc/key.asp?action=cdk&','q','result')"">校验</a><span id=""result""></span></div>"
 	Response.Write "<div class=line1><input type='submit' value='马上兑换' class='btn' onClick=""ConfirmDel('是否确定？');return false""></form>"
 	Response.Write "</div>"
+	
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select top 10 * from [cdk] where userid is not null and sy=2 and usetime is not null and year(usetime)="&year(now)&" and month(usetime)="&month(now)&" and day(usetime)="&day(now)&" order by usetime desc",conn,1,1
+	If Not rs.eof Then
+		gopage="?"
+		Count=rs.recordcount
+		pagecount=(count+pagesize-1)\pagesize
+		if page>pagecount then page=pagecount
+		rs.move(pagesize*(page-1))
+	call kltool_page(1)
+		For i=1 To PageSize
+		If rs.eof Then Exit For
+	lx=clng(rs("lx"))
+	if lx=1 then
+		clx=""&sitemoneyname&""
+	elseif lx=2 then
+		clx="经验"
+	elseif lx=3 then
+		clx=""&sitemoneyname&"+经验"
+	elseif lx=4 then
+		clx="Vip"
+	elseif lx=5 then
+		clx="积时"
+	elseif lx=6 then
+		clx="勋章"
+	end if
+
+	if i mod 2 = 0 then Response.Write"<div class=""line1"">" else Response.Write"<div class=""line2"">"
+	'Response.Write page*PageSize+i-PageSize&"."
+	Response.Write kltool_get_usernickname(rs("userid"),1)&"("&rs("userid")&")"
+	mytime=kltool_DateDiff(rs("usetime"),now(),"n")
+	if mytime<60 then
+	Response.Write mytime&"分钟前使用了<font color=""#FF2D2D"">"&clx&"</font>cdk"
+	else
+	Response.Write"使用了<font color=""#FF2D2D"">"&clx&"</font>cdk(<small><small>"&month(rs("usetime"))&"-"&day(rs("usetime"))&"&nbsp;"&hour(rs("usetime"))&":"&minute(rs("usetime"))&"</small></small>)"
+	end if
+	Response.Write"</div>"
+		rs.movenext
+		Next
+	call kltool_page(2)
+	end if
+	rs.close
+	set rs=nothing
+	
 '''''''''''''''''''''''兑换CDK
 elseif pg="dh"  then
 	clx=request("clx")
@@ -93,7 +137,7 @@ elseif pg="dh"  then
 	if lx=1 or lx=2 or lx=3 then
 	conn.execute"insert into [wap_bankLog](siteid,userid,actionName,money,leftMoney,opera_userid,opera_nickname,remark,ip,addtime)values('"&siteid&"','"&userid&"','CDK兑换','"&jinbi&"','"&money&"','"&userid&"','"&nickname&"','CDK使用:"&cdk&"','"&Request.ServerVariables("REMOTE_ADDR")&"','"&date()&" "&time()&"')"
 	End if
-
+	conn.Execute("update [cdk] set usetime='"&now&"' where cdk='"&cdk&"'")
 	response.write "<div class=line1>立即进入<a href='/myfile.aspx?siteid="&siteid&"'>我的地盘查看</a></div>"
 '''''''''''''''''''''''我的CDK
 elseif pg="mycdk"  then
