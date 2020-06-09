@@ -2,8 +2,9 @@
 <%
 kltool_head("删除会员")
 kltool_quanxian
-lx=clng(request("lx"))
+lx=request("lx")
 if lx<>"" then
+	lx=clng(lx)
 	uid=request("uid")
 	uid2=request("uid2")
 	if uid="" then call kltool_msge("ID不能为空")
