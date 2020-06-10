@@ -56,7 +56,26 @@ pg=request("pg")
 	set rs=nothing
 	Response.write "<input name=""uid"" type=""text"" value="""" size=""12"" placeholder=""输入会员ID"">"&vbcrlf
 	Response.write "<input name=""g"" type=""submit"" value=""确定""></form></div>"&vbcrlf
-
+	
+	Response.write "<div class=""tip"">替换帖子内容 输入 关键词:<br/><form method=""post"" action=""keyword.asp"">"&vbcrlf
+	Response.write "<input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf
+	set rs=conn.execute("select * from [class] where userid="&siteid&" and typeid=16")
+	Response.write "<select name='cid'><option value=''>查看全部</option>"&vbcrlf
+	Do While Not rs.EOF
+	Response.Write"<option value='"&rs("classid")&"'"
+	if cid<>"" then
+	if clng(rs("classid"))=clng(cid) then Response.Write" selected"
+	end if
+	Response.Write">"&rs("classid")&"-"&rs("classname")&"</option>"&vbcrlf
+	rs.MoveNext 
+	Loop
+	Response.write "</select>"&vbcrlf
+	rs.close
+	set rs=nothing
+	Response.write "<input name=""keyword1"" type=""text"" value="""" size=""12"" placeholder=""原字符串"">"&vbcrlf
+	Response.write "<input name=""keyword2"" type=""text"" value="""" size=""12"" placeholder=""将要替换"">"&vbcrlf
+	Response.write "<input name=""g"" type=""submit"" value=""确定""></form></div>"&vbcrlf
+	
 	set rs=Server.CreateObject("ADODB.Recordset")
 	if uid<>"" and cid<>"" then
 	rs.open"select * from [wap_bbs] where book_classid="&cid&" and book_pub="&uid&" and userid="&siteid&" Order by id desc",conn,1,1
