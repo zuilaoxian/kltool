@@ -1,5 +1,23 @@
 ﻿<!--#include file="../inc/config.asp"-->
 <%
+function getcdklx(str)
+	lx=clng(str)
+	clx=""
+	if lx=1 then
+		clx=sitemoneyname
+	elseif lx=2 then
+		clx="经验"
+	elseif lx=3 then
+		clx=sitemoneyname&"+经验"
+	elseif lx=4 then
+		clx="Vip"
+	elseif lx=5 then
+		clx="积时"
+	elseif lx=6 then
+		clx="勋章"
+	end if
+	getcdklx=clx
+end function
 kltool_head("CDK兑换系统-商城")
 kltool_sql("cdk_set")
 	'-----查询各种CDK数量
@@ -39,21 +57,7 @@ if pg="" then
 	call kltool_page(1)
 		For i=1 To PageSize
 		If rs.eof Then Exit For
-	lx=clng(rs("lx"))
-	if lx=1 then
-		clx=""&sitemoneyname&""
-	elseif lx=2 then
-		clx="经验"
-	elseif lx=3 then
-		clx=""&sitemoneyname&"+经验"
-	elseif lx=4 then
-		clx="Vip"
-	elseif lx=5 then
-		clx="积时"
-	elseif lx=6 then
-		clx="勋章"
-	end if
-
+	clx=getcdklx(rs("lx"))
 	if i mod 2 = 0 then Response.Write"<div class=""line1"">" else Response.Write"<div class=""line2"">"
 	Response.Write page*PageSize+i-PageSize&"."&kltool_get_usernickname(rs("userid"),1)&"("&rs("userid")&")"
 	mytime=kltool_DateDiff(rs("ltime"),now(),"n")
@@ -305,20 +309,7 @@ elseif pg="gou" then
 	call kltool_page(1)
 		For i=1 To PageSize 
 		If rs.eof Then Exit For
-	lx=clng(rs("lx"))
-	if lx=1 then
-		clx=""&sitemoneyname&"类CDK"
-	elseif lx=2 then
-		clx="经验类CDK"
-	elseif lx=3 then
-		clx=""&sitemoneyname&"+经验类CDK"
-	elseif lx=4 then
-		clx="Vip类CDK"
-	elseif lx=5 then
-		clx="积时类CDK"
-	elseif lx=6 then
-		clx="勋章类CDK"
-	end if
+	clx=getcdklx(rs("lx"))&"类CDK"
 	Response.write"<div class=""line1"">"&rs("id")&"."&clx&":VIP会员优惠"&clng(rs("yh"))&"%</div>"
 	Response.write"<div class=""line2"">　可购数:"&clng(rs("sl"))&"　vip可购数"&clng(rs("vsl"))&"</div>"
 	rs.movenext

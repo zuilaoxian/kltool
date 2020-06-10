@@ -123,7 +123,7 @@ elseif pg="c3" then
 		if jia<>"" then
 		rs("jiage")=clng(jia)
 		else
-		call kltool_err_msg("价格不能为空")
+		call kltool_msge("价格不能为空")
 		end if
 	end if
 
@@ -278,7 +278,7 @@ elseif pg="c6" then
 
 '-----
 elseif pg="c7" then
-	if not (Isnumeric(request("cyh")) and Isnumeric(request("csl")) and Isnumeric(request("cvsl"))) then call kltool_err_msg("各项必须是数字")
+	if not (Isnumeric(request("cyh")) and Isnumeric(request("csl")) and Isnumeric(request("cvsl"))) then call kltool_msge("各项必须是数字")
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [cdk_set] where id="&request("cid"),conn,1,2
 	If Not rs.eof Then
