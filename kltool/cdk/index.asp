@@ -1,19 +1,18 @@
 ﻿<!--#include file="../inc/config.asp"-->
 <%
 function getcdklx(str)
-	lx=clng(str)
 	clx=""
-	if lx=1 then
+	if str=1 then
 		clx=sitemoneyname
-	elseif lx=2 then
+	elseif str=2 then
 		clx="经验"
-	elseif lx=3 then
+	elseif str=3 then
 		clx=sitemoneyname&"+经验"
-	elseif lx=4 then
+	elseif str=4 then
 		clx="Vip"
-	elseif lx=5 then
+	elseif str=5 then
 		clx="积时"
-	elseif lx=6 then
+	elseif str=6 then
 		clx="勋章"
 	end if
 	getcdklx=clx
@@ -48,23 +47,22 @@ if pg="" then
 	call kltool_page(1)
 		For i=1 To PageSize
 		If rs.eof Then Exit For
-	clx=getcdklx(rs("lx"))
-	lx=clng(rs("lx"))
-	if lx=1 then cjl=clx&"增加"&Clng(rs("jinbi"))
-	if lx=2 then cjl=clx&"增加"&Clng(rs("jingyan"))
-	if lx=3 then cjl=sitemoneyname&"+"&Clng(rs("jinbi"))&" 经验+"&Clng(rs("jingyan"))
-	if lx=4 then cjl=Clng(rs("sff"))&"个月VIP"&kltool_get_vip(Clng(rs("sf")),1)
-	if lx=5 then cjl=clx&"增加"&Clng(rs("lg"))&"秒"
-	if lx=6 then cjl="获得"&kltool_get_xunzhang(rs("xg"))
-	
+	cdklx=clng(rs("lx"))
+	clx=getcdklx(cdklx)
+	if cdklx=1 then cjl=clx&"增加"&Clng(rs("jinbi"))
+	if cdklx=2 then cjl=clx&"增加"&Clng(rs("jingyan"))
+	if cdklx=3 then cjl=sitemoneyname&"+"&Clng(rs("jinbi"))&" 经验+"&Clng(rs("jingyan"))
+	if cdklx=4 then cjl=Clng(rs("sff"))&"个月VIP"&kltool_get_vip(Clng(rs("sf")),1)
+	if cdklx=5 then cjl=clx&"增加"&Clng(rs("lg"))&"秒"
+	if cdklx=6 then cjl="获得"&kltool_get_xunzhang(rs("xg"))
 	if i mod 2 = 0 then Response.Write"<div class=""line1"">" else Response.Write"<div class=""line2"">"
 	'Response.Write page*PageSize+i-PageSize&"."
 	Response.Write kltool_get_usernickname(rs("userid"),1)&"("&rs("userid")&")"
 	mytime=kltool_DateDiff(rs("usetime"),now(),"n")
 	if mytime<60 then
-	Response.Write mytime&"分钟前使用了<font color=""#FF2D2D"">"&clx&"</font>cdk "&cjl
+		Response.Write mytime&"分钟前使用了<font color=""#FF2D2D"">"&clx&"</font>cdk "&cjl
 	else
-	Response.Write"使用了<font color=""#FF2D2D"">"&clx&"</font>cdk "&cjl&"(<small><small>"&month(rs("usetime"))&"-"&day(rs("usetime"))&"&nbsp;"&hour(rs("usetime"))&":"&minute(rs("usetime"))&"</small></small>)"
+		Response.Write"使用了<font color=""#FF2D2D"">"&clx&"</font>cdk "&cjl&"(<small><small>"&month(rs("usetime"))&"-"&day(rs("usetime"))&"&nbsp;"&hour(rs("usetime"))&":"&minute(rs("usetime"))&"</small></small>)"
 	end if
 	Response.Write"</div>"
 		rs.movenext

@@ -529,8 +529,8 @@ if vip_str<>"" then
 	pics_str=".png|.jpg|.bmp|.gif"
 	pics_str_Split=Split(pics_str,"|")
 	'循环图片格式
-	for i=0 to Ubound(pics_str_Split)
-		if instr(vip_pic,pics_str_Split(i))>0 then
+	for vipi=0 to Ubound(pics_str_Split)
+		if instr(vip_pic,pics_str_Split(vipi))>0 then
 			'如果包含
 			'things为1，显示图片
 			if things=1 then
