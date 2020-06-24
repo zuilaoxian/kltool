@@ -119,7 +119,9 @@ elseif pg="xg" then
 	Response.Write "<input type='hidden' name='id' value='"&id&"'>"
 	Response.Write "<input type='hidden' name='page' value='"&page&"'>"
 	Response.Write "<input type='hidden' name='lx' value='"&lx&"'>"
-	Response.Write "<div class=line1><input type='text' name='uid' value=''></div>"
+	Response.Write "<div class=line1><input type='text' name='uid' value=''>"
+	Response.Write "<input type=""radio"" name=""tomsg"" value=""0"">不通知"
+	Response.Write "<input type=""radio"" name=""tomsg"" value=""1"" checked>内信通知</div>"
 	Response.Write "<div class=line2><input type='submit' value='发放' name='g'></div>"
 
 '''''''''''''''''''''''''
@@ -127,6 +129,7 @@ elseif pg="xg1" then
 	uid=request("uid")
 	id=request("id")
 	lx=request("lx")
+	tomsg=request("tomsg")
 	set rs=server.CreateObject("adodb.recordset")
 	rs.open "select * from [cdk] where id="&id,conn,1,2
 	if rs.eof then call kltool_msge("没有此CDK")
@@ -139,7 +142,7 @@ elseif pg="xg1" then
 	set rs=nothing
 	'发信息给目标id
 	call kltool_write_log("(cdk管理)发cdk("&cdk&")给"&kltool_get_usernickname(uid,1)&"("&uid&")")
-	conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values('"&siteid&"','"&siteid&"','系统','来自CDK的发放信息','系统大神发放了一个CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]&pg=mycdk]前往查看[/url]','"&uid&"','1','1','"&date()&" "&time()&"','0')")
+	if tomsg=1 then conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values('"&siteid&"','"&siteid&"','系统','来自CDK的发放信息','系统大神发放了一个CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]&pg=mycdk]前往查看[/url]','"&uid&"','1','1','"&date()&" "&time()&"','0')")
 	Response.redirect"?siteid="&siteid&"&lx="&lx&"&page="&page&""
 ''''''''''''''''''''''''''
 elseif pg="sc" then

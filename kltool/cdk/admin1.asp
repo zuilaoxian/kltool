@@ -72,7 +72,9 @@ elseif pg="c2" then
 	Response.Write "<div class=line2><input type='text'  name='xg' value=''></div>"
 	end if
 	Response.Write "<div class=line1>指定使用人,将全部发给此ID(不指定留空)</div>"
-	Response.Write "<div class=line2><input type='text'  name='uid' value='' ></div>"
+	Response.Write "<div class=line2><input type='text'  name='uid' value='' >"
+	Response.Write "<input type=""radio"" name=""tomsg"" value=""0"" checked>不通知"
+	Response.Write "<input type=""radio"" name=""tomsg"" value=""1"">内信通知</div>"
 	Response.Write "<div class=line1>是否允许转增</div>"
 	Response.Write "<div class=line2><select name='zs'><option value='1'>1-允许</option><option value='2'>2-不允许</option></select></div>"
 
@@ -97,6 +99,7 @@ elseif pg="c3" then
 	zs=request("zs")
 	cs=request("cs")
 	jia=request("jia")
+	tomsg=request("tomsg")
 	set rs=Server.CreateObject("ADODB.Recordset")
 	rs.open"select * from [cdk]",conn,1,3
 	for i=1 to cdk
@@ -149,7 +152,10 @@ elseif pg="c3" then
 	call kltool_write_log("(cdk生产)生产"&cdk&"个cdk,类型:"&clx)
 	Response.Write "<div class=tip><a href='?siteid="&siteid&"'>cdk后台</a>><a href='?siteid="&siteid&"&amp;pg=c1'>生产CDK(1)</a>><a href='?siteid="&siteid&"&amp;pg=c2&amp;lx="&lx&"'>生产CDK(2)</a>>生产CDK(3)</div>"
 	Response.Write "<div class=title>批量生产"&cdk&"个cdk成功,类型:"&clx&"</div>"
-	if not uid="" then  Response.Write "<div class=line2>已批量发号给ID："&kltool_get_usernickname(uid,1)&"("&uid&")</div>"
+	if uid<>"" then
+		Response.Write "<div class=line2>已批量发号给ID："&kltool_get_usernickname(uid,1)&"("&uid&")</div>"
+		if tomsg=1 then conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values('"&siteid&"','"&siteid&"','系统','来自CDK的发放信息','系统大神发放了"&cdk&"个CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]&pg=mycdk]前往查看[/url]','"&uid&"','1','1','"&date()&" "&time()&"','0')")
+	end if
 '-----
 elseif pg="c4"then
 	set rs=server.CreateObject("adodb.recordset")
