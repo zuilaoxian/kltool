@@ -1,0 +1,19 @@
+﻿========
+使用说明
+与旧版不兼容，请勿同时使用，除非你会修改代码
+========
+1.解压文件夹kltool2至网站{任意目录}，文件夹kltool2{可改名},如果以前安装过，请删除以前的文件，再上传
+
+2.主机或空间需要支持asp，FSO，父路径
+
+3.站内链接写法:
+	[url=/kltool2/index.asp?siteid=[siteid]]柯林工具箱[/url]
+  脚本内
+	<a href=""/kltool2/index.asp?siteid="&siteid&""">柯林工具箱</a>
+  脚本外
+	<a href="/kltool2/index.asp?siteid=<%=siteid%>">柯林工具箱</a>
+	.net写法
+	Response.Write("<a href=\"" + this.http_start + "kltool2/index.asp?siteid=" + siteid + "" + "\">柯林工具箱</a>" + "-");
+
+4.文件夹pp，无需登录修改任意ID密码，忘记密码或网站被锁可以上传此文件夹至网站根目录，访问http://域名/pp/index.asp
+  校验码(打开文件index.asp找到)，安全起见，用完请删除，文件夹pp可改名
