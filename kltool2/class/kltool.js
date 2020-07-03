@@ -1,6 +1,6 @@
 ﻿$(function() {
 //通用提醒
-	$("a#tips").click(function(){
+	$("a#tips").on('click',function(){
 		event.preventDefault();
 		tipword=$(this).attr("tiptext");
 		tiplink=$(this).attr("href");
@@ -41,6 +41,43 @@
 	});
 	path=location.pathname.toLowerCase().split('/');
 	thispath=path.length>2?path[2]:Null;
+//功能-发表帖子带专题
+	$("#BbsTopic").click(function(){
+		bbs_title=$('#bbs_title').val();
+		bbs_content=$('#bbs_content').val();
+		bbs_classid=$('#Class:checked').val();
+		bbs_topic=$('#Topic:checked').val();
+		bbs_author=$('#bbs_author').val();
+		bbs_pub=$('#bbs_pub').val();
+		if (!bbs_title) {layer.tips('不能为空', '#bbs_title', {tips: [1, '#0FA6D8']}); return;}
+		if (!bbs_content) {layer.tips('不能为空', '#bbs_content', {tips: [1, '#0FA6D8']}); return;}
+		if (!bbs_classid) {layer.tips('不能为空', '#Class', {tips: [1, '#0FA6D8']}); return;}
+		if (!bbs_author) {layer.tips('不能为空', '#bbs_author', {tips: [1, '#0FA6D8']}); return;}
+		if (!bbs_pub) {layer.tips('不能为空', '#bbs_pub', {tips: [1, '#0FA6D8']}); return;}
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+			url:'?action=yes',
+			type:'post',
+			data:{
+				bbs_title:bbs_title,
+				bbs_content:bbs_content,
+				bbs_classid:bbs_classid,
+				bbs_topic:bbs_topic,
+				bbs_author:bbs_author,
+				bbs_pub:bbs_pub
+				},
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					layer.alert(data,{shadeClose:true,title:''});
+				}
+			})
+		});		
+	});
 //功能-vip自助开通设置
 	$("button#Vip_Set").click(function(){
 		r_id=$(this).attr('vipid');
@@ -94,7 +131,21 @@
 			timeout:'15000',
 			async:true,
 				success:function(data){
-					layer.alert(data,{shadeClose:true,title:''});
+					layer.alert(
+						data,
+						{
+							closeBtn: 0,
+							title:''
+							,btn: ['确定']
+							,yes: function(index){
+								layer.close(index);
+								$.get("?action=getvip&r_id="+r_id,function(data){$("#r_vip").html(data).fadeOut(200).fadeIn(300).fadeOut(200).fadeIn(300);});
+							}
+						}
+					);
+				},
+				error:function(xhr){
+					layer.msg('网络错误，请重试',{time: 60000,anim:6})
 				}
 			})
 		});		

@@ -21,6 +21,7 @@ sub index()
 	"<ul class=""breadcrumb"">"&vbcrlf&_
 	"	<li><a href=""admin.asp?siteid="&siteid&"&action=log"">查看日志</a></li>"&vbcrlf&_
 	"	<li><a href=""index.asp?siteid="&siteid&""">前台</a></li>"&vbcrlf&_
+	"	<li><a href=""/bbs/smalltypelist.aspx?siteid="&siteid&"&systype=card"">设置vip</a></li>"&vbcrlf&_
 	"</ul>"&vbcrlf
 	str=kltool_GetRow("select id,jinbi,jinyan,rmb,xian from [wap2_smallType] where siteid="&siteid&" and systype='card'",0,pagesize)
 	If str(0) Then
@@ -96,6 +97,7 @@ sub log()
 	"<ul class=""breadcrumb"">"&vbcrlf&_
 	"	<li><a href=""admin.asp?siteid="&siteid&""">管理后台</a></li>"&vbcrlf&_
 	"	<li><a href=""index.asp?siteid="&siteid&""">前台</a></li>"&vbcrlf&_
+	"	<li><a href=""/bbs/smalltypelist.aspx?siteid="&siteid&"&systype=card"">设置vip</a></li>"&vbcrlf&_
 	"</ul>"&vbcrlf&_
 	"<li class=""list-group-item"">"&vbcrlf&_
 	"<div class=""form-group"">"&vbcrlf&_
@@ -172,7 +174,7 @@ sub install()
 	Response.Write"Vip自助开通安装成功"
 	conn.Execute("ALTER TABLE [wap2_smallType] ADD [jinbi] bigint")
 	conn.Execute("ALTER TABLE [wap2_smallType] ADD [jinyan] bigint")
-	conn.Execute("ALTER TABLE [wap2_smallType] ADD [rmb] bigint")
+	conn.Execute("ALTER TABLE [wap2_smallType] ADD [rmb] money")
 	conn.Execute("ALTER TABLE [wap2_smallType] ADD [xian] bigint")
 	conn.Execute("CREATE TABLE [dbo].[wap2_smallType_log] (ID int IDENTITY (1,1) not null PRIMARY key)")
 	conn.Execute("ALTER TABLE [wap2_smallType_log] ADD [userid] bigint")
@@ -181,7 +183,7 @@ sub install()
 	conn.Execute("ALTER TABLE [wap2_smallType_log] ADD [yue] bigint")
 	conn.Execute("ALTER TABLE [wap2_smallType_log] ADD [jinbi] bigint")
 	conn.Execute("ALTER TABLE [wap2_smallType_log] ADD [jinyan] bigint")
-	conn.Execute("ALTER TABLE [wap2_smallType_log] ADD [rmb] bigint")
+	conn.Execute("ALTER TABLE [wap2_smallType_log] ADD [rmb] money")
 	conn.Execute("ALTER TABLE [wap2_smallType_log] ADD [time] datetime")
 end sub
 sub uninstall()

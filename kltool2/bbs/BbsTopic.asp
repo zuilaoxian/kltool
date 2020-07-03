@@ -1,88 +1,84 @@
-﻿<!--#include file="../inc/config.asp"-->
+﻿<!--#include file="../config.asp"-->
 <%
 kltool_use(12)
-kltool_head("柯林工具箱-贴子带专题发布通道")
-kltool_quanxian
+kltool_admin(1)
+action=Request.QueryString("action")
+select case action
+	case ""
+		call index()
+	case else
+		call index1()
+end select
+sub index()
+	html=kltool_head("柯林工具箱-贴子带专题发布通道",1)
+	html=html&"<div role=""form"" class=""form-horizontal"">"&vbcrlf&_
+	"	<div class=""form-group"">"&vbcrlf&_
+	"		<label for=""bbs_title"" class=""col-sm-2 control-label"">帖子标题</label>"&vbcrlf&_
+	"		<div class=""col-sm-10"">"&vbcrlf&_
+	"			<textarea class=""form-control"" rows=""3"" name=""bbs_title"" id=""bbs_title"" placeholder=""""></textarea>"&vbcrlf&_
+	"		</div>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
 
-pg=request("pg")
-if pg="" then
-	Response.Write "<form method=""post"" action=""?"">"&vbcrlf
-	Response.Write "<input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf
-	Response.Write "<input name=""pg"" type=""hidden"" value=""yes"">"&vbcrlf
-	Response.Write "<div class=""line1"">帖子标题：</div>"&vbcrlf
-	Response.Write "<div class=""line2""><textarea name=""title"" rows=""5"" value=""""></textarea></div>"&vbcrlf
-	Response.Write "<div class=""line1"">帖子内容：</div>"&vbcrlf
-	Response.Write "<div class=""line2""><textarea name=""content"" rows=""10"" value=""""></textarea></div>"&vbcrlf
-	Response.Write "<div class=""line1"">选择论坛：</div>"&vbcrlf
-	'-----
-	set rs=server.CreateObject("adodb.recordset")
-	rs.open "select * from [class] where userid="&siteid&" and typeid=16",conn,1,1
-	Response.write "<div class=""line2""><select name=""classid"">"&vbcrlf
-	If rs.eof and rs.bof Then
-	Response.Write "<option value="""">请先添加论坛</option>"&vbcrlf
-	else
-	For i=1 To rs.recordcount
-	If rs.eof Then Exit For
-	Response.Write "<option value="""&rs("classid")&""">"&rs("classid")&"-"&rs("classname")&"</option>" &vbcrlf
-	rs.movenext
-	Next
+	"	<div class=""form-group"">"&vbcrlf&_
+	"		<label for=""bbs_content"" class=""col-sm-2 control-label"">帖子内容</label>"&vbcrlf&_
+	"		<div class=""col-sm-10"">"&vbcrlf&_
+	"			<textarea class=""form-control"" rows=""10"" name=""bbs_content"" id=""bbs_content"" placeholder=""""></textarea>"&vbcrlf&_
+	"		</div>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+	
+	"	<label for=""Class"" class=""col-sm-2 control-label"">论坛</label>"&vbcrlf&_
+	"	<div>"&vbcrlf&_
+	kltool_get_classlist(16)&_
+	"	</div>"&vbcrlf&_
+
+	"	<label for=""Topic"" class=""col-sm-2 control-label"">专题</label>"&vbcrlf&_
+	"	<div>"&vbcrlf&_
+	kltool_get_topiclist()&_
+	"	</div>"&vbcrlf&_
+
+	"	<div class=""form-group"">"&vbcrlf&_
+	"		<label for=""bbs_author"" class=""col-sm-2 control-label"">作者</label>"&vbcrlf&_
+	"		<div class=""col-sm-10"">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""bbs_author"" id=""bbs_author"" value="""&nickname&""" >"&vbcrlf&_
+	"		</div>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+	
+	"	<div class=""form-group"">"&vbcrlf&_
+	"		<label for=""bbs_pub"" class=""col-sm-2 control-label"">ID</label>"&vbcrlf&_
+	"		<div class=""col-sm-10"">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""bbs_pub"" id=""bbs_pub"" value="""&userid&""" >"&vbcrlf&_
+	"		</div>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+	
+	"	  <button name=""kltool"" type=""button"" class=""btn btn-default btn-block"" id=""BbsTopic"" data-loading-text=""Loading..."">提交</button>"&vbcrlf&_
+	"</div>"&vbcrlf
+	response.write kltool_code(html&kltool_end(1))
+end sub
+sub index1()
+	bbs_title=Request.Form("bbs_title")
+	bbs_content=Request.Form("bbs_content")
+	bbs_classid=Request.Form("bbs_classid")
+	bbs_topic=Request.Form("bbs_topic")
+	bbs_author=Request.Form("bbs_author")
+	bbs_pub=Request.Form("bbs_pub")
+	if bbs_title="" or bbs_content="" or bbs_author="" or bbs_pub="" or bbs_classid="" then
+		Response.write "发表帖子失败"
+		Response.End()
 	end if
-	rs.close
-	set rs=nothing
-	Response.Write "</select></div>"&vbcrlf
-	Response.Write "<div class=line1>选择专题：</div>"&vbcrlf
-	set rs=server.CreateObject("adodb.recordset")
-	rs.open "select * from [wap2_smallType] where siteid="&siteid&" and systype like '%bbs%'",conn,1,1
-	Response.write "<div class=""line2""><select name=""topic"">"&vbcrlf
-	If rs.eof and rs.bof Then
-	Response.Write "<option value="""">请先添加专题</option>"&vbcrlf
-	else
-	For i=1 To rs.recordcount
-	If rs.eof Then Exit For
-	Response.Write "<option value='"&rs("id")&"'>"&rs("systype")&"-"&rs("subclassName")&"</option>"&vbcrlf
-	rs.movenext
-	Next
-	end if
-	rs.close
-	set rs=nothing
-
-	Response.Write "</select></div>"
-	Response.Write "<input name=""author"" type=""hidden"" value="""&nickname&""">"&vbcrlf
-	Response.Write "<input name=""pub"" type=""hidden"" value="""&userid&""">"&vbcrlf
-	Response.Write "<div class=""line1""><input name=""g"" type=""submit"" value=""马上增加"">"&vbcrlf
-	Response.Write "</form></div>"
-
-'----
-elseif pg="yes" then
-	title=request("title")
-	content=request("content")
-	classid=request("classid")
-	topic=request("topic")
-	author=request("author")
-	pub=request("pub")
-
-	if title="" then call kltool_msge("标题不能为空")
-	if content="" then call kltool_msge("内容不能为空")
-	if pub="" then call kltool_msge("作者不能为空")
-	if classid="" then call kltool_msge("请选择一个论坛")
 
 		set rs=Server.CreateObject("ADODB.Recordset")
 		rs.open"select * from [wap_bbs]",conn,1,2
 		rs.addnew
-		rs("book_title")=title
-		rs("book_content")=content
-		rs("book_classid")=classid
-		if topic<>"" then rs("topic")=topic
-		rs("userid")=siteid
-		rs("book_author")=author
-		rs("book_pub")=pub
+			rs("book_title")=bbs_title
+			rs("book_content")=bbs_content
+			rs("book_classid")=bbs_classid
+			if bbs_topic<>"" then rs("topic")=bbs_topic
+			rs("userid")=siteid
+			rs("book_author")=bbs_author
+			rs("book_pub")=bbs_pub
 		rs.update
 		rs.close
 		set rs=nothing
-		
-	call kltool_write_log("(帖子发布)新增帖子："&title)
-	Response.Write "<div class=tip>帖子:"&title&"，发表成功。<a href=""./bbs1.asp?siteid="&siteid&""">进入帖子管理</a></div>"
-end if
-
-kltool_end
+	Response.Write "发表成功帖子:"&bbs_title
+end sub
 %>

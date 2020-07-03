@@ -10,11 +10,13 @@ select case action
 		call ktvip()
 	case "jcvip"
 		call jcvip()
+	case "getvip"
+		call getvip()
 end select
 sub index()
 	html=kltool_head("vip自助开通",1)&_
-	"<li class=""list-group-item has-warning"">"&vbcrlf&_
-	"	您的身份:"&kltool_get_vip(SessionTimeout,1)&vbcrlf
+	"<li class=""list-group-item has-warning"" id=""r_vip"">"&vbcrlf&_
+	"	您的身份:"&kltool_get_uservip(userid,1)&vbcrlf
 	if SessionTimeout>0 then 
 		html=html&"	<a href=""?action=jcvip&siteid="&siteid&""" id=""tips"" tiptext=""确定解除？"">解除</a>"&vbcrlf&_
 		kltool_get_uservip(userid,2)&vbcrlf
@@ -34,23 +36,27 @@ sub index()
 			rmb=str(2)(3,i)
 			xian=str(2)(4,i)
 			shoptip=""
-			if jinbi="" or isnull(jinbi) then
-				jinbi=0
-			elseif (clng(jinbi)>0) then
+			vip=kltool_get_vip(id,0)
+			if instr(vip,"_")>0 then
+				vip_Split=Split(vip,"_")
+				bbs_grow1=vip_Split(1)
+				bbs_grow2=vip_Split(2)
+				bbs_grow_tip=""
+				if bbs_grow1<>"" then bbs_grow_tip="发帖币递增:"&bbs_grow1&"% "
+				if bbs_grow2<>"" then bbs_grow_tip=bbs_grow_tip&"回帖经验递增:"&bbs_grow2&"%"
+			end if
+			if bbs_grow_tip<>"" then bbs_grow_tip="<br>效果:"&bbs_grow_tip
+			if jinbi<>"" and not isnull(jinbi) and clng(jinbi)>0 then
 				shoptip=shoptip&sitemoneyname&":"&jinbi&" "
 				jinbi=clng(jinbi)
 			end if
-			if jinyan="" or isnull(jinyan) then
-				jinyan=0
-			elseif (clng(jinyan)>0) then
+			if jinyan<>"" and not isnull(jinyan) and clng(jingyan)>0 then
 				shoptip=shoptip&"经验:"&jinyan&" "
 				jinyan=clng(jinyan)
 			end if
-			if rmb="" or isnull(rmb) then
-				rmb=0
-			elseif (clng(rmb)>0) then
+			if rmb<>"" and not isnull(rmb) and rmb>0 then
 				shoptip=shoptip&"rmb:"&rmb&" "
-				rmb=clng(rmb)
+				rmb=rmb
 			end if
 			if clng(id)=SessionTimeout then cs="续期" else cs="开通"
 			html=html&"<li class=""list-group-item"">"&vbcrlf&_
@@ -59,7 +65,7 @@ sub index()
 			"	<label for=""name"">"&id&"."&kltool_get_vip(id,1)&"</label>"&vbcrlf&_
 			"  </div>"&vbcrlf&_
 			"  <div class=""form-group"">"&vbcrlf&_
-			"	<label for=""name"">"&shoptip&"</label>"&vbcrlf&_
+			"	<label for=""name"">"&shoptip&bbs_grow_tip&"</label>"&vbcrlf&_
 			"  </div>"&vbcrlf&_
 			"  <div class=""form-group input-group"">"&vbcrlf&_
 			"    <span class=""input-group-addon"">"&cs&"</span>"&vbcrlf&_
@@ -128,7 +134,6 @@ sub ktvip()
 			r_rmb_jia=0
 			sql3=""
 		else
-			r_rmb=clng(r_rmb)
 			r_rmb_jia=r_rmb*r_num
 			sql3="update [user] set rmb=rmb-"&r_rmb_jia&" where siteid="&siteid&" and userid="&userid
 		end if
@@ -141,7 +146,7 @@ sub ktvip()
 			Response.Write "经验不足 需要"&r_jinyan_jia
 			Response.End()
 		end if
-		if clng(rmb)<r_rmb_jia and userid<>siteid then
+		if rmb<r_rmb_jia and userid<>siteid then
 			Response.Write "rmb不足 需要"&r_rmb_jia
 			Response.End()
 		end if
@@ -188,5 +193,12 @@ sub jcvip()
 	conn.Execute"update [user] set SessionTimeout=0,endTime=null where siteid="&siteid&" and userid="&userid
 	if userid<>siteid then conn.Execute"update [user] set endTime=null where siteid="&siteid&" and userid="&userid
 	response.write "你已经解除当前vip，可以重新开通"
+end sub
+sub getvip()
+	response.write "	您的身份:"&kltool_get_uservip(userid,1)&vbcrlf
+	if SessionTimeout>0 then 
+		'response.write"	<a href=""?action=jcvip&siteid="&siteid&""" id=""tips"" tiptext=""确定解除？"">解除</a>"&vbcrlf
+		response.write kltool_get_uservip(userid,2)&vbcrlf
+	end if
 end sub
 %>
