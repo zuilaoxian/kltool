@@ -41,6 +41,76 @@
 	});
 	path=location.pathname.toLowerCase().split('/');
 	thispath=path.length>2?path[2]:Null;
+//功能-Vip每日抽奖-vip设定
+	$("button#Svip_Set").click(function(){
+		vip_id=$(this).attr('vipid');
+		if (vip_id==0){
+			vipid=$('#s_vip'+vip_id+':checked').val();
+		}else{
+			vipid=$('#s_vip'+vip_id).val();
+		}
+		s_num=$('#s_num'+vip_id).val();
+		if (!vipid) {layer.tips('不能为空', '#s_vip'+vip_id, {tips: [1, '#0FA6D8']}); return;}
+		if (!s_num) {layer.tips('不能为空', '#s_num'+vip_id, {tips: [1, '#0FA6D8']}); return;}
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+			url:'?action=vipset',
+			type:'post',
+			data:{
+				vipid:vipid,
+				s_num:s_num
+				},
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					layer.alert(data,{shadeClose:true,title:''});
+				}
+			})
+		});		
+	});
+//功能-Vip每日抽奖-奖品设定
+	$("button#Prize_Set").click(function(){
+		s_id=$(this).attr('s_id');
+		if (s_id==0){
+			prize1=$('#prize1'+s_id).val();
+			prize2=$('#prize2'+s_id).val();
+			s_prize=$('#vip_prize'+s_id+':checked').val();
+			s_id2=s_id;
+		}else{
+			s_id2=s_id;
+			s_prize=$('#vip_prize'+s_id).val();
+			prize1=$('#prize1'+s_id).val();
+			prize2=$('#prize2'+s_id).val();
+		}
+		if (!s_id2) {layer.tips('不能为空', '#vip_prize'+s_id, {tips: [1, '#0FA6D8']}); return;}
+		if (!prize1) {layer.tips('不能为空', '#prize1'+s_id, {tips: [1, '#0FA6D8']}); return;}
+		if (!prize2) {layer.tips('不能为空', '#prize2'+s_id, {tips: [1, '#0FA6D8']}); return;}
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+			url:'?action=prizeset',
+			type:'post',
+			data:{
+				s_id:s_id2,
+				s_prize:s_prize,
+				prize1:prize1,
+				prize2:prize2
+				},
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					layer.alert(data,{shadeClose:true,title:''});
+				}
+			})
+		});		
+	});
 //功能-发表帖子带专题
 	$("#BbsTopic").click(function(){
 		bbs_title=$('#bbs_title').val();

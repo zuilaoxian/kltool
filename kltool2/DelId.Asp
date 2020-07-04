@@ -43,7 +43,6 @@ if Isnumeric(uid) then
 				Exit For
 			end if
 		next
-		kltool_write_log("删除id:"&uid)
 		Response.write"成功删除"&uid
 		conn.execute("delete from [user] where siteid="&siteid&" and userid in ("&uid&")")
 	else
@@ -51,7 +50,6 @@ if Isnumeric(uid) then
 		rs.open "select userid from [user] where siteid="&siteid&" and userid="&uid,conn,1,2
 			If not rs.eof and clng(uid)>1000 then
 			rs.delete
-				kltool_write_log("删除id:"&uid)
 				Response.write"成功删除"&uid
 			else
 				Response.write"未能删除"&uid
@@ -64,7 +62,6 @@ elseif instr(uid,"-") then
 		if uids(0)<=1000 or not Isnumeric(uids(1)) then
 			Response.write"未能删除"&uid&""
 		else
-			kltool_write_log("删除id:"&uid)
 			conn.execute("delete from [user] where siteid="&siteid&" and userid between "&uids(0)&" and "&uids(1))
 			Response.write"成功删除"&uid
 		end if

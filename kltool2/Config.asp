@@ -403,24 +403,24 @@ GetnameR=r
 End Function
 '-----数组数字相加，cs为分割字符
 Function numsum(str,cs)
-y=0
-arrstr_numsum=split(str,cs)
-for i=0 to ubound(arrstr_numsum)
-if arrstr_numsum(i)="" then y=y else y=y+arrstr_numsum(i)
-next
-numsum=y
+	y=0
+	arrstr_numsum=split(str,cs)
+	for i=0 to ubound(arrstr_numsum)
+	if arrstr_numsum(i)="" then y=y else y=y+arrstr_numsum(i)
+	next
+	numsum=y
 end Function
 '-----数组数字取最大值，cs为分割字符
 Function numax(str,cs)
-arrstr_numax =split(str,cs)
-if arrstr_numax(0)<>"" then x=arrstr_numax(0)
-for i=1 to ubound(arrstr_numax)
-if arrstr_numax(i)="" then arrstr_numax(i)=0
-if arrstr_numax(i)-x>0 then
-x=arrstr_numax(i)
-end if
-next
-numax=x
+	arrstr_numax =split(str,cs)
+	if arrstr_numax(0)<>"" then x=arrstr_numax(0)
+	for i=1 to ubound(arrstr_numax)
+	if arrstr_numax(i)="" then arrstr_numax(i)=0
+	if arrstr_numax(i)-x>0 then
+	x=arrstr_numax(i)
+	end if
+	next
+	numax=x
 end Function
 '-----字节大小转换MB
 function mysize(num)
@@ -463,6 +463,35 @@ function kltool_DateDiff(dt1,dt2,dt3)
 'n	分钟
 's	秒
 kltool_DateDiff=DateDiff(dt3,dt1,dt2)
+end function
+'-----延迟函数
+function sleep(stime)
+	stimes = timer
+	do
+	loop until timer - stimes > stime
+end function
+'-----VIP每日抽奖，奖品设定
+function kltool_get_prizelist(things)
+prize_lx="1|2|3|4|5|6|7"
+prize_name=sitemoneyname&"|经验|RMB|银行存款|VIP延期|空间人气|在线积时"
+prize_lx_=split(prize_lx,"|")
+prize_name_=split(prize_name,"|")
+			For i=0 To ubound(prize_name_)
+				kltool_get_prizelist=kltool_get_prizelist&"  <label class=""checkbox-inline""><input type=""radio"" name="""&things&""" id="""&things&""" value="""&prize_lx_(i)&"""> "&prize_lx_(i)&" "&prize_name_(i)&"</label>"&vbcrlf
+			Next
+end function
+'-----VIP每日抽奖，奖品
+function kltool_get_prize(things)
+prize_lx_str="1|2|3|4|5|6|7"
+prize_name_str=sitemoneyname&"|经验|RMB|银行存款|VIP延期|空间人气|在线积时"
+prize_lx_g=split(prize_lx_str,"|")
+prize_name_g=split(prize_name_str,"|")
+			For prize_i=0 To ubound(prize_name_g)
+				if clng(things)=clng(prize_lx_g(prize_i)) then
+					kltool_get_prize=prize_lx_g(prize_i)&" "&prize_name_g(prize_i)&vbcrlf
+					'Exit For
+				end if
+			Next
 end function
 '-----获取class列表
 Function kltool_get_classlist(things)
@@ -727,17 +756,17 @@ if img<>"" then
 	end if
 end if
 End Function
-'-----获取vip列表，things为表单name
-Function kltool_get_viplist()
+'-----获取vip列表
+Function kltool_get_viplist(things)
 	kltool_get_viplist=""
 	set rsviplist=Server.CreateObject("ADODB.Recordset")
 	rsviplist.open "select * from [wap2_smallType] where siteid="&siteid&" and systype='card'",conn,1,1
 		If rsviplist.eof Then
-			kltool_get_viplist=kltool_get_viplist&"<input type=""radio"" name=""Vip"" id=""Vip"" value=""0""> 没有VIP"
+			kltool_get_viplist=kltool_get_viplist&"<input type=""radio"" name="""&things&""" id="""&things&""" value=""0""> 没有VIP"
 		else
 			For i=0 To rsviplist.recordcount
 			If rsviplist.eof Then Exit For
-				kltool_get_viplist=kltool_get_viplist&"<label class=""checkbox-inline""><input type=""radio"" name=""Vip"" id=""Vip"" value="""&rsviplist("id")&"""> "&rsviplist("id")&"</label>"&vbcrlf
+				kltool_get_viplist=kltool_get_viplist&"<label class=""checkbox-inline""><input type=""radio"" name="""&things&""" id="""&things&""" value="""&rsviplist("id")&"""> "&rsviplist("id")&" "&kltool_get_vip(rsviplist("id"),1)&"</label>"&vbcrlf
 			rsviplist.movenext
 			Next
 		end if

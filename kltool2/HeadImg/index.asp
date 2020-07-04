@@ -293,9 +293,6 @@ sub index1()
 				conn.execute("update [user] set headimg='"&kltool_path&"headimg/"&arrytemp(i)&"' where siteid="&siteid&" and userid="&userid)
 			next
 	end if
-	'前端特效,给出一个延迟
-	s = timer
-	do
-	loop until timer - s > 1
+	sleep(1)
 end sub
 %>

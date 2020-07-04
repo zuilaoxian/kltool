@@ -105,7 +105,7 @@ sub log()
 	"</div>"&vbcrlf&_
 	"<form method=""get"" action=""?"" class=""form-inline"" role=""form"">"&vbcrlf&_
 	" <input name=""action"" type=""hidden"" value=""log"">"&vbcrlf&_
-	" <input name=""siteid"" type=""hidden"" value=""[siteid]"">"&vbcrlf&_
+	" <input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf&_
 	"  <div class=""form-group col-xs-6"">"&vbcrlf&_
 	"   <input name=""r_search"" type=""text"" value="""" placeholder=""输入ID,留空为全部"" class=""form-control"">"&vbcrlf&_
 	"  </div>"&vbcrlf&_

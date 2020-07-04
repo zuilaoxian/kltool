@@ -1,101 +1,58 @@
-﻿<!--#include file="../inc/config.asp"-->
+﻿<!--#include file="../config.asp"-->
 <%
 kltool_use(2)
-kltool_head("vip每日抽奖")
-kltool_sql("vip_lx")
-if kltool_yunxu=1 then Response.write "<div class=tip><a href='admin1.asp?siteid="&siteid&"'>管理后台</a></div>"
-%>
-<div class=line2>您的身份:<%=kltool_get_uservip(userid,1)%><%=kltool_get_uservip(userid,2)%></div>
-<%
-Response.Write"<div class=line2><a href='?siteid="&siteid&"&amp;lx=day'>今日排行</a>/<a href='?siteid="&siteid&"&amp;pg=sf'>抽奖身份</a>/<a href='?siteid="&siteid&"&amp;pg=jp'>奖品类型</a>/<a href='?siteid="&siteid&"&amp;lx=my'>我的记录</a></div>"
+kltool_sql("svip")
 
-set rs=server.CreateObject("adodb.recordset")
-rs.open "select * from [vip_lx] where svip="&SessionTimeout,conn,1,1
-if rs.bof and rs.eof then
-	Response.Write "<div class=tip>sorry，你没有抽奖权限</div>"
-else
-	sci=clng(rs("sci"))
-end if
-rs.close
-set rs=nothing
+action=Request.QueryString("action")
+select case action
+	case ""
+		call index()
+	case "yes"
+		call yes()
+	case "log"
+		call log()
+end select
 
-if sci>0 then
-set rs=Server.CreateObject("ADODB.Recordset")
-rs.open "select * from [vip_log] where userid="&userid&" and DateDiff(day,vtime,getdate())=0",conn,1,1
-if rs.recordcount>=sci then
-Response.Write "<div class=tip>sorry，您今天抽奖次数已经用完，请明天再来</div>"
-else
-Response.Write "<div class=tip><a href='?siteid="&siteid&"&amp;pg=star'>点击抽奖</a>(剩余:"&sci-rs.recordcount&")</div>"
-end if
-rs.close
-set rs=nothing
-end if
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-pg=request("pg")
-	if pg="" then
-	Response.Write "<div class=line1><form method='post' action='?'><input type='hidden'  name='siteid' value='"&siteid&"'><input type='hidden'  name='lx' value='cx'>"
-	Response.Write "<input type='text'  name='uid' value='' size='13' placeholder='用户id'>"
-	Response.Write "<input type='text'  name='vday' value='' size='17' placeholder='日期,限本月'>"
-	Response.Write "<input type='submit' value='查询'></form></div>"
-	lx=request("lx")
-	vday=request("vday")
-	uid=request("uid")
-	if uid<>"" and not Isnumeric(uid) then response.redirect "?siteid="&siteid
-	if vday<>"" and not Isnumeric(vday) then response.redirect "?siteid="&siteid
-
-	set rs=server.CreateObject("adodb.recordset")
-	if lx="" then
-	rs.open "select * from [vip_log] order by id desc",conn,1,1
-
-	elseif lx="day" then
-	rs.open "select * from [vip_log] where DateDiff(day,vtime,getdate())=0 order by jp1,jp2 desc",conn,1,1
-
-	elseif lx="my" then
-	rs.open "select * from [vip_log] where userid="&userid&" order by id desc",conn,1,1
-
-	elseif lx="cx" and uid<>"" and vday<>"" then
-	rs.open "select * from [vip_log] where userid="&uid&" and year(vtime)="&year(now)&" and month(vtime)="&month(now)&" and day(vtime)="&vday&" order by id desc",conn,1,1
-
-	elseif lx="cx" and uid="" and vday<>"" then
-	rs.open "select * from [vip_log] where year(vtime)="&year(now)&" and month(vtime)="&month(now)&" and day(vtime)="&vday&" order by id desc",conn,1,1
-
-	elseif lx="cx" and uid<>"" and vday="" then
-	rs.open "select * from [vip_log] where userid="&uid&" order by id desc",conn,1,1
+function get_num
+	get_num=0
+	if SessionTimeout="" or SessionTimeout<=0 or isnull(SessionTimeout) then
+		get_num=0
 	else
-	response.redirect "?siteid="&siteid&""
+		set rs_getnum=server.CreateObject("adodb.recordset")
+		rs_getnum.open "select * from [svip] where s_vip="&SessionTimeout,conn,1,1
+		if not (rs_getnum.bof and rs_getnum.eof) then get_num=rs_getnum("s_num")
+		rs_getnum.close
+		set rs_getnum=nothing
 	end if
+end function
 
-	If Not rs.eof Then
-	gopage="?lx="&lx&"&amp;uid="&uid&"&amp;vday="&vday&"&amp;"
-	Count=rs.recordcount
-	pagecount=(count+pagesize-1)\pagesize
-	if page>pagecount then page=pagecount
-	rs.move(pagesize*(page-1))
-	call kltool_page(1)
-	For i=1 To PageSize
-	If rs.eof Then Exit For
-	if year(rs("vtime"))=year(now) and month(rs("vtime"))=month(now) and day(rs("vtime"))=day(now) then
-	Response.write "<div class=""tip"">"&i&"."
-	elseif i mod 2 =0 then
-	Response.write "<div class=""line2"">"&i&"."
-	else
-	Response.write "<div class=""line1"">"&i&"."
+function get_num2
+	get_num2=0
+	if get_num then
+		set rs_getnum2=Server.CreateObject("ADODB.Recordset")
+		rs_getnum2.open "select * from [svip_log] where s_userid="&userid&" and DateDiff(day,s_time,getdate())=0",conn,1,1
+		if rs_getnum2.recordcount<clng(get_num) then get_num2=clng(get_num)-rs_getnum2.recordcount
+		rs_getnum2.close
+		set rs_getnum2=nothing
 	end if
-	uid=""&rs("userid")&""
-	Response.write "<a href=""/bbs/userinfo.aspx?siteid="&siteid&"&amp;touserid="&rs("userid")&""">"
-	%><%=kltool_get_usernickname(rs("userid"),1)%><%
-	Response.write "</a>(<a href=""?siteid="&siteid&"&amp;lx=cx&amp;uid="&rs("userid")&"""><small><small>"&rs("userid")&"</small></small></a>)"&rs("content")&"(<small>"&month(rs("vtime"))&"-"&day(rs("vtime"))&" <small>"&hour(rs("vtime"))&":"&minute(rs("vtime"))&"</small></small>)"
-	Response.write "</div>"
-		rs.movenext
-		Next
-	call kltool_page(2)
-	else
-	   Response.write "<div class=""tip"">暂时没有抽奖记录！</div>"
-	end if
-	rs.close
-	set rs=nothing
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-elseif pg="star" then
+end function
+
+
+sub index()
+	html=kltool_head("vip每日抽奖",1)&_
+	"<ul class=""breadcrumb"">"&vbcrlf&_
+	"	<li>vip抽奖</li>"&vbcrlf&_
+	"	<li><a href=""?siteid="&siteid&"&action=log"">查看抽奖记录</a></li>"&vbcrlf&_
+	"</ul>"&vbcrlf&_
+	"<li class=""list-group-item"">"&vbcrlf&_
+	"	您的身份:"&kltool_get_uservip(userid,1)&kltool_get_uservip(userid,2)&vbcrlf&_
+	"	<br/>您的vip可抽奖次数为:"&get_num&" 今日剩余:<span id=""ss_num"">"&get_num2&"</span>"&vbcrlf&_
+	"</li>"&vbcrlf
+
+	Response.write kltool_code(html&kltool_end(1))
+end sub
+
+sub yes()
 	set rs=Server.CreateObject("ADODB.Recordset")
 	rs.open "select * from [vip_log] where userid="&userid&" and DateDiff(day,vtime,getdate())=0",conn,1,1
 	if rs.recordcount>=sci then Response.redirect"?siteid="&siteid&""
@@ -156,72 +113,42 @@ elseif pg="star" then
 	conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values('"&siteid&"','0','系统','您"&ct&"','来自系统大神的消息:恭喜您在vip每日抽奖中"&ct&"','"&userid&"','1','1','"&date()&" "&time()&"','0')")
 
 	Response.redirect"?siteid="&siteid&"&lx=my"
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-elseif pg="sf" then
-	set rs=server.CreateObject("adodb.recordset")
-	rs.open "select * from [vip_lx]",conn,1,1
-	If Not rs.eof Then
-		gopage="?pg=sf&amp;"
-		Count=rs.recordcount
-		pagecount=(count+pagesize-1)\pagesize	
-		if page>pagecount then page=pagecount
-		rs.move(pagesize*(page-1))
-	call kltool_page(1)
-		For i=1 To PageSize
-		If rs.eof Then Exit For
-	Response.write"<div class=""line2"">"&rs("svip")&"."
-	Response.write kltool_get_vip(rs("svip"),1)
-	Response.write "[可抽奖次数:"&rs("sci")&"]</div>"
-		rs.movenext
-		Next
-	call kltool_page(2)
-	else
-	Response.write "<div class=""tip"">暂时没有身份类型记录！</div>"
-	end if
-	rs.close
-	set rs=nothing
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-elseif pg="jp" then
-	set rs=server.CreateObject("adodb.recordset")
-	rs.open "select * from [vip_jp] where xy=1",conn,1,1
-	If Not rs.eof Then
-		gopage="?pg=jp&amp;"
-		Count=rs.recordcount
-		pagecount=(count+pagesize-1)\pagesize	
-		if page>pagecount then page=pagecount
-		rs.move(pagesize*(page-1))
-	call kltool_page(1)
-		For i=1 To PageSize
-		If rs.eof Then Exit For
-	lx=clng(rs("lx"))
-	if lx=1 then
-		jp=""&sitemoneyname&""
-	elseif lx=2 then
-		jp="经验"
-	elseif lx=3 then
-		jp=""&sitemoneyname&"和经验"
-	elseif lx=4 then
-		jp="vip延期(天)"
-	elseif lx=5 then
-		jp="在线积时(秒)"
-	elseif lx=6 then
-		jp="空间人气"
-	elseif lx=7 then
-		jp="人民币(元)"
-	elseif lx=8 then
-		jp="银行存款"
-	end if
-	Response.write "<div class=line2>"&i&".奖品类型:"&jp&"</div>"
-	Response.write "<div class=line1>　"&rs("jp1")&"-"&rs("jp2")&"</div>"
-		rs.movenext
-		Next
-	call kltool_page(2)
-	else
-	Response.write "<div class=""tip"">暂时没有奖品类型记录！</div>"
-	end if
-	rs.close
-	set rs=nothing
+end sub
 
-end if
-kltool_end
+
+sub log()
+kltool_sql("svip_log")
+	html=kltool_head("VIP抽奖-抽奖记录",1)&_
+	"<ul class=""breadcrumb"">"&vbcrlf&_
+	"	<li><a href=""?siteid="&siteid&""">vip抽奖</a></li>"&vbcrlf&_
+	"	<li>查看抽奖记录</li>"&vbcrlf&_
+	"</ul>"&vbcrlf
+	sql="select * from [svip_log]"
+	if r_search<>"" then sql=sql&" where s_userid="&r_search else sql=sql&" where s_userid="&userid
+	sql=sql&" order by s_time desc"
+	str=kltool_GetRow(sql,0,10)
+	If str(0) Then
+		gopage="?action=log&"
+		if r_search<>"" then gopage="?action=log&r_search="&r_search&"&"
+		Count=str(0)
+		pagecount=str(1)
+		if page>pagecount then page=pagecount
+		html=html&kltool_page(1,count,pagecount,gopage)
+		For i=0 To ubound(str(2),2)
+		id=str(2)(0,i)
+		s_userid=str(2)(1,i)
+		s_content=str(2)(2,i)
+		s_time=str(2)(3,i)
+		html=html&"<li class=""list-group-item"">"&vbcrlf&_
+			" "&page*PageSize+i-PageSize+1&"."&kltool_get_usernickname(s_userid,2)&"("&s_userid&")"&vbcrlf&_
+			" <br/>"&s_content&_
+			" <br/><span style=""color: #a0a0a0;font-size:12px;"">("&s_time&")</span>"&vbcrlf&_
+			"</li>"&vbcrlf
+		Next
+		html=html&kltool_page(2,count,pagecount,gopage)
+	else
+		html=html&"<div class=""alert alert-danger"">暂时没有记录</div>"
+	end if
+	Response.write kltool_code(html&kltool_end(1))
+end sub
 %>

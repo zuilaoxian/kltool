@@ -205,9 +205,9 @@ end sub
 
 sub VipId()
 	uid=Request.Form("uid")
-	Response.Write"他的身份："&kltool_get_uservip(uid,1)&kltool_get_uservip(uid,0)&kltool_get_uservip(uid,2)& vbcrlf &_
+	Response.Write"他的身份："&kltool_get_uservip(uid,1)&kltool_get_uservip(uid,2)& vbcrlf &_
 	"<br/>更改(非延期)，身份留空则取消VIP<br/>时间留空则为无限期，如填写，从现在算起<br/>"&vbcrlf&_
-	kltool_get_viplist()&vbcrlf&_
+	kltool_get_viplist("Vip")&vbcrlf&_
 	"<br/>时长(月)"&vbcrlf&_
 	"<br/><input type='text' id='VipTime' name='VipTime' value='' size='5'>"&vbcrlf
 end sub
@@ -229,7 +229,6 @@ sub VipId2()
 		conn.Execute("update [user] set SessionTimeout="&Vip&" where siteid="&siteid&" and userid="&uid)
 	end if
 	Response.Write kltool_get_usernickname(uid,1)
-	kltool.Execute("truncate table [kltool_log]")
 end sub
 
 
