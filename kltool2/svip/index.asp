@@ -48,71 +48,85 @@ sub index()
 	"	您的身份:"&kltool_get_uservip(userid,1)&kltool_get_uservip(userid,2)&vbcrlf&_
 	"	<br/>您的vip可抽奖次数为:"&get_num&" 今日剩余:<span id=""ss_num"">"&get_num2&"</span>"&vbcrlf&_
 	"</li>"&vbcrlf
-
-	Response.write kltool_code(html&kltool_end(1))
+	Response.write kltool_code(html)
+	%>
+	<div class="panel-group" id="accordion">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" class="collapsed" aria-expanded="false">
+					查看VIP
+				</a>
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" class="collapsed" aria-expanded="false">
+					查看奖品
+				</a>
+				<a href="?action=yes&siteid=<%=siteid%>" id="tips" tiptext="确定？">点击抽奖</a>
+			</div>
+			<div id="collapseOne" class="panel-collapse collapse">
+				<%=kltool_get_viplist_show%>
+			</div>
+			<div id="collapseTwo" class="panel-collapse collapse">
+				<%=kltool_get_prizelist_show%>
+			</div>
+		</div>
+	</div>
+	<%
+	Response.write kltool_code(kltool_end(1))
 end sub
 
 sub yes()
-	set rs=Server.CreateObject("ADODB.Recordset")
-	rs.open "select * from [vip_log] where userid="&userid&" and DateDiff(day,vtime,getdate())=0",conn,1,1
-	if rs.recordcount>=sci then Response.redirect"?siteid="&siteid&""
-	rs.close
-	set rs=nothing
-
-	set rs=server.CreateObject("adodb.recordset")
-	rs.open "select top 1 * from [vip_jp] where xy=1 order by newid()",conn,1,1
-	if rs.eof then call kltool_msge("没有可用的奖品")
-	lx=clng(rs("lx"))
-	vjp1=clng(rs("jp1"))
-	vjp2=clng(rs("jp2"))
-	rs.close
-	set rs=nothing
-
-	jp1=RndNumber(vjp2,vjp1)
-	jp2=RndNumber(vjp2,vjp1)
-	if lx=1 then
-		ct="抽到了1号奖品,"&sitemoneyname&"增加"&jp1&""
-		   conn.Execute("update [user] set money=money+"&jp1&" where userid="&userid)
-	elseif lx=2 then
-		ct="抽到了2号奖品,经验增加"&jp1&""
-		   conn.Execute("update [user] set expr=expr+"&jp1&" where userid="&userid)
-	elseif lx=3 then
-		ct="抽到了3号奖品,"&sitemoneyname&"增加"&jp1&"/经验增加"&jp2&""
-		   conn.Execute("update [user] set money=money+"&jp1&",expr=expr+"&jp2&" where userid="&userid)
-	elseif lx=4 then
-		ct="抽到了4号奖品,身份时长增加"&jp1&"天"
-	if not instr(vt,"999") then
-		   conn.Execute("update [user] set endTime=dateadd(day,+"&jp1&",endTime) where userid="&userid)
-	end if
-	elseif lx=5 then
-		ct="抽到了5号奖品,积时增加"&jp1&"秒"
-		   conn.Execute("update [user] set LoginTimes=LoginTimes+"&jp1&" where userid="&userid)
-	elseif lx=6 then
-		ct="抽到了6号奖品,空间人气增加"&jp1&""
-		   conn.Execute("update [user] set ZoneCount=ZoneCount+"&jp1&" where userid="&userid)
-	elseif lx=7 then
-		ct="抽到了7号奖品,人民币增加"&jp1&""
-		   conn.Execute("update [user] set rmb=rmb+"&jp1&" where userid="&userid)
-	elseif lx=8 then
-		ct="抽到了8号奖品,存款增加"&jp1&""
-		   conn.Execute("update [user] set mybankmoney=mybankmoney+"&jp1&" where userid="&userid)
+	if clng(get_num)=0 or clng(get_num2)=0 then
+		Response.write "您没有抽奖次数"
+		Response.End()
 	end if
 	set rs=server.CreateObject("adodb.recordset")
-	rs.open "select * from [vip_log]",conn,1,2
-	rs.addnew
-	rs("userid")=userid
-	rs("name")=nickname
-	rs("jp1")=jp1
-	if lx=3 then rs("jp2")=jp2
-	rs("content")=ct
-	rs("vtime")=now()
-	rs.update
+	rs.open "select top 1 * from [svip_prize] order by newid()",conn,1,1
+	if rs.eof then
+		Response.write "请等待管理员设置奖品"
+		Response.End()
+	end if
+		s_lx=rs("s_lx")
+		s_prize1=rs("s_prize1")
+		s_prize2=rs("s_prize2")
 	rs.close
 	set rs=nothing
-
-	conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values('"&siteid&"','0','系统','您"&ct&"','来自系统大神的消息:恭喜您在vip每日抽奖中"&ct&"','"&userid&"','1','1','"&date()&" "&time()&"','0')")
-
-	Response.redirect"?siteid="&siteid&"&lx=my"
+	if s_lx<>"" then s_lx=clng(s_lx)
+	prize=RndNumber(s_prize2,s_prize1)
+	s_tip="抽到了"&s_lx&"号奖品,"
+	if s_lx=1 then
+		s_tip=s_tip&sitemoneyname&"增加"&prize&""
+		conn.Execute("update [user] set money=money+"&prize&" where userid="&userid)
+	elseif s_lx=2 then
+		s_tip=s_tip&"经验增加"&prize&""
+		conn.Execute("update [user] set expr=expr+"&prize&" where userid="&userid)
+	elseif s_lx=3 then
+		s_tip=s_tip&"人民币增加"&prize&""
+		conn.Execute("update [user] set rmb=rmb+"&prize&" where userid="&userid)
+	elseif s_lx=4 then
+		s_tip=s_tip&"存款增加"&prize&""
+		conn.Execute("update [user] set mybankmoney=mybankmoney+"&prize&" where userid="&userid)
+	elseif s_lx=5 then
+		s_tip=s_tip&"身份时长增加"&prize&"天"
+		if userid<>siteid and not isnull(SessionTimeout) and SessionTimeout<>"" and SessionTimeout>0 then
+			conn.Execute("update [user] set endTime=dateadd(day,+"&prize&",endTime) where userid="&userid)
+		end if
+	elseif s_lx=6 then
+		s_tip=s_tip&"空间人气增加"&prize&""
+		conn.Execute("update [user] set ZoneCount=ZoneCount+"&prize&" where userid="&userid)
+	elseif s_lx=7 then
+		s_tip=s_tip&"积时增加"&prize&"秒"
+		conn.Execute("update [user] set LoginTimes=LoginTimes+"&prize&" where userid="&userid)
+	end if
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [svip_log]",conn,1,2
+		rs.addnew
+		rs("s_userid")=userid
+		rs("s_content")=s_tip
+		rs("s_time")=now()
+		rs.update
+	rs.close
+	set rs=nothing
+	conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values("&siteid&",0,'系统','您"&s_tip&"','来自系统大神的消息:恭喜您在vip每日抽奖中"&s_tip&"','"&userid&"',1,1,'"&now()&"',0)")
+	Response.write "恭喜您"&s_tip
 end sub
 
 

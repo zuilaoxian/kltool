@@ -473,7 +473,7 @@ end function
 '-----VIP每日抽奖，奖品设定
 function kltool_get_prizelist(things)
 prize_lx="1|2|3|4|5|6|7"
-prize_name=sitemoneyname&"|经验|RMB|银行存款|VIP延期|空间人气|在线积时"
+prize_name=sitemoneyname&"|经验|RMB(元)|银行存款|VIP延期(天)|空间人气|在线积时"
 prize_lx_=split(prize_lx,"|")
 prize_name_=split(prize_name,"|")
 			For i=0 To ubound(prize_name_)
@@ -483,7 +483,7 @@ end function
 '-----VIP每日抽奖，奖品
 function kltool_get_prize(things)
 prize_lx_str="1|2|3|4|5|6|7"
-prize_name_str=sitemoneyname&"|经验|RMB|银行存款|VIP延期|空间人气|在线积时"
+prize_name_str=sitemoneyname&"|经验|RMB(元)|银行存款|VIP延期(天)|空间人气|在线积时"
 prize_lx_g=split(prize_lx_str,"|")
 prize_name_g=split(prize_name_str,"|")
 			For prize_i=0 To ubound(prize_name_g)
@@ -492,6 +492,38 @@ prize_name_g=split(prize_name_str,"|")
 					'Exit For
 				end if
 			Next
+end function
+'-----VIP每日抽奖，获取vip列表，展示性
+function kltool_get_viplist_show
+	str=kltool_GetRow("select s_vip,s_num from [svip]",0,300)
+	if str(0) then
+		count=str(0)
+		For i=0 To ubound(str(2),2)
+		s_vip=str(2)(0,i)
+		s_num=str(2)(1,i)
+			kltool_get_viplist_show=kltool_get_viplist_show&"<li class=""list-group-item"">"&s_vip&"."&kltool_get_vip(s_vip,1)&"<br/>"&vbcrlf&_
+			"日抽奖次数:"&s_num&vbcrlf&_
+			"</li>"&vbcrlf
+		next
+	else
+		kltool_get_viplist_show=kltool_get_viplist_show&"暂时没有记录"
+	end if
+end function
+'-----VIP每日抽奖，获取奖品列表，展示性
+function kltool_get_prizelist_show
+	str=kltool_GetRow("select id,s_lx,s_prize1,s_prize2 from [svip_prize]",0,30)
+	if str(0) then
+		For i=0 To ubound(str(2),2)
+		s_lx=str(2)(1,i)
+		s_prize1=str(2)(2,i)
+		s_prize2=str(2)(3,i)
+			kltool_get_prizelist_show=kltool_get_prizelist_show&"<li class=""list-group-item"">奖品:"&kltool_get_prize(s_lx)&"<br/>"&vbcrlf&_
+			""&s_prize1&"--"&s_prize2&vbcrlf&_
+			"</li>"&vbcrlf
+		next
+	else
+		kltool_get_prizelist_show=kltool_get_prizelist_show&"暂时没有记录"
+	end if
 end function
 '-----获取class列表
 Function kltool_get_classlist(things)
