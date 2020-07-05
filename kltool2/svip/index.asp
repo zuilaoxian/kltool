@@ -49,7 +49,7 @@ sub index()
 	"	<br/>您的vip可抽奖次数为:"&get_num&" 今日剩余:<span id=""ss_num"">"&get_num2&"</span>"&vbcrlf&_
 	"</li>"&vbcrlf
 	Response.write kltool_code(html)
-	%>
+%>
 	<div class="panel-group" id="accordion">
 		<div class="panel panel-default">
 			<div class="panel-heading">
@@ -99,7 +99,8 @@ sub yes()
 		s_tip=s_tip&"经验增加"&prize&""
 		conn.Execute("update [user] set expr=expr+"&prize&" where userid="&userid)
 	elseif s_lx=3 then
-		s_tip=s_tip&"人民币增加"&prize&""
+		prize=RndNumberDouble(s_prize2,s_prize1)
+		s_tip=s_tip&"RMB增加"&prize&""
 		conn.Execute("update [user] set rmb=rmb+"&prize&" where userid="&userid)
 	elseif s_lx=4 then
 		s_tip=s_tip&"存款增加"&prize&""

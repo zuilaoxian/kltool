@@ -368,10 +368,15 @@ End function
 '-----随机数运算，最大值最小值
 Function RndNumber(MaxNum,MinNum)
 	Randomize 
-	RndNumber=int((MaxNum-MinNum+1)*rnd+MinNum)
+	RndNumber=int(((MaxNum-MinNum+1)*rnd+MinNum))
 	RndNumber=RndNumber
 End Function
-
+'-----随机数运算，双精度
+Function RndNumberDouble(MaxNum,MinNum)
+	Randomize 
+	RndNumberDouble=((MaxNum-MinNum+1)*rnd+MinNum)
+	RndNumberDouble=FormatNumber(RndNumberDouble,2)
+End Function
 '-----用户IP获取
 Function kltool_userip
 	kltool_userip = Request.ServerVariables("HTTP_X_FORWARDED_FOR") 
