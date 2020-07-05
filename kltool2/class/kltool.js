@@ -86,7 +86,7 @@
 			prize1=$('#prize1'+s_id).val();
 			prize2=$('#prize2'+s_id).val();
 		}
-		if (!s_id2) {layer.tips('不能为空', '#vip_prize'+s_id, {tips: [1, '#0FA6D8']}); return;}
+		if (!s_prize) {layer.tips('不能为空', '#vip_prize'+s_id, {tips: [1, '#0FA6D8']}); return;}
 		if (!prize1) {layer.tips('不能为空', '#prize1'+s_id, {tips: [1, '#0FA6D8']}); return;}
 		if (!prize2) {layer.tips('不能为空', '#prize2'+s_id, {tips: [1, '#0FA6D8']}); return;}
 		layer.confirm("确定?", {
