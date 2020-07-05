@@ -660,128 +660,119 @@ Function kltool_get_usermoney(uid,things)
 End Function
 '-----取昵称,1显示vip图标颜色，2直接显示昵称
 Function kltool_get_usernickname(uid,things)
-kltool_get_usernickname=""
-if uid<>"" then
-	set rsk=conn.execute("select siteid,nickname,SessionTimeout,endTime from [user] where userid="&uid)
-	if not rsk.eof then
-		knickname=rsk("nickname")
-		kvip=clng(rsk("SessionTimeout"))
-		kvipt=rsk("endTime")
-	rsk.close
-	set rsk=nothing
-		if kvip>0 then
-		set rskvip=conn.execute("select subclassName from [wap2_smallType] where id="&kvip)
-		if not rskvip.eof then vip_arrstr=rskvip("subclassName")
-		rskvip.close
-		set rskvip=nothing
+	set rsusernick=conn.execute("select nickname,SessionTimeout,endTime from [user] where userid="&uid)
+	if not rsusernick.eof then
+		user_nickname=rsusernick("nickname")
+		user_vip=rsusernick("SessionTimeout")
+		user_vip_time=rsusernick("endTime")
+		if user_vip="" or isnull(user_vip) then user_vip=0 else user_vip=clng(user_vip)
+		rsusernick.close
+		set rsusernick=nothing
+		
+		uservip_str=""
+		if user_vip>0 then
+			set rs_get_uservip=conn.execute("select subclassName from [wap2_smallType] where siteid="&siteid&" and id="&user_vip)
+				if not rs_get_uservip.eof then uservip_str=rs_get_uservip("subclassName")
+			rs_get_uservip.close
+			set rs_get_uservip=nothing
 		end if
-		if vip_arrstr<>"" then
-			'-----图片
-				if instr(vip_arrstr,"#") then
-					vip_arrstr_Split=Split(vip_arrstr,"#")
-				else
-					vip_arrstr_Split=Split(vip_arrstr&"#","#")
-				end if
-					if instr(vip_arrstr_Split(0),".")>0 then
-						kltool_get_usernickname="<img src="""&vip_arrstr_Split(0)&""" alt=""图片"">"
+		if things=1 then
+			kltool_get_usernickname=user_nickname
+			if uservip_str<>"" then
+				if instr(uservip_str,"#") then
+					uservip_str_Split=Split(uservip_str,"#")
+					uservip_namevip_str=uservip_str_Split(0)
+					uservip_color_str=uservip_str_Split(1)
+					if instr(uservip_namevip_str,".")>0 then
+						kltool_get_usernickname="<img src="""&uservip_namevip_str&""" alt=""图片"">"
 					end if
-				'-----颜色
-				if vip_arrstr_Split(1)<>"" then
-					color_arrstr_Split=Split(vip_arrstr_Split(1),"_")
-					color_vip=color_arrstr_Split(0)
+					if uservip_color_str<>"" and instr(uservip_color_str,"_")>0 then
+						uservip_color_Split=Split(uservip_color_str,"_")
+						uservip_color=uservip_color_Split(0)
+						kltool_get_usernickname=kltool_get_usernickname&"<font color=""#"&uservip_color&""">"&user_nickname&"</font>"
+					else
+						kltool_get_usernickname=kltool_get_usernickname&user_nickname
+					end if
 				end if
-			if things=2 then
-				kltool_get_usernickname=knickname
-			else
-				if color_vip<>"" then kltool_get_usernickname=kltool_get_usernickname&"<font color=""#"&color_vip&""">"
-					kltool_get_usernickname=kltool_get_usernickname&knickname
-					if color_vip<>"" then kltool_get_usernickname=kltool_get_usernickname&"</font>"
 			end if
-		else
-			kltool_get_usernickname=knickname
 		end if
+		if things=2 then kltool_get_usernickname=user_nickname
 	else
 		kltool_get_usernickname="无记录的会员"
 	end if
-end if
 End Function
 '-----取用户vip,0显示vip源代码，1显示图，2显示到期时间
 Function kltool_get_uservip(uid,things)
-	kltool_get_uservip="普通会员"
 	set rsuservip=conn.execute("select nickname,SessionTimeout,endTime from [user] where userid="&uid)
 	if not rsuservip.eof then
 		user_vip=rsuservip("SessionTimeout")
 		user_vip_time=rsuservip("endTime")
-		if user_vip<>"" or not isnull(user_vip) then user_vip=clng(user_vip) else user_vip=0
+		if user_vip="" or isnull(user_vip) then user_vip=0 else user_vip=clng(user_vip)
 	rsuservip.close
 	set rsuservip=nothing
-		if user_vip>0 then
-			set rs_get_vip=conn.execute("select subclassName from [wap2_smallType] where siteid="&siteid&" and id="&user_vip)
-			if not rs_get_vip.eof then
-				uservip_str=rs_get_vip("subclassName")
-				if things=0 then kltool_get_uservip=uservip_str
-				if things=1 then
-					if uservip_str<>"" then
-						if instr(uservip_str,"#") then
-							uservip_str_Split=Split(uservip_str,"#")
-							uservip_namevip=uservip_str_Split(0)
-							uservip_color=uservip_str_Split(1)
-						end if
-						if uservip_color<>"" and instr(uservip_color,"_")>0 then
-							uservip_color_Split=Split(uservip_color,"_")
-							uservip_color_=uservip_color_Split(0)
-						end if
-						if instr(uservip_namevip,".")>0 then
-							kltool_get_uservip="<img src="""&uservip_namevip&""" alt=""图片"">"
-						else
-							kltool_get_uservip=uservip_namevip
-							if uservip_color_<>"" then
-								kltool_get_uservip="<font color=""#"&uservip_color_&""">"&uservip_namevip&"</font>"
-							end if
-						end if
+	end if
+	
+	uservip_str=""
+	if user_vip>0 then
+		set rs_get_vip=conn.execute("select subclassName from [wap2_smallType] where siteid="&siteid&" and id="&user_vip)
+			if not rs_get_vip.eof then uservip_str=rs_get_vip("subclassName")
+		rs_get_vip.close
+		set rs_get_vip=nothing
+	end if
+	if things=0 and uservip_str<>"" then kltool_get_uservip=uservip_str
+	if things=1 then
+		kltool_get_uservip="普通会员"
+		if uservip_str<>"" then
+			if instr(uservip_str,"#") then
+				uservip_str_Split=Split(uservip_str,"#")
+				uservip_namevip_str=uservip_str_Split(0)
+				uservip_color_str=uservip_str_Split(1)
+				if instr(uservip_namevip_str,".")>0 then
+					kltool_get_uservip="<img src="""&uservip_namevip_str&""" alt=""图片"">"
+				else
+					kltool_get_uservip=uservip_namevip_str
+					if uservip_color_str<>"" and instr(uservip_color_str,"_")>0 then
+						uservip_color_Split=Split(uservip_color_str,"_")
+						uservip_color=uservip_color_Split(0)
+						kltool_get_uservip="<font color=""#"&uservip_color&""">"&uservip_namevip_str&"</font>"
 					end if
 				end if
-				if things=2 then
-						if isnull(user_vip_time) or instr(user_vip_time,"999")>0 then kltool_get_uservip="<br/>过期时间:无限期" else kltool_get_uservip="<br/>过期时间:"&user_vip_time&"(剩余"&kltool_DateDiff(now(),user_vip_time,"d")&"天)"
-				end if
+			else
+				kltool_get_uservip=uservip_str
 			end if
-			rs_get_vip.close
-			set rs_get_vip=nothing
 		end if
+	end if
+	if things=2 then
+			if user_vip_time="" or isnull(user_vip_time) or instr(user_vip_time,"999")>0 then kltool_get_uservip="<br/>过期时间:无限期" else kltool_get_uservip="<br/>过期时间:"&user_vip_time&"(剩余"&kltool_DateDiff(now(),user_vip_time,"d")&"天)"
 	end if
 End Function
 
 '-----取vip,0显示vip源代码，1显示图
 Function kltool_get_vip(uid,things)
-	kltool_get_vip="普通会员"
-	set rs_vip=conn.execute("select siteid,subclassName from [wap2_smallType] where siteid="&siteid&" and id="&uid)
-	if not rs_vip.eof then
-		vip_str=rs_vip("subclassName")
-		if things=0 then
-			kltool_get_vip=vip_str
-		end if
-		if things=1 then
-			if instr(vip_str,"#") then
-				vip_str_Split=Split(vip_str,"#")
-				vip_namepic=vip_str_Split(0)
-				vip_color=vip_str_Split(1)
-			end if
-			if vip_color<>"" and instr(vip_color,"_")>0 then
-				vip_color_Split=Split(vip_color,"_")
-				vip_color_=vip_color_Split(0)
-			end if
-			if instr(vip_namepic,".") then
-				kltool_get_vip="<img src="""&vip_namepic&""" alt=""图片"">"
-			else
-				kltool_get_vip=vip_namepic
-				if vip_color_<>"" then
-					kltool_get_vip="<font color=""#"&vip_color_&""">"&vip_namepic&"</font>"
+	kltool_get_vip=""
+	set rs_get_vip=conn.execute("select subclassName from [wap2_smallType] where siteid="&siteid&" and id="&uid)
+		if not rs_get_vip.eof then
+			uservip_str=rs_get_vip("subclassName")
+			rs_get_vip.close
+			set rs_get_vip=nothing
+			if things=0 then kltool_get_vip=uservip_str
+			if things=1 then
+				if instr(uservip_str,"#") then uservip_str_Split=Split(uservip_str,"#") else uservip_str_Split=Split(uservip_str&"#","#")
+				uservip_namevip_str=uservip_str_Split(0)
+				uservip_color_str=uservip_str_Split(1)
+			kltool_get_vip=uservip_namevip_str
+				if uservip_color_str<>"" and instr(uservip_color_str,"_")>0 then
+					uservip_color_Split=Split(uservip_color_str,"_")
+					uservip_color=uservip_color_Split(0)
+				end if
+				if instr(uservip_namevip_str,".")>0 then
+					kltool_get_vip_pic="<img src="""&uservip_namevip_str&""" alt=""图片"">"
+				end if
+				if uservip_color<>"" then
+					if kltool_get_vip_pic<>"" then kltool_get_vip=kltool_get_vip_pic&"<font color=""#"&uservip_color&""">颜色示例</font>" else kltool_get_vip="<font color=""#"&uservip_color&""">"&uservip_namevip_str&"</font>"
 				end if
 			end if
 		end if
-	end if
-	rs_vip.close
-	set rs_vip=nothing
 End Function
 '-----显示勋章
 Function kltool_get_xunzhang(img)
