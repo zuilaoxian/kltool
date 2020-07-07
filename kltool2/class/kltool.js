@@ -143,6 +143,74 @@
 			$('#myModal').modal('hide')
 		})
 	});
+
+//功能-帖子管理-操作
+	$("#bbsdoselect").change(function(){
+		r_do=$('#bbsdoselect option:selected').val();
+		switch(r_do){
+			case '1': case '2': case '3': case '4': case '11':
+			$('input#r_num').hide();
+			$('#r_class').hide();
+			break;
+			case '5': case '6': case '7': case '8': case '9':
+				$('input#r_num').show();
+				$('#r_class').hide();
+			break;
+			case '10':
+				$('input#r_num').hide();
+				$('#r_class').show();
+			break;
+		}
+	});
+	$("button#bbsdo").click(function(){
+		r_do=$('#bbsdoselect option:selected').val();
+		if (r_do==0){layer.tips('请选择操作', '#bbsdoselect', {tips: [1, '#0FA6D8']}); return;}
+		var r_num,r_class;
+		switch(r_do){
+			case '1': case '2': case '3': case '4': case '11':
+			$('input#r_num').hide();
+			$('#r_class').hide();
+			break;
+			case '5': case '6': case '7': case '8': case '9':
+				$('input#r_num').show();
+				$('#r_class').hide();
+				r_num=$('input#r_num').val();
+				if (!r_num){layer.tips('输入数量', 'input#r_num', {tips: [1, '#0FA6D8']}); return;}
+			break;
+			case '10':
+				$('input#r_num').hide();
+				$('#r_class').show();
+				r_class=$('#r_class input:checked').val();
+				if (!r_class){layer.tips('没有选择栏目', '#r_class', {tips: [1, '#0FA6D8']}); return;}
+			break;
+		}
+		if ($('input#kid:checked').length<1){layer.alert('请至少选择一条',{shadeClose:true,title:''}); return;}
+			kid='';
+		$('input#kid:checked').each(function(){
+			kid=$(this).val()+','+kid
+		})
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+					url:'?action=bbsdo',
+					type:'post',
+					data:{
+						r_do:r_do,
+						kid:kid,
+						r_num:r_num,
+						r_class:r_class
+						},
+					timeout:'15000',
+					async:false,
+						success:function(data){
+							layer.alert(data,{shadeClose:true,title:''});
+						}
+			});
+		});
+	});
 //功能-Vip每日抽奖-vip设定
 	$("button#Svip_Set").click(function(){
 		vip_id=$(this).attr('vipid');
@@ -587,7 +655,6 @@
 				async:true,
 					success:function(data){
 						layer.msg(data,{time:2000,anim:6});
-						//layer.alert(data,{shadeClose:true,title:''});
 						if (data.indexOf('成功')>=0) $("a#"+uid).parent().parent().parent().fadeOut(300).fadeIn(300).fadeOut(500);
 					}
 			})
@@ -613,7 +680,6 @@
 				dataType:'json',
 					success:function(data){
 						layer.msg(data.b,{time:2000,anim:6});
-						//layer.alert(data.b,{shadeClose:true,title:''});
 						$("a#"+uid+".LockId").html(data.a).fadeOut(300).fadeIn(300);
 					}
 			})
@@ -632,7 +698,7 @@
 			timeout:'15000',
 			async:false,
 				success:function(data){
-					$(".modal-title").html(uid);
+					$(".modal-title").html('资料查看');
 					$(".modal-body").html(data);
 				}
 		})
@@ -650,7 +716,7 @@
 			timeout:'15000',
 			async:false,
 				success:function(data){
-					$(".modal-title").html(uid);
+					$(".modal-title").html('修改权限');
 					$(".modal-body").html(data);
 				}
 		})
@@ -686,7 +752,7 @@
 			timeout:'15000',
 			async:false,
 				success:function(data){
-					$(".modal-title").html(uid);
+					$(".modal-title").html('修改VIP');
 					$(".modal-body").html(data);
 				}
 		})
@@ -716,6 +782,24 @@
 		$('.btn.btn-primary').off("click");//解除绑定事件
 		$(".modal-title,.modal-body").html("");
 	})
+//反选
+	$("#chose").click(function(){
+		$('input#kid').each(function(){
+			if ($(this).is(':checked')){
+				$(this).prop("checked", false);
+			}else{
+				$(this).prop("checked", true);
+			}
+		})
+	})
+//全选，取消
+	$("#choseall").click(function(){
+		if ($('input#kid').length!=$('input#kid:checked').length){
+			$('input#kid').prop("checked", true);
+		}else{
+			$('input#kid').prop("checked", false);
+		}
+	})
 	
   setInterval(clock,1000);
 });
@@ -736,37 +820,4 @@ function clock(){
   min=min>9?min:"0"+min;
   sec=sec>9?sec:"0"+sec;
   $("#times").html(" "+ year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec +" "+ week);
-}
-//全选反选
-function check_all(obj,cName) 
-{
-    var checkboxs = document.getElementsByName(cName); 
-    for(var i=0;i<checkboxs.length;i++){checkboxs[i].checked = obj.checked;} 
-}
-//点击提示内容
-function ConfirmDel(message)
-{
-   if (confirm(message))
-   {
-   document.formDel.submit();
-   }else{
-   //history.go(0);
-   }
-}
-//隐藏部分内容,点击显示
-function display(obj)
-{
-  if (obj.style.display=='none') 
-    obj.style.display='';
-  else
-    obj.style.display='none';
-}
-
-function getValues(obj,val,arr){
-var Dom=document.getElementById(obj);
-	if (arr.indexOf(val)<0){
-		Dom.style.display='none';
-	}else{
-		Dom.style.display='';
-	}
 }

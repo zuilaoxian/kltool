@@ -311,27 +311,36 @@ end function
 function kltool_page(things,count,pagecount,gopage)
 	kltool_page=""
 if pagecount>1 then
-	kltool_page=vbcrlf&"<li class=""list-group-item"">"&vbcrlf
-	kltool_page=kltool_page&"  <ul class=""pagination"">"&vbcrlf
+	kltool_page=vbcrlf&_
+	"<li class=""list-group-item"">"&vbcrlf&_
+	"	<ul class=""pagination"">"&vbcrlf
 		if page>1 then
-			kltool_page=kltool_page&"   <li><a href='"&gopage&"siteid="&siteid&"&pagesize="&pagesize&"'><<</a></li>"&vbcrlf
-			kltool_page=kltool_page&"   <li><a href='"&gopage&"page="&page-1&"&siteid="&siteid&"&pagesize="&pagesize&"'><</a></li>"&vbcrlf
+			kltool_page=kltool_page&_
+			"		<li><a href='"&gopage&"siteid="&siteid&"&pagesize="&pagesize&"'><<</a></li>"&vbcrlf&_
+			"		<li><a href='"&gopage&"page="&page-1&"&siteid="&siteid&"&pagesize="&pagesize&"'><</a></li>"&vbcrlf
 		else
-			kltool_page=kltool_page&"    <li class=""disabled""><a><<</a></li>"&vbcrlf&_
-			"    <li class=""disabled""><a><</a></li>"&vbcrlf
+			kltool_page=kltool_page&_
+			"		<li class=""disabled""><a><<</a></li>"&vbcrlf&_
+			"		<li class=""disabled""><a><</a></li>"&vbcrlf
 		end if
-		kltool_page=kltool_page&"    <li class=""disabled""><a><b>"&page&"</b>/"&pagecount&"页/"&count&"条</a></li>"&vbcrlf
+		kltool_page=kltool_page&_
+		"			<li class=""disabled""><a><b>"&page&"</b>/"&pagecount&"页/"&count&"条</a></li>"&vbcrlf
 		if page<pagecount then
-			kltool_page=kltool_page&"    <li><a href='"&gopage&"page="&page+1&"&siteid="&siteid&"&pagesize="&pagesize&"'>></a></li>"&vbcrlf
-			kltool_page=kltool_page&"    <li><a href='"&gopage&"page="&pagecount&"&siteid="&siteid&"&pagesize="&pagesize&"'>>></a></li>"&vbcrlf
+			kltool_page=kltool_page&_
+			"		<li><a href='"&gopage&"page="&page+1&"&siteid="&siteid&"&pagesize="&pagesize&"'>></a></li>"&vbcrlf&_
+			"		<li><a href='"&gopage&"page="&pagecount&"&siteid="&siteid&"&pagesize="&pagesize&"'>>></a></li>"&vbcrlf
 		else
-			kltool_page=kltool_page&"    <li class=""disabled""><a>></a></li>"&vbcrlf&_
+			kltool_page=kltool_page&_
+			"    <li class=""disabled""><a>></a></li>"&vbcrlf&_
 			"    <li class=""disabled""><a>>></a></li>"&vbcrlf
 		end if
-	kltool_page=kltool_page&"    </ul>"&vbcrlf&_
+	kltool_page=kltool_page&_
+	"	</ul>"&vbcrlf&_
 	"</li>"&vbcrlf
 	if things=2 then
-		kltool_page=kltool_page&"<li class=""list-group-item"">"&vbcrlf&"  <form class=""form-inline"" method=""get"" action=""?"" role=""form"">"&vbcrlf
+		kltool_page=kltool_page&_
+		"<li class=""list-group-item"">"&vbcrlf&_
+		"	<form class=""form-inline"" method=""get"" action=""?"" role=""form"">"&vbcrlf
 			gopage=replace(gopage,"&amp;","&")
 			gopage_arr=Split(gopage,"?")
 			gopage_arr1=gopage_arr(1)
@@ -340,20 +349,30 @@ if pagecount>1 then
 				for igopage=0 to Ubound(gopage_arr2)
 					if gopage_arr2(igopage)<>"" and gopage_arr2(igopage)<>"page" and gopage_arr2(igopage)<>"pagesize" then
 						gopage_arr3=Split(gopage_arr2(igopage),"=")
-						kltool_page=kltool_page&"    <input name="""&gopage_arr3(0)&""" type=""hidden"" value="""&gopage_arr3(1)&""">"&vbcrlf
+						kltool_page=kltool_page&_
+						"		<input name="""&gopage_arr3(0)&""" type=""hidden"" value="""&gopage_arr3(1)&""">"&vbcrlf
 					end if
 				next
 			end if
 		if page<pagecount then page=page+1 else pgae=page-1
-		kltool_page=kltool_page&"    <input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf&_
-		"    <input name=""pagesize"" type=""hidden"" value="""&pagesize&""">"&vbcrlf&_
-		"    <div class=""form-group col-xs-5"">"&vbcrlf&_
-		"        <input name=""page"" type=""text"" value="""&page&""" class=""form-control"">"&vbcrlf&_
-		"    </div>"&vbcrlf&_
-		"    <input name=""g"" type=""submit"" value=""跳转"" class=""btn btn-default"">"&vbcrlf&_
-		"  </form>"&vbcrlf&_
-		"</li>"&vbcrlf
-	end if
+			kltool_page=kltool_page&_
+			"		<input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf&_
+			"		<input name=""pagesize"" type=""hidden"" value="""&pagesize&""">"&vbcrlf&_
+    		"		<div class=""row"">"&vbcrlf&_
+			"			<div class=""col-lg-6"">"&vbcrlf&_
+			"				<div class=""input-group col-xs-7"">"&vbcrlf&_
+			"					<input name=""page"" type=""text"" value="""&page&""" class=""form-control"">"&vbcrlf&_
+			"					<span class=""input-group-btn"">"&vbcrlf&_
+			"						<button class=""btn btn-default"" type=""submit"">"&vbcrlf&_
+			"						跳转!"&vbcrlf&_
+			"						</button>"&vbcrlf&_
+			"					</span>"&vbcrlf&_
+			"				</div>"&vbcrlf&_
+			"			</div>"&vbcrlf&_
+			"		</div>"&vbcrlf&_
+			"	</form>"&vbcrlf&_
+			"</li>"&vbcrlf
+		end if
 	kltool_page=kltool_page
 end if
 end function

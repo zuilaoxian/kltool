@@ -41,7 +41,7 @@ function get_topicinfo(uid,cid)
 	get_topicinfo=""
 	if uid then
 		set rs2=conn.execute("select id,subclassName from [wap2_smallType] where siteid="&siteid&" and systype='bbs"&cid&"' and id="&uid)
-		if not rs2.eof then get_topicinfo="专题:<a cid="""&cid&""" tid="""&uid&""" id=""re_topic""  data-toggle=""modal"" data-target=""#myModal"">"&rs2("subclassName")&"("&uid&")</a>"
+		if not rs2.eof then get_topicinfo="专题:<a cid="""&cid&""" tid="""&uid&""" id=""re_topic""  data-toggle=""modals"" data-target=""#myModal"">"&rs2("subclassName")&"("&uid&")</a>"
 		rs2.close
 		set rs2=nothing
 	end if
@@ -69,6 +69,8 @@ select case action
 		call bbsrecontent()
 	case "bbsrecontentyes"
 		call bbsrecontentyes()
+	case "bbsdo"
+		call bbsdo()
 end select
 
 sub index()
@@ -100,22 +102,22 @@ sub index()
 	" <label for=""r_search""></label><br>"&vbcrlf&_
 	"</div>"&vbcrlf&_
 	"<form method=""get"" action=""?"" class=""form-horizontal"" role=""form"">"&vbcrlf&_
-	" <input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf&_
-	"  <div class=""form-group"">"&vbcrlf&_
-	"	<label for=""r_search"" class=""col-sm-2 control-label"">会员ID</label>"&vbcrlf&_
-	"	<div class=""col-sm-10"">"&vbcrlf&_
-	"	  <input type=""text"" name=""r_search"" class=""form-control"" id=""r_search"" placeholder="""">"&vbcrlf&_
+	"	<input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf&_
+	"	<div class=""form-group"">"&vbcrlf&_
+	"		<label for=""r_search"" class=""col-sm-2 control-label"">会员ID</label>"&vbcrlf&_
+	"		<div class=""col-sm-10"">"&vbcrlf&_
+	"			<input type=""text"" name=""r_search"" class=""form-control"" id=""r_search"" placeholder="""">"&vbcrlf&_
+	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
-	"  </div>"&vbcrlf&_
-	"  <div class=""form-group"">"&vbcrlf&_
-	"	<label for=""Class"" class=""col-sm-2 control-label"">选择论坛</label>"&vbcrlf&_
-	"	<div class=""col-sm-offset-2"">"&vbcrlf&_
+	"	<div class=""form-group"">"&vbcrlf&_
+	"		<label for=""Class"" class=""col-sm-2 control-label"">选择论坛</label>"&vbcrlf&_
+	"		<div class=""col-sm-offset-2"">"&vbcrlf&_
 	kltool_get_classlist(16)&_
+	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
+	"	<div class=""form-group"">"&vbcrlf&_
+	"		<button type=""submit"" class=""btn btn-default btn-sm btn-block"">搜索</button>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
-	"<div class=""form-group"">"&vbcrlf&_
-	" <button type=""submit"" class=""btn btn-default btn-sm btn-block"">搜索</button>"&vbcrlf&_
-	"</div>"&vbcrlf&_
 	"</form>"&vbcrlf&_
 	"</li>"&vbcrlf
 	
@@ -164,7 +166,7 @@ sub index()
 			if b_islock=1 then b_islock_c="<span class=""glyphicon glyphicon-remove-circle""></span>解锁" else b_islock_c="<span class=""glyphicon glyphicon-ok-circle""></span>锁定"
 			if b_islock=1 then b_islock_cc="解锁" else b_islock_cc="锁定"
 			html=html&"<li class=""list-group-item"""&b_isCheck_&">"&vbcrlf&_
-			" <h4>"&b_id&" <a href=""/bbs/book_view.aspx?siteid="&siteid&"&classid="&b_book_classid&"&id="&b_id&""">"&b_book_title&"</a></h4>"&vbcrlf&_
+			" <h4><input type=""checkbox"" class=""kid"" id=""kid"" value="""&b_id&"""> "&b_id&" <a href=""/bbs/book_view.aspx?siteid="&siteid&"&classid="&b_book_classid&"&id="&b_id&""">"&b_book_title&"</a></h4>"&vbcrlf&_
 			
 			" (作者:<a href=""/bbs/userinfo.aspx?siteid="&siteid&"&touserid="&b_book_pub&""">"&kltool_get_usernickname(b_book_pub,1)&"</a>)"&vbcrlf&_
 			" (<a href=""?siteid="&siteid&"&r_search="&b_book_pub&""">"&b_book_pub&"</a>)<br/>"&vbcrlf&_
@@ -183,7 +185,40 @@ sub index()
 			" 赞"&b_suport&""&vbcrlf&_
 			"</li>"&vbcrlf
 			Next
-			html=html&kltool_page(2,count,pagecount,gopage)
+			html=html&"<li class=""list-group-item"">"&vbcrlf&_
+			"<a id=""chose"" class=""btn btn-default"">反选</a> <a id=""choseall"" class=""btn btn-default"">全选</a><br/>"&vbcrlf&_
+			"<div class=""row"">"&vbcrlf&_
+			"	<div class=""col-xs-7"">"&vbcrlf&_
+			"		<div class=""input-group"">"&vbcrlf&_
+			"			<span class=""input-group-btn"">"&vbcrlf&_
+			"				<select id=""bbsdoselect"" class=""btn btn-default"">"&vbcrlf&_
+			"				  <option value=""0"">选择操作</option>"&vbcrlf&_
+			"				  <option value=""1"">删除</option>"&vbcrlf&_
+			"				  <option value=""2"">恢复</option>"&vbcrlf&_
+			"				  <option value=""3"">锁定</option>"&vbcrlf&_
+			"				  <option value=""4"">解锁</option>"&vbcrlf&_
+			"				  <option value=""5"">增加阅读量</option>"&vbcrlf&_
+			"				  <option value=""6"">减少阅读量</option>"&vbcrlf&_
+			"				  <option value=""7"">增加回复</option>"&vbcrlf&_
+			"				  <option value=""8"">增加点赞</option>"&vbcrlf&_
+			"				  <option value=""9"">减少点赞</option>"&vbcrlf&_
+			"				  <option value=""10"">转移栏目</option>"&vbcrlf&_
+			"				  <option value=""11"">彻底删除</option>"&vbcrlf&_
+			"				</select>"&vbcrlf&_
+			"			</span>"&vbcrlf&_
+			"			<input type=""text"" class=""form-control"" name=""r_num"" id=""r_num"" placeholder=""输入数量"" style=""display:none;"">"&vbcrlf&_
+			"		</div><!-- /input-group -->"&vbcrlf&_
+			"	</div><!-- /.col-lg-6 -->"&vbcrlf&_
+			"</div><!-- /.row -->"&vbcrlf&_
+	"	<div class=""form-group"" id=""r_class"" style=""display:none;"">"&vbcrlf&_
+	"		<label for=""Class"" class=""col-sm-2 control-label"">选择论坛</label>"&vbcrlf&_
+	"		<div class=""col-sm-offset-2"">"&vbcrlf&_
+	kltool_get_classlist(16)&_
+	"		</div>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+			"<button name=""kltool"" id=""bbsdo"" class=""btn btn-default btn-block"" data-loading-text=""Loading..."">确定</button>"&vbcrlf&_
+			"</li>"&vbcrlf&_
+			kltool_page(2,count,pagecount,gopage)
 		else
 			html=html&"<div class=""alert alert-danger"">暂时没有记录</div>"
 		end if
@@ -366,5 +401,113 @@ sub bbsreplaceyes()
 	if re_id then sql=sql&" and book_classid="&re_id
 	conn.Execute(sql)
 end sub
-
+sub bbsdo()
+	r_do=Request.Form("r_do")
+	kid=Request.Form("kid")
+	r_num=Request.Form("r_num")
+	r_class=Request.Form("r_class")
+	if kid="" then
+		Response.Write"请至少选择一条记录"
+		Response.End()
+	end if
+	kid=replace(kid&",",",,","")
+	select case r_do
+		case "1","2","3","4","11"
+			if r_do="1" then
+				conn.Execute("update [wap_bbs] set isCheck=2 where id in("&kid&")")
+				Response.Write"帖子标记删除"
+			end if
+			if r_do="2" then
+				conn.Execute("update [wap_bbs] set isCheck=0 where id in("&kid&")")
+				Response.Write"帖子标记恢复"
+			end if
+			if r_do="3" then
+				conn.Execute("update [wap_bbs] set islock=1 where id in("&kid&")")
+				Response.Write"帖子锁定"
+			end if
+			if r_do="4" then
+				conn.Execute("update [wap_bbs] set islock=0 where id in("&kid&")")
+				Response.Write"帖子解锁"
+			end if
+			if r_do="11" then
+				conn.Execute("delete from [wap_bbs] where id in("&kid&")")
+				Response.Write"帖子彻底删除"
+			end if
+		case "5","6","7","8","9"
+			if r_num="" then
+				Response.Write"数量不能为空"
+				Response.End()
+			end if
+			r_num=clng(r_num)
+			if r_do="5" then
+				conn.Execute("update [wap_bbs] set book_click=book_click+"&r_num&" where id in("&kid&")")
+				Response.Write"帖子增加阅读量"
+			end if
+			if r_do="6" then
+				conn.Execute("update [wap_bbs] set book_click=book_click-"&r_num&" where id in("&kid&")")
+				Response.Write"帖子减少阅读量"
+			end if
+			if r_do="7" then
+				rearrtid=split(kid,",")
+				for d=0 to ubound(rearrtid)
+					if rearrtid(d)<>"" then
+						for i=1 to r_num
+							thistid=rearrtid(d)
+							retid=kltool_bbs_tclassid(thistid)
+							recontent=kltool_bbs_reyu
+							reuser=kltool_bbs_reuser
+							if recontent="" then
+								Response.Write"没有查询到回复语"
+								Response.End()
+							end if
+							if reuser="" then
+								Response.Write"没有查询到用户"
+								Response.End()
+							end if
+							rearruser=split(reuser,"|kltool|")
+							reuserid=rearruser(0)
+							renickname=rearruser(1)
+							if recontent<>"" and reuserid<>"" then
+								set rs=Server.CreateObject("ADODB.Recordset")
+								rs.open"select * from [wap_bbsre]",conn,1,2
+									rs.addnew
+									rs("devid")=siteid
+									rs("userid")=reuserid
+									rs("nickname")=renickname
+									rs("classid")=retid
+									rs("content")=recontent
+									rs("bookid")=thistid
+									rs("myGetMoney")=0
+									rs("book_top")=0
+									rs("isCheck")=0
+									rs("HangBiaoShi")=0
+									rs("isdown")=0
+									rs("reply")=0
+									rs.update
+								rs.close
+								set rs=nothing
+								conn.execute("update [wap_bbs] set book_re=book_re+1 where id="&rearrtid(d))
+							end if
+						next
+					end if
+				next
+				Response.Write"帖子增加回复"
+			end if
+			if r_do="8" then
+				conn.Execute("update [wap_bbs] set suport=suport+"&r_num&" where id in("&kid&")")
+				Response.Write"帖子增加点赞"
+			end if
+			if r_do="9" then
+				conn.Execute("update [wap_bbs] set suport=suport+"&r_num&" where id in("&kid&")")
+				Response.Write"帖子减少点赞"
+			end if
+		case "10"
+			if r_class="" then
+				Response.Write"栏目不能为空"
+				Response.End()
+			end if
+			conn.Execute("update [wap_bbs] set book_classid="&r_class&" where id in("&kid&")")
+			Response.Write"帖子转移栏目"
+	end select
+end sub
 %>

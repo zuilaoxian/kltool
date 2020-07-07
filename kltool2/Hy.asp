@@ -56,16 +56,26 @@ sub index()
 	"	</div><!-- /.modal -->"&vbcrlf&_
 	"</div>"&vbcrlf&_
 	"<li class=""list-group-item"">"&vbcrlf&_
-	"<div class=""form-group"">"&vbcrlf&_
-	" <label for=""r_search"">模糊搜索:输入ID、用户名、昵称、关键词</label><br>"&vbcrlf&_
-	"</div>"&vbcrlf&_
-	"<form method=""get"" action=""?"" class=""form-inline"" role=""form"">"&vbcrlf&_
-	" <input name=""lx"" type=""hidden"" value=""7"">"&vbcrlf&_
-	" <input name=""siteid"" type=""hidden"" value=""[siteid]"">"&vbcrlf&_
-	"  <div class=""form-group col-xs-6"">"&vbcrlf&_
-	"   <input name=""r_search"" type=""text"" value="""" placeholder=""查询仅限于本站"" class=""form-control"">"&vbcrlf&_
-	"  </div>"&vbcrlf&_
-	" <button type=""submit"" class=""btn btn-default"">搜索</button>"&vbcrlf&"</form>"&vbcrlf&"</li>"&vbcrlf&_
+	"	<div class=""form-group"">"&vbcrlf&_
+	"		<label for=""r_search"">模糊搜索:输入ID、用户名、昵称、关键词</label><br>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+	"	<form method=""get"" action=""?"" class=""form-inline"" role=""form"">"&vbcrlf&_
+	"		<input name=""lx"" type=""hidden"" value=""7"">"&vbcrlf&_
+	"		<input name=""siteid"" type=""hidden"" value=""[siteid]"">"&vbcrlf&_
+	"		<div class=""row"">"&vbcrlf&_
+	"			<div class=""col-lg-6"">"&vbcrlf&_
+	"				<div class=""input-group col-xs-8"">"&vbcrlf&_
+	"					<input name=""r_search"" type=""text"" value="""" placeholder=""查询仅限于本站"" class=""form-control"">"&vbcrlf&_
+	"					<span class=""input-group-btn"">"&vbcrlf&_
+	"						<button class=""btn btn-default"" type=""submit"">"&vbcrlf&_
+	"						搜索!"&vbcrlf&_
+	"						</button>"&vbcrlf&_
+	"					</span>"&vbcrlf&_
+	"				</div>"&vbcrlf&_
+	"			</div>"&vbcrlf&_
+	"		</div>"&vbcrlf&_
+	"	</form>"&vbcrlf&_
+	"</li>"&vbcrlf&_
 	"<ul class=""breadcrumb"">"&vbcrlf
 	for i=0 to 6
 		if lx=i then html=html&"<li>"&getmanagername(i)&"</li>"&vbcrlf else html=html&"<li><a href='?siteid="&siteid&"&lx="&i&"'>"&getmanagername(i)&"</a></li>"&vbcrlf
@@ -205,11 +215,26 @@ end sub
 
 sub VipId()
 	uid=Request.Form("uid")
-	Response.Write"他的身份："&kltool_get_uservip(uid,1)&kltool_get_uservip(uid,2)& vbcrlf &_
-	"<br/>更改(非延期)，身份留空则取消VIP<br/>时间留空则为无限期，如填写，从现在算起<br/>"&vbcrlf&_
+	Response.Write"<li class=""list-group-item"">"&_
+	"他的身份："&kltool_get_uservip(uid,1)&kltool_get_uservip(uid,2)& vbcrlf &_
+	"<br/>更改(非延期)，身份留空则取消VIP<br/>时间留空则为无限期，如填写，从现在算起</li>"&vbcrlf&_
+	"<li class=""list-group-item"">"&vbcrlf&_
 	kltool_get_viplist("Vip")&vbcrlf&_
-	"<br/>时长(月)"&vbcrlf&_
-	"<br/><input type='text' id='VipTime' name='VipTime' value='' size='5'>"&vbcrlf
+	"</li>"&vbcrlf&_
+	"<li class=""list-group-item"">"&vbcrlf&_
+	"	<div class=""row"">"&vbcrlf&_
+	"		<div class=""col-lg-6"">"&vbcrlf&_
+	"			<div class=""input-group col-xs-6"">"&vbcrlf&_
+	"				<input name=""VipTime"" id=""VipTime""type=""text"" value="""" placeholder=""时长"" class=""form-control"">"&vbcrlf&_
+	"				<span class=""input-group-btn"">"&vbcrlf&_
+	"					<button class=""btn btn-default"" type=""button"">"&vbcrlf&_
+	"					月"&vbcrlf&_
+	"					</button>"&vbcrlf&_
+	"				</span>"&vbcrlf&_
+	"			</div>"&vbcrlf&_
+	"		</div>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+	"</li>"&vbcrlf
 end sub
 
 sub VipId2()

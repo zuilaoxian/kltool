@@ -100,16 +100,26 @@ sub log()
 	"	<li><a href=""/bbs/smalltypelist.aspx?siteid="&siteid&"&systype=card"">设置vip</a></li>"&vbcrlf&_
 	"</ul>"&vbcrlf&_
 	"<li class=""list-group-item"">"&vbcrlf&_
-	"<div class=""form-group"">"&vbcrlf&_
-	" <label for=""ksearch"">搜索:输入ID,留空为全部</label><br>"&vbcrlf&_
-	"</div>"&vbcrlf&_
-	"<form method=""get"" action=""?"" class=""form-inline"" role=""form"">"&vbcrlf&_
-	" <input name=""action"" type=""hidden"" value=""log"">"&vbcrlf&_
-	" <input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf&_
-	"  <div class=""form-group col-xs-6"">"&vbcrlf&_
-	"   <input name=""r_search"" type=""text"" value="""" placeholder=""输入ID,留空为全部"" class=""form-control"">"&vbcrlf&_
-	"  </div>"&vbcrlf&_
-	" <button type=""submit"" class=""btn btn-default"">搜索</button>"&vbcrlf&"</form>"&vbcrlf&"</li>"&vbcrlf
+	"	<div class=""form-group"">"&vbcrlf&_
+	"		<label for=""ksearch"">搜索:输入ID,留空为全部</label><br>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+	"	<form method=""get"" action=""?"" class=""form-inline"" role=""form"">"&vbcrlf&_
+	"		<input name=""action"" type=""hidden"" value=""log"">"&vbcrlf&_
+	"		<input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf&_
+	"		<div class=""row"">"&vbcrlf&_
+	"			<div class=""col-lg-6"">"&vbcrlf&_
+	"				<div class=""input-group col-xs-8"">"&vbcrlf&_
+	"					<input name=""r_search"" type=""text"" value="""" placeholder=""查询仅限于本站"" class=""form-control"">"&vbcrlf&_
+	"					<span class=""input-group-btn"">"&vbcrlf&_
+	"						<button class=""btn btn-default"" type=""submit"">"&vbcrlf&_
+	"						搜索!"&vbcrlf&_
+	"						</button>"&vbcrlf&_
+	"					</span>"&vbcrlf&_
+	"				</div>"&vbcrlf&_
+	"			</div>"&vbcrlf&_
+	"		</div>"&vbcrlf&_
+	"	</form>"&vbcrlf&_
+	"</li>"&vbcrlf
 	
 	sql="select id,userid,lx,vip,yue,jinbi,jinyan,rmb,time from [wap2_smallType_log]"
 	if r_search<>"" then sql=sql&" where userid="&r_search
