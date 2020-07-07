@@ -38,7 +38,7 @@ sub index()
 			kltool_order=str(2)(4,i)
 			kltool_show=str(2)(6,i)
 			if t=1 then tstr="启用" else tstr="停用"
-			if kltool_show=0 then kltool_show_t="style=""display:none;"""
+			if kltool_show=0 then kltool_show_t="style=""display:none;""" else kltool_show_t=""
 			html=html&"<div class=""panel panel-"&rndpanel&""" "&kltool_show_t&">"&vbcrlf&_
 			"<div class=""panel-heading"">"&vbcrlf&_
 			"<span data-toggle=""collapse"" data-parent=""#accordion"" href=""#collapse"&id&""">"&vbcrlf&_

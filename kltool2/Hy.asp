@@ -95,8 +95,8 @@ sub index()
 			pagecount=str(1)
 			if page>pagecount then page=pagecount
 			if lx=7 then gopage="?lx="&lx&"&r_search="&r_search&"&" else gopage="?lx="&lx&"&"
-			html=html&kltool_page(1,count,pagecount,gopage)&_
-			"<ul class=""list-group"">"
+			html=html&kltool_page(1,count,pagecount,gopage)
+			'"<ul class=""list-group"">"
 			For i=0 To ubound(str(2),2)
 				uid=str(2)(0,i)
 				usiteid=str(2)(1,i)
@@ -115,7 +115,7 @@ sub index()
 					" <a class=""LvlId"" id="""&uid&""" data-toggle=""modal"" data-target=""#myModal"">"&kltool_get_managername(managerlvl)&"</a>"&vbcrlf&_
 					"</li>"&vbcrlf
 					
-					html=html&""&vbcrlf&_
+					html=html&_
 					"	<div class=""media list-group-item"">"&vbcrlf&_
 					"	  <div class=""media-left media-middle"">"&vbcrlf&_
 							kltool_get_userheadimg(uid,1)&vbcrlf&_

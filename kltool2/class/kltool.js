@@ -41,6 +41,108 @@
 	});
 	path=location.pathname.toLowerCase().split('/');
 	thispath=path.length>2?path[2]:Null;
+//功能-帖子管理-回复语设定
+	$("button#Bbs_Re_Set").click(function(){
+		re_id=$(this).attr('reid');
+		re_qt=$('#re_qt'+re_id+':checked').val();
+		re_word=$('#re_word'+re_id).val();
+		if (!re_word) {layer.tips('不能为空', '#re_word'+re_id, {tips: [1, '#0FA6D8']}); return;}
+		if (!re_qt) {layer.tips('不能为空', '#re_qt'+re_id, {tips: [1, '#0FA6D8']}); return;}
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+			url:'?action=bbsrewordset',
+			type:'post',
+			data:{
+				re_id:re_id,
+				re_qt:re_qt,
+				re_word:re_word
+				},
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					layer.alert(data,{shadeClose:true,title:''});
+				}
+			})
+		});		
+	});
+//功能-帖子管理-关键词替换
+	$("#bbsreplace").click(function(){
+		$('.btn.btn-primary').show();
+		$.ajax({
+			url:'?action=bbsreplace',
+			type:'get',
+			timeout:'15000',
+			async:false,
+				success:function(data){
+					$(".modal-title").html("关键词替换");
+					$(".modal-body").html(data);
+				}
+		})
+		$('.btn.btn-primary').click(function(){
+			re_id=$('#Class:checked').val();
+			re_word1=$('#bbsreplaceword1').val();
+			re_word2=$('#bbsreplaceword2').val();
+			$.ajax({
+				url:'?action=bbsreplaceyes',
+				type:'post',
+				data:{
+					re_id:re_id,
+					re_word1:re_word1,
+					re_word2:re_word2
+					},
+				timeout:'15000',
+				async:false,
+					success:function(data){
+						layer.alert(data,{shadeClose:true,title:''});
+					}
+			});
+			$('.btn.btn-primary').off("click");
+			$('#myModal').modal('hide')
+		})
+	});
+//功能-帖子管理-帖子修改
+	$("a#bbsrecontent").click(function(){
+		tid=$(this).attr("tid")
+		$('.btn.btn-primary').show();
+		$.ajax({
+			url:'?action=bbsrecontent&tid='+tid,
+			type:'get',
+			timeout:'15000',
+			async:false,
+				success:function(data){
+					$(".modal-title").html("帖子修改");
+					$(".modal-body").html(data);
+				}
+		})
+		$('.btn.btn-primary').click(function(){
+			rec_id=$('#Class:checked').val();
+			ret_id=$('#Topic:checked').val();
+			re_title=$('#title').val();
+			re_content=$('#content').val();
+			$.ajax({
+				url:'?action=bbsrecontentyes',
+				type:'post',
+				data:{
+					tid:tid,
+					rec_id:rec_id,
+					ret_id:ret_id,
+					re_title:re_title,
+					re_content:re_content
+					},
+				timeout:'15000',
+				async:false,
+					success:function(data){
+						layer.alert(data,{shadeClose:true,title:''});
+					}
+			});
+			$('.btn.btn-primary').off("click");
+			$('#myModal').modal('hide')
+		})
+	});
 //功能-Vip每日抽奖-vip设定
 	$("button#Svip_Set").click(function(){
 		vip_id=$(this).attr('vipid');

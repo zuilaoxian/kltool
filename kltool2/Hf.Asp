@@ -10,12 +10,13 @@ select case action
 		call index1()
 end select
 
-response.write kltool_code(kltool_head("柯林工具箱-恢复功能指向",1))
 
 sub index()
-	response.write"<div class=line1>恢复插件功能指向</div>"
-	response.write"<div class=line2>点击【<a href=""?siteid="&siteid&"&action=yes"" id=""tip"" tiptext=""确定？"">恢复插件功能指向</a>】</div>"
-	response.write"<div class=content>如果点击栏目跳到柯林总站，请使用此功能(无法恢复自定义功能)</div>"
+	html=kltool_head("柯林工具箱-恢复功能指向",1)&_
+	"<div class=line1>恢复插件功能指向</div>"&vbcrlf&_
+	"<div class=line2>点击【<a href=""?siteid="&siteid&"&action=yes"" id=""tips"" tiptext=""确定？"">恢复插件功能指向</a>】</div>"&vbcrlf&_
+	"<div class=content>如果点击栏目跳到柯林总站，请使用此功能(无法恢复自定义功能)</div>"&vbcrlf
+	response.write kltool_code(html&kltool_end(1))
 end sub
 
 sub index1()
@@ -24,10 +25,7 @@ sub index1()
 	response.write "恢复成功<br>"
 	for I=0 to ubound(str)
 		conn.execute("update [systype] set typepath='" & str(I)(0) & "' where typeid="& str(I)(1))
-		response.write ""& str(I)(1) &" - " & str(I)(0) & "<br>" & vbCrLf
+		'response.write ""& str(I)(1) &" - " & str(I)(0) & "<br>" & vbCrLf
 	next
-	kltool_write_log("恢复了插件功能指向")
 end sub
-
-response.write kltool_code(kltool_end(1))
 %>

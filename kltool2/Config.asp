@@ -311,46 +311,50 @@ end function
 function kltool_page(things,count,pagecount,gopage)
 	kltool_page=""
 if pagecount>1 then
-	kltool_page=kltool_page&vbcrlf&"<ul class=""pagination"">"&vbcrlf
+	kltool_page=vbcrlf&"<li class=""list-group-item"">"&vbcrlf
+	kltool_page=kltool_page&"  <ul class=""pagination"">"&vbcrlf
 		if page>1 then
-			kltool_page=kltool_page&" <li><a href='"&gopage&"siteid="&siteid&"&pagesize="&pagesize&"'><<</a></li>"&vbcrlf
-			kltool_page=kltool_page&" <li><a href='"&gopage&"page="&page-1&"&siteid="&siteid&"&pagesize="&pagesize&"'><</a></li>"&vbcrlf
+			kltool_page=kltool_page&"   <li><a href='"&gopage&"siteid="&siteid&"&pagesize="&pagesize&"'><<</a></li>"&vbcrlf
+			kltool_page=kltool_page&"   <li><a href='"&gopage&"page="&page-1&"&siteid="&siteid&"&pagesize="&pagesize&"'><</a></li>"&vbcrlf
 		else
-			kltool_page=kltool_page&" <li class=""disabled""><a><<</a></li>"&vbcrlf&" <li class=""disabled""><a><</a></li>"&vbcrlf
+			kltool_page=kltool_page&"    <li class=""disabled""><a><<</a></li>"&vbcrlf&_
+			"    <li class=""disabled""><a><</a></li>"&vbcrlf
 		end if
-		kltool_page=kltool_page&" <li class=""disabled""><a><b>"&page&"</b>/"&pagecount&"页/"&count&"条</a></li>"&vbcrlf
+		kltool_page=kltool_page&"    <li class=""disabled""><a><b>"&page&"</b>/"&pagecount&"页/"&count&"条</a></li>"&vbcrlf
 		if page<pagecount then
-			kltool_page=kltool_page&" <li><a href='"&gopage&"page="&page+1&"&siteid="&siteid&"&pagesize="&pagesize&"'>></a></li>"&vbcrlf
-			kltool_page=kltool_page&" <li><a href='"&gopage&"page="&pagecount&"&siteid="&siteid&"&pagesize="&pagesize&"'>>></a></li>"&vbcrlf
+			kltool_page=kltool_page&"    <li><a href='"&gopage&"page="&page+1&"&siteid="&siteid&"&pagesize="&pagesize&"'>></a></li>"&vbcrlf
+			kltool_page=kltool_page&"    <li><a href='"&gopage&"page="&pagecount&"&siteid="&siteid&"&pagesize="&pagesize&"'>>></a></li>"&vbcrlf
 		else
-			kltool_page=kltool_page&" <li class=""disabled""><a>></a></li>"&vbcrlf&" <li class=""disabled""><a>>></a></li>"&vbcrlf
+			kltool_page=kltool_page&"    <li class=""disabled""><a>></a></li>"&vbcrlf&_
+			"    <li class=""disabled""><a>>></a></li>"&vbcrlf
 		end if
-	kltool_page=kltool_page&"</ul>"&vbcrlf
-	
+	kltool_page=kltool_page&"    </ul>"&vbcrlf&_
+	"</li>"&vbcrlf
 	if things=2 then
-	kltool_page=kltool_page&"<li class=""list-group-item"">"&vbcrlf&"<form class=""form-inline"" method=""get"" action=""?"" role=""form"">"&vbcrlf
-		gopage=replace(gopage,"&amp;","&")
-		gopage_arr=Split(gopage,"?")
-		gopage_arr1=gopage_arr(1)
-		if gopage_arr1<>"" then gopage_arr2=Split(gopage_arr1,"&") else gopage_arr2=Split(gopage,"&")
-		if Ubound(gopage_arr2)>0 then
-			for igopage=0 to Ubound(gopage_arr2)
-				if gopage_arr2(igopage)<>"" and gopage_arr2(igopage)<>"page" and gopage_arr2(igopage)<>"pagesize" then
-					gopage_arr3=Split(gopage_arr2(igopage),"=")
-					kltool_page=kltool_page&" <input name="""&gopage_arr3(0)&""" type=""hidden"" value="""&gopage_arr3(1)&""">"&vbcrlf
-				end if
-			next
-		end if
-	if page<pagecount then page=page+1 else pgae=page-1
-	kltool_page=kltool_page&" <input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf&_
-	" <input name=""pagesize"" type=""hidden"" value="""&pagesize&""">"&vbcrlf&_
-	" <div class=""form-group col-xs-5"">"&vbcrlf&_
-	"  <input name=""page"" type=""text"" value="""&page&""" class=""form-control"">"&vbcrlf&_
-	" </div>"&vbcrlf&_
-	" <input name=""g"" type=""submit"" value=""跳转"" class=""btn btn-default"">"&vbcrlf&_
-	"</form>"&vbcrlf
+		kltool_page=kltool_page&"<li class=""list-group-item"">"&vbcrlf&"  <form class=""form-inline"" method=""get"" action=""?"" role=""form"">"&vbcrlf
+			gopage=replace(gopage,"&amp;","&")
+			gopage_arr=Split(gopage,"?")
+			gopage_arr1=gopage_arr(1)
+			if gopage_arr1<>"" then gopage_arr2=Split(gopage_arr1,"&") else gopage_arr2=Split(gopage,"&")
+			if Ubound(gopage_arr2)>0 then
+				for igopage=0 to Ubound(gopage_arr2)
+					if gopage_arr2(igopage)<>"" and gopage_arr2(igopage)<>"page" and gopage_arr2(igopage)<>"pagesize" then
+						gopage_arr3=Split(gopage_arr2(igopage),"=")
+						kltool_page=kltool_page&"    <input name="""&gopage_arr3(0)&""" type=""hidden"" value="""&gopage_arr3(1)&""">"&vbcrlf
+					end if
+				next
+			end if
+		if page<pagecount then page=page+1 else pgae=page-1
+		kltool_page=kltool_page&"    <input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf&_
+		"    <input name=""pagesize"" type=""hidden"" value="""&pagesize&""">"&vbcrlf&_
+		"    <div class=""form-group col-xs-5"">"&vbcrlf&_
+		"        <input name=""page"" type=""text"" value="""&page&""" class=""form-control"">"&vbcrlf&_
+		"    </div>"&vbcrlf&_
+		"    <input name=""g"" type=""submit"" value=""跳转"" class=""btn btn-default"">"&vbcrlf&_
+		"  </form>"&vbcrlf&_
+		"</li>"&vbcrlf
 	end if
-	kltool_page=kltool_page&"</li>"&vbcrlf
+	kltool_page=kltool_page
 end if
 end function
 '-----组件检测函数
@@ -493,7 +497,7 @@ prize_lx_g=split(prize_lx_str,"|")
 prize_name_g=split(prize_name_str,"|")
 			For prize_i=0 To ubound(prize_name_g)
 				if clng(things)=clng(prize_lx_g(prize_i)) then
-					kltool_get_prize=prize_lx_g(prize_i)&" "&prize_name_g(prize_i)&vbcrlf
+					kltool_get_prize=prize_lx_g(prize_i)&":"&prize_name_g(prize_i)&vbcrlf
 					'Exit For
 				end if
 			Next
@@ -522,7 +526,7 @@ function kltool_get_prizelist_show
 		s_lx=str(2)(1,i)
 		s_prize1=str(2)(2,i)
 		s_prize2=str(2)(3,i)
-			kltool_get_prizelist_show=kltool_get_prizelist_show&"<li class=""list-group-item"">奖品:"&kltool_get_prize(s_lx)&"<br/>"&vbcrlf&_
+			kltool_get_prizelist_show=kltool_get_prizelist_show&"<li class=""list-group-item"">奖品"&kltool_get_prize(s_lx)&"<br/>"&vbcrlf&_
 			""&s_prize1&"--"&s_prize2&vbcrlf&_
 			"</li>"&vbcrlf
 		next
@@ -540,7 +544,7 @@ Function kltool_get_classlist(things)
 		else
 			For i=0 To rsclasslist.recordcount
 			If rsclasslist.eof Then Exit For
-				kltool_get_classlist=kltool_get_classlist&"  <label class=""checkbox-inline""><input type=""radio"" name=""Class"" id=""Class"" value="""&rsclasslist("classid")&"""> "&rsclasslist("classname")&"</label>"&vbcrlf
+				kltool_get_classlist=kltool_get_classlist&"  <label class=""checkbox-inline""><input type=""radio"" name=""Class"" id=""Class"" value="""&rsclasslist("classid")&"""> "&rsclasslist("classname")&"("&rsclasslist("classid")&")</label>"&vbcrlf
 			rsclasslist.movenext
 			Next
 		end if

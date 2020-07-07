@@ -127,7 +127,7 @@ kltool_sql("svip_prize")
 			html=html&"<li class=""list-group-item"">"&vbcrlf&_
 			" <div role=""form"" class=""bs-example bs-example-form"">"&vbcrlf&_
 			"  <div class=""form-group"">"&vbcrlf&_
-			"	<label for=""name"">奖品:"&kltool_get_prize(s_lx)&"</label>"&vbcrlf&_
+			"	<label for=""name"">奖品"&kltool_get_prize(s_lx)&"</label>"&vbcrlf&_
 			"	<input type=""hidden"" name=""vip_prize"&s_id&""" id=""vip_prize"&s_id&""" value="""&s_lx&""" class=""form-control"">"&vbcrlf&_
 			"  </div>"&vbcrlf&_
 			"  <div class=""form-group input-group"">"&vbcrlf&_
