@@ -105,7 +105,6 @@ end sub
 %>
 <!--#include file="class/cookies.asp"-->
 <!--#include file="class/md5.asp"-->
-<!--#include file="class/keycdksc.asp"-->
 <!--#include file="class/kltool_rndnick_s.asp"-->
 <%
 '-----读会员数据
@@ -802,6 +801,8 @@ Function kltool_get_xunzhang(img)
 if img<>"" then
 	if len(img)<=6 then
 		kltool_get_xunzhang="<img src='/bbs/medal/"&img&"' alt=''>"
+	elseif instr(img,"/")=1 then
+		kltool_get_xunzhang="<img src='"&img&"' alt=''>"
 	else
 		kltool_get_xunzhang="<img src='/"&img&"' alt=''>"
 	end if
@@ -836,4 +837,23 @@ sub Create_Folder(path_str)
 		next
 	Set fso_f = nothing
 end sub
+
+public function Generate_Key()
+ Randomize
+ do
+ num  =  Int((75  *  Rnd)+48)
+ found  =  false
+ if  num  >=  58  and  num  <=  64  then 
+ found  =  true
+ else
+ if  num  >=91  and  num  <=96  then
+ found  =  true
+ end  if
+ end  if
+ if  found  =  false  then
+ RSKey  =  RSKey+Chr(num)
+ end  if
+ loop  until  len(RSKey)=16
+ Generate_Key=RSKey
+ end  function
 %>

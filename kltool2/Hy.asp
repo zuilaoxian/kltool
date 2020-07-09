@@ -61,7 +61,7 @@ sub index()
 	"	</div>"&vbcrlf&_
 	"	<form method=""get"" action=""?"" class=""form-inline"" role=""form"">"&vbcrlf&_
 	"		<input name=""lx"" type=""hidden"" value=""7"">"&vbcrlf&_
-	"		<input name=""siteid"" type=""hidden"" value=""[siteid]"">"&vbcrlf&_
+	"		<input name=""siteid"" type=""hidden"" value="""&siteid&""">"&vbcrlf&_
 	"		<div class=""row"">"&vbcrlf&_
 	"			<div class=""col-lg-6"">"&vbcrlf&_
 	"				<div class=""input-group col-xs-8"">"&vbcrlf&_

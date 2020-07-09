@@ -41,6 +41,44 @@
 	});
 	path=location.pathname.toLowerCase().split('/');
 	thispath=path.length>2?path[2]:Null;
+	
+	
+	
+//功能-cdk-cdk发放
+	$("a#cdk_send").click(function(){
+		$('.btn.btn-primary').show();
+		c_id=$(this).attr('c_id');
+		$.ajax({
+			url:'?action=cdksend&c_id='+c_id,
+			type:'get',
+			timeout:'15000',
+			async:false,
+				success:function(data){
+					$(".modal-title").html("cdk发放");
+					$(".modal-body").html(data);
+				}
+		})
+		$('.btn.btn-primary').click(function(){
+			c_id=$('#c_id').val();
+			c_userid=$('#c_userid').val();
+			c_msg=$('#c_msg:checked').val();
+			$.ajax({
+				url:'?action=cdksendyes',
+				type:'post',
+				data:{
+					c_id:c_id,
+					c_userid:c_userid,
+					c_msg:c_msg
+					},
+				timeout:'15000',
+				async:false,
+					success:function(data){
+						layer.alert(data,{shadeClose:true,title:''});
+					}
+			});
+			$('#myModal').modal('hide')
+		})
+	});
 //功能-帖子管理-回复语设定
 	$("button#Bbs_Re_Set").click(function(){
 		re_id=$(this).attr('reid');
@@ -100,7 +138,6 @@
 						layer.alert(data,{shadeClose:true,title:''});
 					}
 			});
-			$('.btn.btn-primary').off("click");
 			$('#myModal').modal('hide')
 		})
 	});
@@ -139,7 +176,6 @@
 						layer.alert(data,{shadeClose:true,title:''});
 					}
 			});
-			$('.btn.btn-primary').off("click");
 			$('#myModal').modal('hide')
 		})
 	});
@@ -735,7 +771,6 @@
 						$("a#"+uid+".LvlId").html(data).fadeOut(300).fadeIn(300);
 					}
 			});
-			$('.btn.btn-primary').off("click");//解除绑定事件
 			$('#myModal').modal('hide')
 		});
 	});
@@ -773,13 +808,12 @@
 						$("a#"+uid+".Nick").html(data).fadeOut(300).fadeIn(300);
 					}
 			});
-			$('.btn.btn-primary').off("click");
 			$('#myModal').modal('hide')
 		})
 	});
 //模态框监测，关闭后清除内容，解除事件绑定
 	 $('#myModal').on('hide.bs.modal', function () {
-		$('.btn.btn-primary').off("click");//解除绑定事件
+		$('.btn.btn-primary').off("click");
 		$(".modal-title,.modal-body").html("");
 	})
 //反选
