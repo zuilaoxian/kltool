@@ -1,6 +1,7 @@
 ﻿<!--#include file="../config.asp"-->
 <%
 kltool_admin(1)
+kltool_use(3)
 action=Request.QueryString("action")
 select case action
 	case ""
@@ -32,50 +33,6 @@ select case action
 	case "cdkaddyes"
 		call cdkaddyes()
 end select
-
-function kltool_get_cdkinfo(cdk)
-	set rs_cdkinfo=server.CreateObject("adodb.recordset")
-	rs_cdkinfo.open "select * from [cdk] where id="&cdk,conn,1,1
-	if not (rs_cdkinfo.bof and rs_cdkinfo.eof) then
-		lx=rs_cdkinfo("lx")
-		if lx="1" then
-			kltool_get_cdkinfo=sitemoneyname&""&rs_cdkinfo("jinbi")
-		elseif lx="2" then
-			kltool_get_cdkinfo="经验"&rs_cdkinfo("jingyan")
-		elseif lx="3" then
-			kltool_get_cdkinfo=sitemoneyname&rs_cdkinfo("jinbi")&",经验"&rs_cdkinfo("jingyan")
-		elseif lx="4" then
-			kltool_get_cdkinfo="rmb"&rs_cdkinfo("rmb")
-		elseif lx="5" then
-			kltool_get_cdkinfo=rs_cdkinfo("sff")&"个月VIP"&kltool_get_vip(rs_cdkinfo("sf"),1)
-		elseif lx="6" then
-			kltool_get_cdkinfo=rs_cdkinfo("lg")&"秒积时"
-		elseif lx="7" then
-			kltool_get_cdkinfo="勋章"&kltool_get_xunzhang(rs_cdkinfo("xg"))
-		end if
-	end if
-	rs_cdkinfo.close
-	set rs_cdkinfo=nothing
-end function
-
-function kltool_get_cdklx(c_lx)
-		lx=clng(c_lx)
-		if lx="1" then
-			kltool_get_cdklx=sitemoneyname
-		elseif lx="2" then
-			kltool_get_cdklx="经验"
-		elseif lx="3" then
-			kltool_get_cdklx=sitemoneyname&"和经验"
-		elseif lx="4" then
-			kltool_get_cdklx="rmb"
-		elseif lx="5" then
-			kltool_get_cdklx="VIP"
-		elseif lx="6" then
-			kltool_get_cdklx="积时"
-		elseif lx="7" then
-			kltool_get_cdklx="勋章"
-		end if
-end function
 
 sub index()
 	kltool_sql("cdk")
@@ -189,7 +146,7 @@ sub index()
 			if c_sy="1" then c_sy_c="未用" else c_sy_c="已用"
 			html=html&_
 			"<li class=""list-group-item"">"&vbcrlf&_
-			"<h4>"&c_id&" cdk:"&cdk&"</h4>"&vbcrlf&_
+			"<h4><input type=""checkbox"" class=""kid"" id=""kid"" value="""&c_id&"""> "&c_id&" cdk:"&cdk&"</h4>"&vbcrlf&_
 			"cdk内容:"&kltool_get_cdkinfo(c_id)&"<br/>"&vbcrlf
 			
 			if c_userid<>"" then html=html&"<a href=""?c_uid=1000"">"&c_userid&"</a> " else html=html&"<a c_id="""&c_id&""" id=""cdk_send""  data-toggle=""modal"" data-target=""#myModal"">发放</a> "
@@ -201,7 +158,11 @@ sub index()
 			html=html&"</li>"&vbcrlf
 			
 		Next
-		html=html&kltool_page(2,count,pagecount,gopage)
+		html=html&"<li class=""list-group-item"">"&vbcrlf&_
+			"<a id=""chose"" class=""btn btn-default"">反选</a> <a id=""choseall"" class=""btn btn-default"">全选</a>"&vbcrlf&_
+			"<button name=""kltool"" id=""Cdk_Del"" class=""btn btn-default"" data-loading-text=""Loading..."">选择完毕,删除</button>"&vbcrlf&_
+			"</li>"&vbcrlf&_
+		kltool_page(2,count,pagecount,gopage)
 	else
 		html=html&"<div class=""alert alert-danger"">暂时没有记录</div>"
 	end if
@@ -250,7 +211,7 @@ sub cdksendyes()
 	c_msg=Request.Form("c_msg")
 	conn.Execute("update [cdk] set userid="&c_userid&" where id in("&c_id&")")
 	response.write "成功发放cdk给ID:"&c_userid
-	if c_msg="1" then conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values("&siteid&","&siteid&",'系统','来自CDK的发放信息','系统大神发放了CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]&action=mycdk]前往查看[/url]',"&c_userid&",1,1,'"&now()&"',0)")
+	if c_msg="1" then conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values("&siteid&","&siteid&",'系统','来自CDK的发放信息','系统大神发放了CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]]前往查看[/url]',"&c_userid&",1,1,'"&now()&"',0)")
 end sub
 sub cdkzs()
 	c_id=Request.QueryString("c_id")
@@ -383,6 +344,7 @@ sub cdkaddyes
 		rs("lx")=c_lx
 		rs("time")=now()
 		rs("zs")=c_zs
+		rs("sy")=1
 		if c_uid<>"" then rs("userid")=c_uid
 		rs("chushou")=c_chushou
 		if c_chushou=1 then
@@ -407,7 +369,7 @@ sub cdkaddyes
 	Response.Write "生产"&c_num&"个cdk成功"
 	if c_uid<>"" then
 		Response.Write "<br/>已发号给ID："&kltool_get_usernickname(c_uid,1)&"("&c_uid&")"
-		if c_msg=1 then conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values("&siteid&","&siteid&",'系统','来自CDK的发放信息','系统大神发放了"&c_num&"个CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]&action=mycdk]前往查看[/url]',"&c_uid&",1,1,'"&nonw()&"',0)")
+		if c_msg=1 then conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values("&siteid&","&siteid&",'系统','来自CDK的发放信息','系统大神发放了"&c_num&"个CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]]前往查看[/url]',"&c_uid&",1,1,'"&nonw()&"',0)")
 	end if
 end sub
 sub shopset()

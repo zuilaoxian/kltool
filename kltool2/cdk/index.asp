@@ -1,264 +1,288 @@
 <!--#include file="../config.asp"-->
 <%
 kltool_use(3)
-function getcdklx(str)
-	clx=""
-	if str=1 then
-		clx=sitemoneyname
-	elseif str=2 then
-		clx="经验"
-	elseif str=3 then
-		clx=sitemoneyname&"+经验"
-	elseif str=4 then
-		clx="Vip"
-	elseif str=5 then
-		clx="积时"
-	elseif str=6 then
-		clx="勋章"
-	end if
-	getcdklx=clx
-end function
-kltool_head "CDK兑换系统",0
 kltool_sql("cdk")
-jieshu=endTime
-Response.write "<div class=line1>您的"&sitemoneyname&":"&money&"/经验:"&expr&"</div>"
-if kltool_yunxu=1 then Response.Write "<div class=tip><a href='admin1.asp?siteid="&siteid&"'>后台管理</a></div>"
-Response.Write "<div class=title><a href='?siteid="&siteid&"&amp;pg=mycdk'>我的CDK</a>　<a href='shop.asp?siteid="&siteid&"'>CDK商城</a></div>"
-
-
-pg=request("pg")
-if pg="" then
-
-	Response.Write "<div class=tip>兑换cdk</div>"
-	Response.Write "<form method='post' action='?siteid="&siteid&"&amp;pg=dh'>"
-	Response.Write "<div class=line1>输入要兑换的cdk：</div>"
-	Response.Write "<div class=line2><input name='cdk' type='text' size='20' value='' id='q'>"
-	Response.Write "<a onClick=""return ajaxQuerySetDom(document.getElementById('q').value,'../inc/key.asp?action=cdk&','q','result')"">校验</a><span id=""result""></span></div>"
-	Response.Write "<div class=line1><input type='submit' value='马上兑换' class='btn' onClick=""ConfirmDel('是否确定？');return false""></form>"
-	Response.Write "</div>"
+action=Request.QueryString("action")
+select case action
+	case ""
+		call index()
+	case "cdkdh"
+		call cdkdh()
+	case "cdk"
+		call cdk()
+	case "cdkzs"
+		call cdkzs()
+	case "cdkzsyes"
+		call cdkzsyes()
+end select
+sub index()
+	html=kltool_head("CDK兑换系统",1)&_
+	"<!-- 模态框（Modal） -->"&vbcrlf&_
+	"<div class=""modal fade"" id=""myModal"" tabindex=""-1"" role=""dialog"" aria-labelledby=""myModalLabel"" aria-hidden=""true"">"&vbcrlf&_
+	"	<div class=""modal-dialog"">"&vbcrlf&_
+	"		<div class=""modal-content"">"&vbcrlf&_
+	"			<div class=""modal-header"">"&vbcrlf&_
+	"				<button type=""button"" class=""close"" data-dismiss=""modal"" aria-hidden=""true"">&times;</button>"&vbcrlf&_
+	"				<h4 class=""modal-title"" id=""myModalLabel"">模态框（Modal）标题</h4>"&vbcrlf&_
+	"			</div>"&vbcrlf&_
+	"			<div class=""modal-body"">在这里添加一些文本</div>"&vbcrlf&_
+	"			<div class=""modal-footer"">"&vbcrlf&_
+	"				<button type=""button"" class=""btn btn-default"" data-dismiss=""modal"">关闭</button>"&vbcrlf&_
+	"				<button type=""button"" class=""btn btn-primary"" style=""display:none;"">提交更改</button>"&vbcrlf&_
+	"			</div>"&vbcrlf&_
+	"		</div><!-- /.modal-content -->"&vbcrlf&_
+	"	</div><!-- /.modal -->"&vbcrlf&_
+	"</div>"&vbcrlf&_
 	
-	set rs=server.CreateObject("adodb.recordset")
-	rs.open "select * from [cdk] where userid is not null and sy=2 and usetime is not null and DateDiff(day,usetime,getdate())<3 order by usetime desc",conn,1,1
-	If Not rs.eof Then
-		gopage="?"
-		Count=rs.recordcount
-		pagecount=(count+pagesize-1)\pagesize
+	"<ul class=""breadcrumb"">"&vbcrlf&_
+	"	<li>cdk管理</li>"&vbcrlf&_
+	"	<li><a href='?'>我的CDK</a></li>"&vbcrlf&_
+	"	<li><a href='?siteid="&siteid&"&action=shoplog'>CDK商城</a></li>"&vbcrlf&_
+	"	<li><a href='?siteid="&siteid&"&action=cdkadd'>生产cdk</a></li>"&vbcrlf&_
+	"	<li><a href='index.asp?siteid="&siteid&"'>前台</a></li>"&vbcrlf&_
+	"</ul>"&vbcrlf&_
+
+	"<li class=""list-group-item"">"&vbcrlf&_
+	"	<div class=""form-inline"" role=""form"">"&vbcrlf&_
+	"	<div>"&vbcrlf&_
+	"	<label for=""c_cdk"" id=""c_cdkjy"" class=""control-label"">输入cdk</label>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+	"		<div class=""row"">"&vbcrlf&_
+	"			<div class=""col-lg-6"">"&vbcrlf&_
+	"				<div class=""input-group col-xs-8"">"&vbcrlf&_
+	"					<input name=""c_cdkjy"" id=""c_cdk"" type=""text"" value="""" placeholder=""输入cdk"" class=""form-control"">"&vbcrlf&_
+	"					<span class=""input-group-btn"">"&vbcrlf&_
+	"						<button class=""btn btn-default"" type=""button"" id=""c_cdkdh"">"&vbcrlf&_
+	"						兑换!"&vbcrlf&_
+	"						</button>"&vbcrlf&_
+	"					</span>"&vbcrlf&_
+	"				</div>"&vbcrlf&_
+	"			</div>"&vbcrlf&_
+	"		</div>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+	"</li>"&vbcrlf
+	
+	sql="select id,cdk,lx,sy,time,zs,chushou,jiage from [cdk] where userid="&userid&" Order by id desc"
+	gopage="?"
+	str=kltool_GetRow(sql,0,pagesize)
+	If str(0) Then
+		count=str(0)
+		pagecount=str(1)
 		if page>pagecount then page=pagecount
-		rs.move(pagesize*(page-1))
-	call kltool_page(1)
-		For i=1 To PageSize
-		If rs.eof Then Exit For
-	cdklx=clng(rs("lx"))
-	clx=getcdklx(cdklx)
-	if cdklx=1 then cjl=clx&"增加"&Clng(rs("jinbi"))
-	if cdklx=2 then cjl=clx&"增加"&Clng(rs("jingyan"))
-	if cdklx=3 then cjl=sitemoneyname&"+"&Clng(rs("jinbi"))&" 经验+"&Clng(rs("jingyan"))
-	if cdklx=4 then cjl=Clng(rs("sff"))&"个月VIP"&kltool_get_vip(Clng(rs("sf")),1)
-	if cdklx=5 then cjl=clx&"增加"&Clng(rs("lg"))&"秒"
-	if cdklx=6 then cjl="获得"&kltool_get_xunzhang(rs("xg"))
-	if i mod 2 = 0 then Response.Write"<div class=""line1"">" else Response.Write"<div class=""line2"">"
-	'Response.Write page*PageSize+i-PageSize&"."
-	Response.Write kltool_get_usernickname(rs("userid"),1)&"("&rs("userid")&")"
-	mytime=kltool_DateDiff(rs("usetime"),now(),"n")
-	if mytime<60 then
-		Response.Write mytime&"分钟前使用了<font color=""#FF2D2D"">"&clx&"</font>cdk "&cjl
-	else
-		Response.Write"使用了<font color=""#FF2D2D"">"&clx&"</font>cdk "&cjl&"(<small><small>"&month(rs("usetime"))&"-"&day(rs("usetime"))&"&nbsp;"&hour(rs("usetime"))&":"&minute(rs("usetime"))&"</small></small>)"
-	end if
-	Response.Write"</div>"
-		rs.movenext
+		html=html&kltool_page(1,count,pagecount,gopage)
+		For i=0 To ubound(str(2),2)
+			c_id=str(2)(0,i)
+			c_cdk=str(2)(1,i)
+			c_lx=str(2)(2,i)
+			c_sy=str(2)(3,i)
+			c_time=str(2)(4,i)
+			c_zs=str(2)(5,i)
+			if c_zs="1" and c_sy="1" then c_zs_c="<a c_cdk="""&c_cdk&""" id=""cdk_give""  data-toggle=""modal"" data-target=""#myModal"">赠送</a> " else c_zs_c="赠送"
+			if c_sy="1" then c_sy_c="<a href=""?action=cdkdh&c_cdk="&c_cdk&""" class=""nouse"" id=""tips"" tiptext=""确定？"">使用</a>" else c_sy_c="使用"
+			html=html&_
+			"<li class=""list-group-item"">"&vbcrlf&_
+			"<h4>"&kltool_get_cdklx(c_lx)&" cdk:"&c_cdk&"</h4>"&vbcrlf&_
+			"cdk内容:"&kltool_get_cdkinfo(c_id)&"<br/>"&vbcrlf&_
+			c_sy_c&" "&_
+			c_zs_c&_
+			"</li>"&vbcrlf
 		Next
-	call kltool_page(2)
+		html=html&"<button name=""kltool"" id=""Cdk_Fast_Use"" class=""btn btn-default"" data-loading-text=""Loading..."">本页cdk一键使用</button>"&vbcrlf&_
+			"</li>"&vbcrlf&_
+		kltool_page(2,count,pagecount,gopage)
+	else
+		html=html&"<div class=""alert alert-danger"">暂时没有记录</div>"
 	end if
-	rs.close
-	set rs=nothing
-	
-'''''''''''''''''''''''兑换CDK
-elseif pg="dh"  then
-	clx=request("clx")
-	cdk=request("cdk")
+	Response.write kltool_code(html&kltool_end(1))
+end sub
+sub cdkdh()
+	c_cdk=Request.QueryString("c_cdk")
+		Response.Write "CDK:["&c_cdk&"]<br/>"
 	set rs=Server.CreateObject("ADODB.Recordset")
-	rs.open"select * from [cdk] where cdk='"&cdk&"' and chushou=2",conn,1,1
-	if rs.eof then call kltool_msge("CDK:["&cdk&"] 不存在，请核对")
-	lx=Clng(rs("lx"))
-	sy=Clng(rs("sy"))
-	jinbi=Clng(rs("jinbi"))
-	jingyan=Clng(rs("jingyan"))
-	sff=Clng(rs("sff"))
-	sf=Clng(rs("sf"))
-	lg=Clng(rs("lg"))
-	xg=""&rs("xg")&""
-	uid=Clng(rs("userid"))
-	chushou=clng(rs("chushou"))
-	rs.close
-	set rs=nothing
-
-	if uid<>"" and uid<>clng(userid) then call kltool_msge("CDK:["&cdk&"] 不属于你，不可以兑换")
-	if sy=2 then call kltool_msge("CDK:["&cdk&"] 已被使用")
-	response.write "<div class=line1 id=use>你使用了CDK:["&cdk&"]</div>"
-	if lx=1 then
-	conn.Execute("update [user] set money=money+"&jinbi&" where userid="&userid)
-	response.write "<div class=tip id=msg>你的"&sitemoneyname&"增加了"&jinbi&"个</div>"
-
-	elseif lx=2 then
-	conn.Execute("update [user] set expR=expR+"&jingyan&" where userid="&userid)
-	response.write "<div class=tip id=msg>你的经验增加了"&jingyan&"点</div>"
-
-	elseif lx=3 then
-	conn.Execute("update [user] set money=money+"&jinbi&",expR=expR+"&jingyan&" where userid="&userid)
-	response.write "<div class=tip id=msg>你的"&sitemoneyname&"增加了"&jinbi&"个,经验增加了"&jingyan&"</div>"
-
-	elseif lx=4 then
-	if clng(sf)=clng(sessiontimeout) then
-	 if userid<>siteid then
-	 ti1=DateAdd("m",""&sff&"",""&jieshu&"")
-	conn.Execute("update [user] set endTime='"&ti1&"' where userid="&userid&"")
-	 response.write "<div class=tip id=msg>兑换CDK成功，VIP时长已增加"&sff&"个月,截止到"&ti1&"</div>"
-	 else
-	 response.write "<div class=tip id=msg>兑换CDK成功</div>"
-	 end if
-	else
-	 conn.Execute("update [user] set SessionTimeout="&sf&" where userid="&userid)
-	 if userid<>siteid then
-	ti=DateAdd("m",""&sff&"",date())
-	conn.Execute("update [user] set endTime='"&ti&"' where userid="&userid&"")
-	 response.write "<div class=tip id=msg>兑换了"&sff&"个月VIP("&kltool_get_vip(sf,1)&") 截止到"&ti&"</div>"
-	 else
-	 response.write "<div class=tip id=msg>兑换CDK成功</div>"
-	 end if
+	rs.open"select * from [cdk] where cdk='"&c_cdk&"' and chushou=2",conn,1,2
+	if rs.eof then
+		Response.Write"不存在，请核对"
+		Response.End()
 	end if
-
-	elseif lx=5 then
-	conn.Execute("update [user] set LoginTimes=LoginTimes+"&lg&" where userid="&userid)
-	response.write "<div class=tip id=msg>你的在线积时增加了："&lg&"秒</div>"
-
-	elseif lx=6 then
-	arrstr=Split(moneyname,"|")
-	For i=0 To UBound(arrstr)
-	if arrstr(i)=xg then
-	kltool_msge("您已经拥有此勋章！")
-	Exit For
-	end if
-	next
-	 conn.Execute("update [user] set moneyname='"&moneyname&"|"&xg&"|' where userid="&userid)
-	 if Instr(moneyname,"||")>0 then conn.Execute("update [user] set moneyname=replace(cast(moneyname as varchar(8000)),'||','|')")
-	response.write "<div class=tip id=msg>成功兑换了勋章奖励"&kltool_get_xunzhang(xg)&"</div>"
-	end if
-	conn.Execute("update [cdk] set sy=2,userid="&userid&" Where cdk='"&cdk&"'")
-	if lx=1 or lx=2 or lx=3 then
-	conn.execute"insert into [wap_bankLog](siteid,userid,actionName,money,leftMoney,opera_userid,opera_nickname,remark,ip,addtime)values('"&siteid&"','"&userid&"','CDK兑换','"&jinbi&"','"&money&"','"&userid&"','"&nickname&"','CDK使用:"&cdk&"','"&Request.ServerVariables("REMOTE_ADDR")&"','"&date()&" "&time()&"')"
-	End if
-	conn.Execute("update [cdk] set usetime='"&now&"' where cdk='"&cdk&"'")
-	response.write "<div class=line1>立即进入<a href='/myfile.aspx?siteid="&siteid&"'>我的地盘查看</a></div>"
-'''''''''''''''''''''''我的CDK
-elseif pg="mycdk"  then
-	Response.Write "<div class=tip>我的CDK　<a href='?siteid="&siteid&"'>兑换CDK</a>　<a id='dhcdk'>一键兑换本页CDK</a> </div><div class='usetip'></div>"
-	set rs=server.CreateObject("adodb.recordset")
-	rs.open "select * from [cdk] where userid="&userid&" and chushou=2 order by time desc",conn,1,1
-	If Not rs.eof Then
-		gopage="?pg=mycdk&amp;"
-		Count=rs.recordcount	
-		pagecount=(count+pagesize-1)\pagesize	
-		if page>pagecount then page=pagecount
-		rs.move(pagesize*(page-1))
-	call kltool_page(1)
-		For i=1 To PageSize 
-		If rs.eof Then Exit For
-	lx=clng(rs("lx"))
-	zs=clng(rs("zs"))
-	sy=clng(rs("sy"))
-	if sy=1 then
-	Response.write "<div class=line1>【未使用】"
-	else
-	Response.write "<div class=line1>【已使用】"
-	end if
-	Response.write ""&page*PageSize+i-PageSize&"_CDK:"&rs("cdk")&"</div>"
-
-	if lx=1 then
-	Response.write "<div class=line2>　此CDK奖励为:"&sitemoneyname&""&rs("jinbi")&"</div>"
-	elseif lx=2 then
-	Response.write "<div class=line2>　此CDK奖励为:经验"&rs("jingyan")&"</div>"
-	elseif lx=3 then
-	Response.write "<div class=line2>　此CDK奖励为:"&sitemoneyname&""&rs("jinbi")&",经验"&rs("jingyan")&"</div>"
-	elseif lx=4 then
-	Response.write "<div class=line2>　此CDK奖励为:"&rs("sff")&"个月VIP("&kltool_get_vip(rs("sf"),1)&")"
-	if clng(sy)=1 and clng(rs("sf"))=clng(sessiontimeout) then
-	Response.Write "<br/>　{与当前身份相同，使用后将进行延期操作}"
-	elseif clng(sy)=1 and Clng(sessiontimeout)>0 then
-	Response.Write "<br/>　{与当前身份不相同，使用后将顶替当前身份}"
-	end if
-	Response.write "</div>"
-	elseif lx=5 then
-	Response.write "<div class=line2>　此CDK奖励为:"&rs("lg")&"秒积时</div>"
-	elseif lx=6 then
-	Response.write "<div class=line2>　此CDK奖励为:勋章奖励"&kltool_get_xunzhang(rs("xg"))&"</div>"
-	end if
-	if sy=1 or zs=1 then Response.write "<div class=content>"
-	if sy=1 then
-	Response.write "　<a id='nouse' href='?siteid="&siteid&"&amp;pg=dh&amp;cdk="&rs("cdk")&"&amp;clx=dh' onClick=""ConfirmDel('是否确定？');return false"">点击使用</a>"
-	if zs=1 then Response.write " <a href='?siteid="&siteid&"&amp;pg=zengsong&amp;id="&rs("id")&"'>赠予他人</a>"
-	end if
-	if sy=1 or zs=1 then Response.write "</div>"
-		rs.movenext
-		Next
-	call kltool_page(2)
-	else
-	   Response.write "<div class=tip>暂时没有记录！</div>"
-	end if
+	c_lx=rs("lx")
+	c_sy=rs("sy")
+	c_jinbi=rs("jinbi")
+	c_jingyan=rs("jingyan")
+	c_rmb=rs("rmb")
+	c_sff=rs("sff")
+	c_sf=rs("sf")
+	c_lg=rs("lg")
+	c_xg=rs("xg")
+	c_uid=rs("userid")
+	c_chushou=rs("chushou")
 	rs.close
 	set rs=nothing
 	
-	%>
-<script>
-$('a#dhcdk').click(function(){
-	if ($('a#nouse').length){
-		$('a#nouse').each(function(index){
-			$.get($(this).attr('href'), function (data) {
-			 $('.usetip').append($(data).filter('.mains').find('#use,#msg,#tip').text()+'<hr>');
-			})
-		})
-	}else{
-		$('.usetip').html('本页没有未使用的cdk');
-	}
-});
-</script>
-<%
-''''''''''''''''''''''''''''转增操作
-elseif pg="zengsong"  then
-	id=request("id")
-	Response.Write "<div class=tip>CDK转增</div>"
-	Response.Write "<form method='post' action='?siteid="&siteid&"'>"
-	Response.Write "<input type='hidden' name='id' value='"&id&"'>"
-	Response.Write "<input type='hidden' name='pg' value='zengsong1'>"
-	Response.Write "<div class=line1><input type='text' name='uid' value=''></div>"
-	Response.Write "<div class=line2><input type='submit' value='转增' onClick=""ConfirmDel('是否确定？');return false""></div>"
+	if c_uid<>"" then
+		if clng(c_uid)<>userid then
+			Response.Write"不属于你，不可以兑换"
+			Response.End()
+		end if
+	end if
+	if c_sy="2" then
+		Response.Write"已被使用"
+		Response.End()
+	end if
+	 
+		response.write "使用成功,类型:"&kltool_get_cdklx(c_lx)&"<br/>"
+	
+	if c_lx="1" then
+		conn.Execute("update [user] set money=money+"&c_jinbi&" where userid="&userid)
+		response.write "你的"&sitemoneyname&"增加了"&c_jinbi
+	end if
+	
+	if c_lx="2" then
+		conn.Execute("update [user] set expR=expR+"&c_jingyan&" where userid="&userid)
+		response.write "你的经验增加了"&c_jingyan
+	end if
+	
+	if c_lx="3" then
+		conn.Execute("update [user] set money=money+"&c_jinbi&",expR=expR+"&c_jingyan&" where userid="&userid)
+		response.write "你的"&sitemoneyname&"增加了"&c_jinbi&"<br/>经验增加了"&c_jingyan
+	end if
+	
+	if c_lx="4" then
+		conn.Execute("update [user] set rmb=rmb+"&c_rmb&" where userid="&userid)
+		response.write "你的rmb增加了"&c_rmb
+	end if
+	
+	if c_lx="5" then
+		if clng(c_sf)=sessiontimeout then
+			if userid<>siteid then
+				ti1=DateAdd("m",""&c_sff&"",""&endtime&"")
+				conn.Execute("update [user] set endTime='"&ti1&"' where userid="&userid&"")
+				response.write "你的VIP时长已增加"&c_sff&"个月<br/>截止到"&ti1
+			else
+				Response.Write"已有此vip，不予兑换"
+				Response.End()
+			end if
+		else
+			conn.Execute("update [user] set SessionTimeout="&c_sf&" where userid="&userid)
+			if userid<>siteid then
+				ti=DateAdd("m",""&c_sff&"",now())
+				conn.Execute("update [user] set endTime='"&ti&"' where userid="&userid&"")
+				response.write "兑换了"&c_sff&"个月VIP("&kltool_get_vip(c_sf,1)&")<br/>截止到"&ti&"</div>"
+			else
+				response.write "兑换了VIP("&kltool_get_vip(c_sf,1)&")"
+			end if
+		end if
+	end if
+	if c_lx="6" then
+		conn.Execute("update [user] set LoginTimes=LoginTimes+"&c_lg&" where userid="&userid)
+		response.write "你的在线积时增加了："&c_lg&"秒"
+	end if
+	
+	if c_lx="7" then
+		if instr("|"&moneyname&"|","|"&c_xg&"|")>=1 then
+			Response.Write"你已经拥有此勋章"
+			Response.End()
+		end if
+		c_xg_xg=moneyname&"|"&c_xg
+		if Instr(c_xg_xg,"||")>0 then c_xg_xg=replace(c_xg_xg,"||","|")
+		conn.Execute("update [user] set moneyname='"&c_xg_xg&"' where userid="&userid)
+		response.write "你获得了勋章"&kltool_get_xunzhang(c_xg)
+	end if
+	
+	conn.Execute("update [cdk] set sy=2,userid="&userid&",usetime='"&now()&"' Where cdk='"&c_cdk&"'")
+	if c_lx="1" or c_lx="2" or c_lx="3" then
+		conn.execute"insert into [wap_bankLog](siteid,userid,actionName,money,leftMoney,opera_userid,opera_nickname,remark,ip,addtime)values("&siteid&","&userid&",'CDK兑换',"&c_jinbi&","&money&","&userid&",'"&nickname&"','CDK使用:"&c_cdk&"','"&Request.ServerVariables("REMOTE_ADDR")&"','"&now&"')"
+	End if
+end sub
+sub cdk()
+	c_cdk=Request.QueryString("c_cdk")
+		Response.Write "CDK:["&c_cdk&"]<br/>"
+	set rs=Server.CreateObject("ADODB.Recordset")
+	rs.open"select * from [cdk] where cdk='"&c_cdk&"' and chushou=2",conn,1,2
+	if rs.eof then
+		Response.Write"不存在，请核对"
+		Response.End()
+	end if
+	c_id=rs("id")
+	c_lx=rs("lx")
+	c_userid=rs("userid")
+	c_sy=rs("sy")
+	rs.close
+	set rs=nothing
+	if c_userid<>"" then Response.Write "所有人："&c_userid
+	if c_sy="1" then Response.Write " 未使用 " else Response.Write" 已使用 "
+	Response.Write "类型："&kltool_get_cdklx(c_lx)&"<br>"&kltool_get_cdkinfo(c_id)
+end sub
 
-elseif pg="zengsong1"  then
-	id=request("id")
-	uid=request("uid")
-	if uid="" then call kltool_msge("错误,id不能为空")
-	if not Isnumeric(uid) then call kltool_msge("id必须是数字")
-	if clng(uid)=clng(userid) then call kltool_msge("这本来就是你的CDK好吧")
+sub cdkzs()
+	c_cdk=Request.QueryString("c_cdk")
+	set rs=server.CreateObject("adodb.recordset")
+	rs.open "select * from [cdk] where cdk='"&c_cdk&"' and chushou=2 and sy=1 and userid="&userid,conn,1,1
+	if rs.eof then
+		Response.Write"不存在的记录"
+		Response.End()
+	end if
+	c_id=rs("id")
+	rs.close
+	set rs=nothing
+	Response.Write ""&_
+	"<li class=""list-group-item"">"&vbcrlf&_
+	"	<div class=""form-group"">"&vbcrlf&_
+	"		<label for=""r_search"">cdk:"&c_cdk&"<br/>"&kltool_get_cdkinfo(c_id)&"</label><br>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+	"		<input name=""c_cdk"" id=""c_cdk"" type=""hidden"" value="""&c_cdk&""">"&vbcrlf&_
+	"		<div class=""row"">"&vbcrlf&_
+	"			<div class=""col-lg-6"">"&vbcrlf&_
+	"				<div class=""input-group col-xs-8"">"&vbcrlf&_
+	"					<input name=""c_userid"" id=""c_userid"" type=""text"" value="""" placeholder=""输入对方ID"" class=""form-control"">"&vbcrlf&_
+	"				</div>"&vbcrlf&_
+	"			</div>"&vbcrlf&_
+	"		</div>"&vbcrlf&_
+	
+	"	<label for=""c_msg"" class=""col-sm-2 control-label"">是否通知他</label>"&vbcrlf&_
+	"	<div>"&vbcrlf&_
+	"    <label class=""radio-inline"">"&vbcrlf&_
+	"        <input type=""radio"" name=""c_msg"" id=""c_msg""  value=""1"" checked> 通知"&vbcrlf&_
+	"    </label>"&vbcrlf&_
+	"    <label class=""radio-inline"">"&vbcrlf&_
+	"        <input type=""radio"" name=""c_msg"" id=""c_msg""  value=""0""> 不通知"&vbcrlf&_
+	"    </label>"&vbcrlf&_
+	"	</div>"&vbcrlf&_
+	
+	"</li>"&vbcrlf
+end sub
+sub cdkzsyes()
+	c_cdk=Request.Form("c_cdk")
+	c_userid=Request.Form("c_userid")
+	c_msg=Request.Form("c_msg")
+	
+	if c_userid="" or clng(c_userid)=userid then
+		Response.Write"必须输入对方ID"
+		Response.End()
+	end if
 
-	set rs=conn.execute("select userid from [user] where userid="&uid)
-	If rs.eof Then call kltool_msge("错误,ID:"&uid&"不存在，请核对")
+	set rs=conn.execute("select userid from [user] where userid="&c_userid)
+	If rs.eof Then
+		Response.Write c_userid&"不存在，请核对"
+		Response.End()
+	end if
 	rs.close
 	set rs=nothing
 
 	set rs=server.CreateObject("adodb.recordset")
-	rs.open "select * from [cdk] where id="&id&" and userid="&userid&" and chushou=2",conn,1,2
-	if rs.eof then call kltool_msge("错误,CDK不存在")
-	zcdk=rs("cdk")
-	if clng(rs("zs"))=2 then call kltool_msge("错误,此cdk不允许转增")
-	if clng(rs("sy"))=2 then call kltool_msge("对不起，已使用过的CDK无法转增")
-	rs("userid")=uid
+	rs.open "select * from [cdk] where cdk='"&c_cdk&"' and chushou=2 and sy=1 and userid="&userid,conn,1,2
+	if rs.eof then
+		Response.Write"不存在的记录"
+		Response.End()
+	end if
+	rs("userid")=c_userid
 	rs.update
 	rs.close
 	set rs=nothing
-	   Response.write "<div class=tip>转增成功!已经使用内信通知对方!</div>"
-	conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values('"&siteid&"','"&userid&"','"&nickname&"','来自CDK的转赠信息','您的朋友："&nickname&"赠送了一个CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]&pg=mycdk]前往查看[/url]','"&uid&"','1','0','"&date()&" "&time()&"','0')")
-	conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values('"&siteid&"','"&uid&"','"&nickname&"','CDK的赠送信息','您赠送了一个CDK给您的好友{"&uid&"},"&zcdk&"','"&userid&"','2','0','"&date()&" "&time()&"','0')")
-
-end if
-kltool_end
+	   Response.write "转增cdk："&c_cdk&"<br/>给"&kltool_get_usernickname(c_userid,1)&"("&c_userid&")"
+	if c_msg="1" then
+		 Response.write "<br/>并使用内信通知对方!"
+		conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values("&siteid&","&userid&",'"&nickname&"','来自CDK的转赠信息','您的朋友："&nickname&"赠送了一个CDK给您，请[url="&kltool_path&"cdk/index.asp?siteid=[siteid]]前往查看[/url]','"&c_userid&"',1,0,'"&now()&"',0)")
+		conn.execute("insert into [wap_message](siteid,userid,nickname,title,content,touserid,isnew,issystem,addtime,HangBiaoShi)values("&siteid&","&c_userid&",'"&nickname&"','CDK的赠送信息','您赠送了一个CDK给您的好友{"&c_userid&"},"&c_cdk&"','"&userid&"',2,0,'"&now()&"',0)")
+	end if
+end sub
 %>

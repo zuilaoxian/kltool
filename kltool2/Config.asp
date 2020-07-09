@@ -856,4 +856,49 @@ public function Generate_Key()
  loop  until  len(RSKey)=16
  Generate_Key=RSKey
  end  function
+ 
+'-----获取cdk内容
+function kltool_get_cdkinfo(cdk)
+	set rs_cdkinfo=server.CreateObject("adodb.recordset")
+	rs_cdkinfo.open "select * from [cdk] where id="&cdk,conn,1,1
+	if not (rs_cdkinfo.bof and rs_cdkinfo.eof) then
+		lx=rs_cdkinfo("lx")
+		if lx="1" then
+			kltool_get_cdkinfo=sitemoneyname&""&rs_cdkinfo("jinbi")
+		elseif lx="2" then
+			kltool_get_cdkinfo="经验"&rs_cdkinfo("jingyan")
+		elseif lx="3" then
+			kltool_get_cdkinfo=sitemoneyname&rs_cdkinfo("jinbi")&",经验"&rs_cdkinfo("jingyan")
+		elseif lx="4" then
+			kltool_get_cdkinfo="rmb"&rs_cdkinfo("rmb")
+		elseif lx="5" then
+			kltool_get_cdkinfo=rs_cdkinfo("sff")&"个月VIP"&kltool_get_vip(rs_cdkinfo("sf"),1)
+		elseif lx="6" then
+			kltool_get_cdkinfo=rs_cdkinfo("lg")&"秒积时"
+		elseif lx="7" then
+			kltool_get_cdkinfo="勋章"&kltool_get_xunzhang(rs_cdkinfo("xg"))
+		end if
+	end if
+	rs_cdkinfo.close
+	set rs_cdkinfo=nothing
+end function
+'-----获取cdk类型
+function kltool_get_cdklx(c_lx)
+		lx=clng(c_lx)
+		if lx="1" then
+			kltool_get_cdklx=sitemoneyname
+		elseif lx="2" then
+			kltool_get_cdklx="经验"
+		elseif lx="3" then
+			kltool_get_cdklx=sitemoneyname&"和经验"
+		elseif lx="4" then
+			kltool_get_cdklx="rmb"
+		elseif lx="5" then
+			kltool_get_cdklx="VIP"
+		elseif lx="6" then
+			kltool_get_cdklx="积时"
+		elseif lx="7" then
+			kltool_get_cdklx="勋章"
+		end if
+end function
 %>

@@ -41,9 +41,203 @@
 	});
 	path=location.pathname.toLowerCase().split('/');
 	thispath=path.length>2?path[2]:Null;
-	
-	
-	
+
+//功能-cdk-cdk兑换前校验
+	$("input[name=c_cdkjy]").bind("input propertychange",function(event){
+		if ($(this).val().length==16){
+			$.ajax({
+				url:'?action=cdk&c_cdk='+$(this).val(),
+				type:'get',
+				timeout:'15000',
+				async:false,
+					success:function(data){
+						$('label#c_cdkjy').html(data);
+					}
+			})
+		}else{
+			$('label#c_cdkjy').html("输入cdk");
+		}
+	});
+//功能-cdk-cdk兑换
+	$("#c_cdkdh").click(function(){
+		c_cdk=$("input[name=c_cdkjy]").val();
+		if (!c_cdk) {layer.tips('不能为空', '#c_cdk', {tips: [1, '#0FA6D8']}); return;}
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+				url:'?action=cdkdh&c_cdk='+c_cdk,
+				type:'get',
+				timeout:'15000',
+				async:false,
+					success:function(data){
+						layer.alert(data,{shadeClose:true,title:''});
+					}
+			})
+		});
+	});
+//功能-cdk-cdk赠送
+	$("a#cdk_give").click(function(){
+		$('.btn.btn-primary').show();
+		c_cdk=$(this).attr('c_cdk');
+		$.ajax({
+			url:'?action=cdkzs&c_cdk='+c_cdk,
+			type:'get',
+			timeout:'15000',
+			async:false,
+				success:function(data){
+					$(".modal-title").html("cdk赠送");
+					$(".modal-body").html(data);
+				}
+		})
+		$('.btn.btn-primary').click(function(){
+			c_cdk=$('#c_cdk').val();
+			c_userid=$('#c_userid').val();
+			c_msg=$('#c_msg:checked').val();
+			if (!c_userid) {layer.tips('不能为空', '#c_userid', {tips: [1, '#0FA6D8']}); return;}
+			$.ajax({
+				url:'?action=cdkzsyes',
+				type:'post',
+				data:{
+					c_cdk:c_cdk,
+					c_userid:c_userid,
+					c_msg:c_msg
+					},
+				timeout:'15000',
+				async:false,
+					success:function(data){
+						layer.alert(data,{shadeClose:true,title:''});
+					}
+			});
+			$('#myModal').modal('hide')
+		})
+	});
+//功能-cdk-一键使用
+	$('#Cdk_Fast_Use').click(function(){
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			layer.msg('loading...',{time:1000,anim:6});
+			if ($('a.nouse').length){
+				$('a.nouse').each(function(index){
+					$.get($(this).attr('href'), function (data) {
+					 $('#Cdk_Fast_Use').before('<li class="list-group-item">'+data+'</li>');
+					})
+				})
+			}else{
+				$('#Cdk_Fast_Use').before('<li class="list-group-item">本页没有未使用的cdk</li>');
+			}
+		});
+	});
+//功能-cdk-生产cdk
+	$('input#c_chushou').click(function(){
+		if ($(this).val()==1){$('#c_chushou_div').fadeIn(500);}else{$('#c_chushou_div').fadeOut(500);}
+	});
+	$('input#c_lx').click(function(){
+		if ($(this).val()==3 || $(this).val()==5){$('#c_money2_div').fadeIn(500);}else{$('#c_money2_div').fadeOut(500);}
+	});
+	$("button#Cdk_add").click(function(){
+		c_num=$('#c_num').val();
+		c_lx=$('#c_lx:checked').val();
+		c_money1=$('#c_money1').val();
+		c_money2=$('#c_money2').val();
+		c_uid=$('#c_uid').val();
+		c_msg=$('#c_msg:checked').val();
+		c_zs=$('#c_zs:checked').val();
+		c_chushou=$('#c_chushou:checked').val();
+		c_money3=$('#c_money3').val();
+		c_money4=$('#c_money4').val();
+		if (!c_num) {layer.tips('不能为空', '#c_num', {tips: [1, '#0FA6D8']}); return;}
+		if (!c_lx) {layer.tips('不能为空', '#c_lx', {tips: [1, '#0FA6D8']}); return;}
+		if (!c_money1) {layer.tips('不能为空', '#c_money1', {tips: [1, '#0FA6D8']}); return;}
+		if ((c_lx==3 || c_lx==5) && !c_money2) {layer.tips('不能为空', '#c_money2', {tips: [1, '#0FA6D8']}); return;}
+		if (c_chushou==1 && !c_money3) {layer.tips('不能为空', '#c_money3', {tips: [1, '#0FA6D8']}); return;}
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+			url:'?action=cdkaddyes',
+			type:'post',
+			data:{
+				c_num:c_num,
+				c_lx:c_lx,
+				c_money1:c_money1,
+				c_money2:c_money2,
+				c_uid:c_uid,
+				c_msg:c_msg,
+				c_zs:c_zs,
+				c_chushou:c_chushou,
+				c_money3:c_money3,
+				c_money4:c_money4
+				},
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					layer.alert(data,{shadeClose:true,title:''});
+				}
+			})
+		});
+	});
+//功能-cdk-商城设定
+	$("button#Cdk_shop_Set").click(function(){
+		r_id=$(this).attr('shopsetid');
+		r_yh=$('#r_yh'+r_id).val();
+		r_sl=$('#r_sl'+r_id).val();
+		r_vsl=$('#r_vsl'+r_id).val();
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+			url:'?action=shopsetyes',
+			type:'post',
+			data:{
+				r_id:r_id,
+				r_yh:r_yh,
+				r_sl:r_sl,
+				r_vsl:r_vsl
+				},
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					layer.alert(data,{shadeClose:true,title:''});
+				}
+			})
+		});	
+	});
+//功能-cdk-cdk批量删除
+	$("#Cdk_Del").click(function(){
+		if ($('input#kid:checked').length<1){layer.alert('请至少选择一条',{shadeClose:true,title:''}); return;}
+		var kid=[];
+		$('input#kid:checked').each(function(){
+			kid.push($(this).val());
+		})
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+			url:'?action=cdkdel',
+			type:'get',
+			data:{
+				c_id:kid.join(',')
+				},
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					layer.alert(data,{shadeClose:true,title:''});
+				}
+			})
+		});	
+	});
 //功能-cdk-cdk发放
 	$("a#cdk_send").click(function(){
 		$('.btn.btn-primary').show();
@@ -221,9 +415,9 @@
 			break;
 		}
 		if ($('input#kid:checked').length<1){layer.alert('请至少选择一条',{shadeClose:true,title:''}); return;}
-			kid='';
+		var kid=[];
 		$('input#kid:checked').each(function(){
-			kid=$(this).val()+','+kid
+			kid.push($(this).val());
 		})
 		layer.confirm("确定?", {
 		  btn: ['确定','取消']
@@ -235,7 +429,7 @@
 					type:'post',
 					data:{
 						r_do:r_do,
-						kid:kid,
+						kid:kid.join(','),
 						r_num:r_num,
 						r_class:r_class
 						},
