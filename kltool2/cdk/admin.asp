@@ -1,7 +1,6 @@
 ﻿<!--#include file="../config.asp"-->
 <%
 kltool_admin(1)
-kltool_use(3)
 action=Request.QueryString("action")
 select case action
 	case ""
@@ -35,6 +34,7 @@ select case action
 end select
 
 sub index()
+	kltool_use(3)
 	kltool_sql("cdk")
 	c_uid=Request.QueryString("c_uid")
 	c_lx=Request.QueryString("c_lx")
@@ -70,7 +70,7 @@ sub index()
 	"	<li><a href='?siteid="&siteid&"&c_lx=syn'>未使用</a></li>"&vbcrlf&_
 	"	<li><a href='?siteid="&siteid&"&c_lx=sy'>已使用</a></li>"&vbcrlf&_
 	"	<li><a href='?siteid="&siteid&"&c_lx=repeat'>重复cdk</a></li>"&vbcrlf&_
-	"	<li><a href='?siteid="&siteid&"&c_lx=8'>出售中</a></li>"&vbcrlf&_
+	"	<li><a href='?siteid="&siteid&"&c_lx=shou'>出售中</a></li>"&vbcrlf&_
 	"</ul>"&vbcrlf&_
 	"<ul class=""breadcrumb"">"&vbcrlf&_
 	"	<li><a href='?siteid="&siteid&"&c_lx=1'>金</a></li>"&vbcrlf&_
@@ -247,7 +247,8 @@ sub cdkdel()
 	Response.write "删除cdk成功"
 end sub
 sub cdkadd()
-kltool_sql("cdk")
+	kltool_use(3)
+	kltool_sql("cdk")
 	html=kltool_head("柯林工具箱-生产cdk",1)&_
 	"<div role=""form"">"&vbcrlf&_
 	"<ul class=""breadcrumb"">"&vbcrlf&_
@@ -373,6 +374,7 @@ sub cdkaddyes
 	end if
 end sub
 sub shopset()
+	kltool_use(3)
 	kltool_sql("cdk")
 	html=kltool_head("柯林工具箱-商城设置",1)&_
 	"<ul class=""breadcrumb"">"&vbcrlf&_
@@ -428,6 +430,7 @@ sub shopsetyes()
 	Response.write "修改成功"
 end sub
 sub shoplog()
+	kltool_use(3)
 	kltool_sql("cdk")
 	r_search=Request.QueryString("r_search")
 	html=kltool_head("柯林工具箱-商城日志",1)&_

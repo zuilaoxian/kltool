@@ -1,6 +1,5 @@
 ﻿<!--#include file="../config.asp"-->
 <%
-kltool_use(2)
 kltool_admin(1)
 
 action=Request.QueryString("action")
@@ -26,7 +25,8 @@ select case action
 end select
 
 sub index()
-kltool_sql("svip")
+	kltool_use(2)
+	kltool_sql("svip")
 	html=kltool_head("柯林工具箱-VIP抽奖-vip设定",1)&_
 	"<ul class=""breadcrumb"">"&vbcrlf&_
 	"	<li><a href=""?siteid="&siteid&"&action=log"">查看日志</a></li>"&vbcrlf&_
@@ -88,7 +88,8 @@ kltool_sql("svip")
 end sub
 
 sub prize()
-kltool_sql("svip_prize")
+	kltool_use(2)
+	kltool_sql("svip_prize")
 	html=kltool_head("柯林工具箱-VIP抽奖-奖品设定",1)&_
 	"<ul class=""breadcrumb"">"&vbcrlf&_
 	"	<li><a href=""?siteid="&siteid&"&action=log"">查看日志</a></li>"&vbcrlf&_
@@ -160,7 +161,9 @@ end sub
 
 
 sub log()
-kltool_sql("svip_log")
+	kltool_use(2)
+	kltool_sql("svip_log")
+	r_search=Request.QueryString("r_search")
 	html=kltool_head("柯林工具箱-VIP抽奖-日志",1)&_
 	"<ul class=""breadcrumb"">"&vbcrlf&_
 	"	<li>查看日志</li>"&vbcrlf&_
@@ -178,7 +181,7 @@ kltool_sql("svip_log")
 	"		<div class=""row"">"&vbcrlf&_
 	"			<div class=""col-lg-6"">"&vbcrlf&_
 	"				<div class=""input-group col-xs-8"">"&vbcrlf&_
-	"					<input name=""r_search"" type=""text"" value="""" placeholder=""查询仅限于本站"" class=""form-control"">"&vbcrlf&_
+	"					<input name=""r_search"" type=""text"" value="""" placeholder="""" class=""form-control"">"&vbcrlf&_
 	"					<span class=""input-group-btn"">"&vbcrlf&_
 	"						<button class=""btn btn-default"" type=""submit"">"&vbcrlf&_
 	"						搜索!"&vbcrlf&_

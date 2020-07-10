@@ -1,6 +1,5 @@
 ﻿<!--#include file="../config.asp"-->
 <%
-kltool_use(4)
 kltool_admin(1)
 action=Request.QueryString("action")
 select case action
@@ -16,6 +15,7 @@ select case action
 		call uninstall()
 end select
 sub index()
+	kltool_use(4)
 	kltool_sql("wap2_smallType_log")
 	html=kltool_head("柯林工具箱-Vip自助开通管理后台",1)&_
 	"<ul class=""breadcrumb"">"&vbcrlf&_
@@ -91,6 +91,7 @@ sub yes()
 end sub
 
 sub log()
+	kltool_use(4)
 	kltool_sql("wap2_smallType_log")
 	r_search=Request.QueryString("r_search")
 	Response.Write kltool_code(kltool_head("柯林工具箱-vip开通记录",1))&_
