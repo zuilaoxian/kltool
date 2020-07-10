@@ -114,6 +114,26 @@
 			$('#myModal').modal('hide')
 		})
 	});
+	
+//功能-cdk-一键购买
+	$('#Cdk_Fast_buy').click(function(){
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			layer.msg('loading...',{time:1000,anim:6});
+			if ($('a.cdk_buy').length){
+				$('a.cdk_buy').each(function(index){
+					$.get($(this).attr('href'), function (data) {
+					 $('#Cdk_Fast_buy').before('<li class="list-group-item">'+data+'</li>');
+					})
+				})
+			}else{
+				$('#Cdk_Fast_buy').before('<li class="list-group-item">本页没有可购买的cdk</li>');
+			}
+		});
+	});
 //功能-cdk-一键使用
 	$('#Cdk_Fast_Use').click(function(){
 		layer.confirm("确定?", {
@@ -155,7 +175,7 @@
 		if (!c_lx) {layer.tips('不能为空', '#c_lx', {tips: [1, '#0FA6D8']}); return;}
 		if (!c_money1) {layer.tips('不能为空', '#c_money1', {tips: [1, '#0FA6D8']}); return;}
 		if ((c_lx==3 || c_lx==5) && !c_money2) {layer.tips('不能为空', '#c_money2', {tips: [1, '#0FA6D8']}); return;}
-		if (c_chushou==1 && !c_money3) {layer.tips('不能为空', '#c_money3', {tips: [1, '#0FA6D8']}); return;}
+		if (c_chushou==1 && !c_money3 && !c_money4) {layer.tips('至少填写一项', '#c_money3', {tips: [1, '#0FA6D8']}); return;}
 		layer.confirm("确定?", {
 		  btn: ['确定','取消']
 		  ,shadeClose:true

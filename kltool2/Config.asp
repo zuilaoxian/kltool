@@ -701,6 +701,7 @@ Function kltool_get_usernickname(uid,things)
 		if things=1 then
 			kltool_get_usernickname=user_nickname
 			if uservip_str<>"" then
+				kltool_get_usernickname=""
 				if instr(uservip_str,"#") then
 					uservip_str_Split=Split(uservip_str,"#")
 					uservip_namevip_str=uservip_str_Split(0)

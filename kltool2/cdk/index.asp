@@ -35,11 +35,8 @@ sub index()
 	"</div>"&vbcrlf&_
 	
 	"<ul class=""breadcrumb"">"&vbcrlf&_
-	"	<li>cdk管理</li>"&vbcrlf&_
-	"	<li><a href='?'>我的CDK</a></li>"&vbcrlf&_
-	"	<li><a href='?siteid="&siteid&"&action=shoplog'>CDK商城</a></li>"&vbcrlf&_
-	"	<li><a href='?siteid="&siteid&"&action=cdkadd'>生产cdk</a></li>"&vbcrlf&_
-	"	<li><a href='index.asp?siteid="&siteid&"'>前台</a></li>"&vbcrlf&_
+	"	<li><a href='?siteid="&siteid&"'>->CDK兑换</a></li>"&vbcrlf&_
+	"	<li><a href='shop.asp?siteid="&siteid&"'>CDK商城</a></li>"&vbcrlf&_
 	"</ul>"&vbcrlf&_
 
 	"<li class=""list-group-item"">"&vbcrlf&_

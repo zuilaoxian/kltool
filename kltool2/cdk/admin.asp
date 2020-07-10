@@ -348,8 +348,8 @@ sub cdkaddyes
 		if c_uid<>"" then rs("userid")=c_uid
 		rs("chushou")=c_chushou
 		if c_chushou=1 then
-			rs("jiage")=c_money3
-			rs("jiage2")=c_money4
+			if c_money3<>"" then rs("jiage")=c_money3 else rs("jiage")=0
+			if c_money4<>"" then rs("jiage2")=c_money4 else rs("jiage2")=0
 		end if
 		if c_lx="1" or c_lx="3" then rs("jinbi")=c_money1
 		if c_lx="3" then rs("jingyan")=c_money2
@@ -423,6 +423,7 @@ sub shopsetyes()
 	r_yh=Request.Form("r_yh")
 	r_sl=Request.Form("r_sl")
 	r_vsl=Request.Form("r_vsl")
+	if r_yh="" then r_yh=0
 	conn.Execute("update [cdk_set] set yh="&r_yh&",sl="&r_sl&",vsl="&r_vsl&" where id="&r_id)
 	Response.write "修改成功"
 end sub
