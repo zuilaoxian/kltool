@@ -65,28 +65,28 @@ SourceFile=SourceFile&"\web.config"
 Const ForReading = 1, ForWriting = 2 
 Dim objFSO
 Set objFSO=Server.CreateObject("Scripting.FileSystemObject")
-Dim f, content 
+Dim f, kelin_config
 Set f = objFSO.OpenTextFile(SourceFile, ForReading) 
-content = f.ReadAll()
+kelin_config = f.ReadAll()
 f.Close 
-content=replace(content,chr(34),"")
-content=replace(content,chr(32),"")
+kelin_config=replace(kelin_config,chr(34),"")
+kelin_config=replace(kelin_config,chr(32),"")
 dim s1,o1,KL_Main_DatabaseName,KL_SQL_SERVERIP,KL_SQL_UserName,KL_SQL_PassWord
 
-s1=InStr(content, "KL_DatabaseNamevalue=")
-o1 = InStr(s1, content, "/>")
-KL_Main_DatabaseName = Mid(content, s1 + 21, o1 - s1 - 21)
+s1=InStr(kelin_config, "KL_DatabaseNamevalue=")
+o1 = InStr(s1, kelin_config, "/>")
+KL_Main_DatabaseName = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
 
-s1=InStr(content, "KL_SQL_UserNamevalue=")
-o1 = InStr(s1, content, "/>")
-KL_SQL_UserName = Mid(content, s1 + 21, o1 - s1 - 21)
-s1=InStr(content, "KL_SQL_PassWordvalue=")
-o1 = InStr(s1, content, "/>")
-KL_SQL_PassWord = Mid(content, s1 + 21, o1 - s1 - 21)
+s1=InStr(kelin_config, "KL_SQL_UserNamevalue=")
+o1 = InStr(s1, kelin_config, "/>")
+KL_SQL_UserName = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
+s1=InStr(kelin_config, "KL_SQL_PassWordvalue=")
+o1 = InStr(s1, kelin_config, "/>")
+KL_SQL_PassWord = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
 
-s1=InStr(content, "KL_SQL_SERVERIPvalue=")
-o1 = InStr(s1, content, "/>")
-KL_SQL_SERVERIP = Mid(content, s1 + 21, o1 - s1 - 21)
+s1=InStr(kelin_config, "KL_SQL_SERVERIPvalue=")
+o1 = InStr(s1, kelin_config, "/>")
+KL_SQL_SERVERIP = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
 
 set conn=Server.CreateObject("ADODB.Connection")
 'conn.open "driver={SQL Server};database="&KL_Main_DatabaseName&";Server="&KL_SQL_SERVERIP&";uid="&KL_SQL_UserName&";pwd="&KL_SQL_PassWord 

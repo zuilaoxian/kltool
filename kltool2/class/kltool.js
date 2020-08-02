@@ -41,7 +41,38 @@
 	});
 	path=location.pathname.toLowerCase().split('/');
 	thispath=path.length>2?path[2]:Null;
-
+//功能-工具箱功能设定
+	$("button#tool_set").click(function(){
+		t_id=$(this).attr('t_id');
+		t_name=$('#t_name'+t_id).val();
+		t_title=$('#t_title'+t_id).val();
+		t_content=$('#t_content'+t_id).val();
+		t_t=$('#t_t'+t_id+':checked').val();
+		t_show=$('#t_show'+t_id+':checked').val();
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+			url:'?action=tool_set',
+			type:'post',
+			data:{
+				t_id:t_id,
+				t_name:t_name,
+				t_title:t_title,
+				t_content:t_content,
+				t_t:t_t,
+				t_show:t_show
+				},
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					layer.alert(data,{shadeClose:true,title:''});
+				}
+			})
+		});		
+	});
 //功能-cdk-cdk兑换前校验
 	$("input[name=c_cdkjy]").bind("input propertychange",function(event){
 		if ($(this).val().length==16){
