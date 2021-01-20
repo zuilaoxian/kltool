@@ -141,6 +141,7 @@ response.Write kltool_code(kltool_head("头像剪切上传",1))
           input.value = '';
           image.src = url;
           $alert.hide();
+		  $modal.attr('data-backdrop','static').attr('data-keyboard','false')
           $modal.modal('show');
         };
         var reader;
