@@ -1058,20 +1058,30 @@
 	});
 //备份恢复-备份
 	$("#backup").click(function(){
-		$(this).button('loading');
+		ss1=$(this);
+		ss1.button('loading');
+		layer.msg('努力备份中', {
+		  icon: 16
+		  ,shade: 0.01
+		});
 		$.ajax({
 			url:'?action=backup',
 			type:'get',
 			async:true,
 				success:function(data){
 					layer.msg(data,{time:2000,anim:6});
-					$("#backup").button('reset');
+					ss1.button('reset');
 				}
 		})
-		$('.content').load("? .content")
+		$('.content:eq(0)').load("? .content",function(){
+			deldata();
+			restore();
+		});
+		
 	});
+var deldata = function(){
 //备份恢复-删除备份
-	$("a#deldata").click(function(){
+	$("a#deldata").on('click',function(){
 		tipword=$(this).attr("tiptext");
 		dbname=$(this).attr("dbname")
 		layer.confirm(tipword, {
@@ -1094,8 +1104,12 @@
 			})
 		});	
 	});
+}
+deldata();
+var restore = function(){
 //备份恢复-恢复备份
 	$("a#restore").click(function(){
+		ss=$(this);
 		tipword=$(this).attr("tiptext");
 		dbname=$(this).attr("dbname")
 		layer.confirm(tipword, {
@@ -1103,6 +1117,11 @@
 		  ,shadeClose:true
 		  ,title:''
 		}, function(){
+			ss.button('loading');
+			layer.msg('努力还原中', {
+			  icon: 16
+			  ,shade: 0.01
+			});
 			$.ajax({
 				url:'?action=restore',
 				type:'get',
@@ -1113,11 +1132,68 @@
 					success:function(data){
 						layer.msg(data,{time:2000,anim:6});
 						if (data.indexOf('成功')>=0) $("a[dbname='"+dbname+"']").parent().fadeOut(300).fadeIn(300);
-						
+						ss.button('reset');
+					}
+			})
+			
+		});
+	});
+}
+restore();
+
+//权限管理管理-删除ID
+	$(".DelId2").click(function(){
+		tipword=$(this).attr("tiptext");
+		uid=$(this).attr("id")
+		layer.confirm(tipword, {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+				url:'?action=del',
+				type:'post',
+				data:{
+					uid:uid
+					},
+				timeout:'15000',
+				async:true,
+					success:function(data){
+						layer.msg(data,{time:2000,anim:6});
+						if (data.indexOf('成功')>=0) $("a#"+uid).parent().parent().parent().fadeOut(300).fadeIn(300).fadeOut(500);
 					}
 			})
 		});	
 	});
+
+//权限管理管理-添加ID
+	$("button#maddid").click(function(){
+		uid=$('#r_search').val();
+		if (!uid) {
+			layer.tips('不能为空', '#r_search', {tips: [1, '#0FA6D8']});
+			return;
+		}
+		layer.confirm("添加"+uid, {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+				url:'?action=add',
+				type:'post',
+				data:{
+					uid:uid
+					},
+				timeout:'15000',
+				async:true,
+					success:function(data){
+						layer.msg(data,{time:2000,anim:6});
+						if (data.indexOf('成功')>=0) $("a#"+uid).parent().parent().parent().fadeOut(300).fadeIn(300).fadeOut(500);
+					}
+			})
+		});	
+	});
+	
 //模态框监测，关闭后清除内容，解除事件绑定
 	 $('#myModal').on('hide.bs.modal', function () {
 		$('.btn.btn-primary').off("click");

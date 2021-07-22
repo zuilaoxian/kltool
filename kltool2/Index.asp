@@ -31,7 +31,12 @@ select case action
 end select
 
 sub index()
-	html=kltool_head("柯林工具箱",1)
+	html=kltool_head("柯林工具箱",1)&vbcrlf&_
+	"<div class=""alert alert-danger alert-dismissible"" role=""alert"">"&vbcrlf&_
+	"	<button type=""button"" class=""close"" data-dismiss=""alert"" aria-label=""Close""><span aria-hidden=""true"">×</span></button>"&vbcrlf&_
+	"	<a href=""admin.asp"">工具箱权限管理</a>"&vbcrlf&_
+	"</div>"&vbcrlf
+	
 	str=kltool_GetRow("select * from [kltool] order by kltool_order",1,30)
 	if str(0) then
 		html=html&_
@@ -230,8 +235,20 @@ sub edtool()
 			t=str(2)(5,i)
 			kltool_order=str(2)(4,i)
 			kltool_show=str(2)(6,i)
-			if t=1 then tstr1="checked" else tstr0="checked"
-			if kltool_show then tshow1="checked" else tshow0="checked"
+			if t=1 then
+				tstr1="checked"
+				tstr0=""
+			else
+				tstr1=""
+				tstr0="checked"
+			end if
+			if kltool_show=1 then
+				tshow1="checked"
+				tshow0=""
+			else
+				tshow1=""
+				tshow0="checked"
+			end if
 			html=html&"<li class=""list-group-item"">"&vbcrlf&_
 			"	<div role=""form"" class=""bs-example bs-example-form"">"&vbcrlf&_
 			

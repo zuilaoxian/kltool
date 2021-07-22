@@ -135,6 +135,7 @@ siteid=clng(siteid)
       end if
 	siters.close()
 	set siters=nothing
+	if sessionid<>SidTimeOut then Response.redirect"/waplogin.aspx?siteid="&siteid
 '-----取币名
 set rs=conn.execute("select * from [user] where userid="&siteid)
 	sitemoneyname=rs("sitemoneyname")
@@ -143,15 +144,11 @@ set rs=nothing
 '-----工具箱权限判断
 Function kltool_admin(kltool_admin_str)
 	set adminrs=server.CreateObject("adodb.recordset")
-	adminrs.open "select top 1 userid from [quanxian]",kltool,1,1
+	adminrs.open "select userid from [quanxian] where userid="&userid,kltool,1,1
 		If not adminrs.eof then
-			kltool_admin_userid="|"&adminrs("userid")&"|"
-			kltool_userid="|"&userid&"|"
-			if instr(kltool_admin_userid,kltool_userid) then
-				kltool_admin=true
-			else
-				kltool_admin=False
-			end if
+			kltool_admin=true
+		else
+			kltool_admin=False
 		end if
 	adminrs.close
 	set adminrs=nothing
@@ -639,8 +636,10 @@ Function kltool_get_userheadimg(uid,things)
 		if things=1 then kltool_get_userheadimg=kltool_get_userheadimg&"		<img src="""
 		if instr(ktx,"http")=1 or instr(ktx,"/")=1 then
 			kltool_get_userheadimg=kltool_get_userheadimg&ktx
-		else
+		elseif instr(ktx,"/")<=0 then
 			kltool_get_userheadimg=kltool_get_userheadimg&"/bbs/head/"&ktx
+		else
+			kltool_get_userheadimg=kltool_get_userheadimg&"/"&ktx
 		end if
 		if things=1 then kltool_get_userheadimg=kltool_get_userheadimg&""" class=""media-object"" style=""max-width:100px;max-height:45px;border-radius:45px;"" alt=""头像"">"
 	end if

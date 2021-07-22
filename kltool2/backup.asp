@@ -39,7 +39,7 @@ sub index()
 		   "		"&file.name&"("&int(file.size/1024000)&"M)<br/>"&vbcrlf&_
 		   "		"&file.datelastmodified&vbcrlf&_
 		   "		<a dbname="""&file.name&""" id=""deldata"" name=""deldata"" tiptext=""删除"&file.name&""">删除</a>"&vbcrlf&_
-		   "		<a dbname="""&file.name&""" id=""restore"" name=""restore"" tiptext=""恢复备份"&file.name&""">恢复</a>"&vbcrlf&_
+		   "		<a dbname="""&file.name&""" id=""restore"" name=""restore"" tiptext=""恢复备份"&file.name&""" data-loading-text=""恢复中..."">恢复</a>"&vbcrlf&_
 		   "	</li>"&vbcrlf
 		Next
 		
@@ -93,8 +93,10 @@ sub restore()
 				response.end
 			end if
 			cnn.execute("ALTER DATABASE "&KL_Main_DatabaseName&" SET OFFLINE WITH ROLLBACK IMMEDIATE")
-			cnn.execute("Restore database "&KL_Main_DatabaseName&" from disk='"&Server.MapPath(dbpath)&"' with replace")
+			cnn.execute("Restore database "&KL_Main_DatabaseName&" from disk='"&Server.MapPath(dbpath)&"'")
 			cnn.execute("ALTER database "&KL_Main_DatabaseName&" set online")
+			'修复文件所有者发生变化导致无法访问数据
+			cnn.execute("use "&KL_Main_DatabaseName&"	execute Sp_changedbowner '"&KL_SQL_UserName&"',true")
 			if err<>0 then
 			   response.write "错误："&err.Descripting
 			else

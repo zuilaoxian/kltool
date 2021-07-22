@@ -291,7 +291,8 @@ sub index1()
 			arrytemp=split(fileurl,"|")
 			for i=1 to ubound(arrytemp)
 				if arrytemp(i)<>"" then response.Write "path:"&arrytemp(i)&"<br/>headimg:"&kltool_path&arrytemp(i)
-				conn.execute("update [user] set headimg='"&kltool_path&"headimg/"&arrytemp(i)&"' where siteid="&siteid&" and userid="&userid)
+				h_path=Mid(kltool_path,2,len(kltool_path))
+				conn.execute("update [user] set headimg='"&h_path&"headimg/"&arrytemp(i)&"' where siteid="&siteid&" and userid="&userid)
 			next
 	end if
 	sleep(1)
