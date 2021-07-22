@@ -1056,6 +1056,68 @@
 			$('#myModal').modal('hide')
 		})
 	});
+//备份恢复-备份
+	$("#backup").click(function(){
+		$(this).button('loading');
+		$.ajax({
+			url:'?action=backup',
+			type:'get',
+			async:true,
+				success:function(data){
+					layer.msg(data,{time:2000,anim:6});
+					$("#backup").button('reset');
+				}
+		})
+		$('.content').load("? .content")
+	});
+//备份恢复-删除备份
+	$("a#deldata").click(function(){
+		tipword=$(this).attr("tiptext");
+		dbname=$(this).attr("dbname")
+		layer.confirm(tipword, {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+				url:'?action=deldata',
+				type:'get',
+				data:{
+					dbname:dbname
+					},
+				async:true,
+					success:function(data){
+						layer.msg(data,{time:2000,anim:6});
+						if (data.indexOf('成功')>=0) $("a[dbname='"+dbname+"']").parent().fadeOut(300).fadeIn(300).fadeOut(500);
+						
+					}
+			})
+		});	
+	});
+//备份恢复-恢复备份
+	$("a#restore").click(function(){
+		tipword=$(this).attr("tiptext");
+		dbname=$(this).attr("dbname")
+		layer.confirm(tipword, {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			$.ajax({
+				url:'?action=restore',
+				type:'get',
+				data:{
+					dbname:dbname
+					},
+				async:true,
+					success:function(data){
+						layer.msg(data,{time:2000,anim:6});
+						if (data.indexOf('成功')>=0) $("a[dbname='"+dbname+"']").parent().fadeOut(300).fadeIn(300);
+						
+					}
+			})
+		});	
+	});
 //模态框监测，关闭后清除内容，解除事件绑定
 	 $('#myModal').on('hide.bs.modal', function () {
 		$('.btn.btn-primary').off("click");

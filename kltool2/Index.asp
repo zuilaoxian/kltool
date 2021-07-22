@@ -64,19 +64,19 @@ sub index()
 		Next
 	end if
 		html=html&"</div>"&vbcrlf&_
-		"<div class=""alert alert-danger alert-dismissible"" role=""alert"" id=""linkhide"" style=""display:none;"">"&vbcrlf&_
+		"<div class=""alert alert-danger alert-dismissible"" role=""alert"" id=""linkhide2"" style=""display:none;"">"&vbcrlf&_
 		"	<button type=""button"" class=""close"" data-dismiss=""alert"" aria-label=""Close""><span aria-hidden=""true"">×</span></button>"&vbcrlf&_
 		"	<a href=""?action=edtool"">功能编辑</a>"&vbcrlf&_
 		"</div>"&vbcrlf&_
 		
 		"<div class=""alert alert-danger alert-dismissible"" role=""alert"" id=""linkhide"" style=""display:none;"">"&vbcrlf&_
 		"	<button type=""button"" class=""close"" data-dismiss=""alert"" aria-label=""Close""><span aria-hidden=""true"">×</span></button>"&vbcrlf&_
-		"	排序完成请按Esc"&vbcrlf&_
+		"	点击完成排序"&vbcrlf&_
 		"</div>"&vbcrlf&_
 		
-		"<div class=""alert alert-danger alert-dismissible"" role=""alert"">"&vbcrlf&_
+		"<div id=""linkshow"" class=""alert alert-danger alert-dismissible"" role=""alert"">"&vbcrlf&_
 		"	<button type=""button"" class=""close"" data-dismiss=""alert"" aria-label=""Close""><span aria-hidden=""true"">×</span></button>"&vbcrlf&_
-		"	按Enter开启神秘功能"&vbcrlf&_
+		"	点击进入排序和功能编辑"&vbcrlf&_
 		"</div>"&vbcrlf&_
 		
 		"<script>"&vbcrlf&_
@@ -102,13 +102,12 @@ sub index()
 		"		})"&vbcrlf&_
 		"	});"&vbcrlf&_
 		
-		"	$(document).keyup(function(event){"&vbcrlf&_
-		"		keycode=event.which;"&vbcrlf&_
-		"		if(keycode==13){"&vbcrlf&_
-		"			$('input#kltool_order,#linkhide,div.panel').show();"&vbcrlf&_
-		"		} "&vbcrlf&_
-		"		if(keycode == 27){"&vbcrlf&_
-		"			$('input#kltool_order').hide();"&vbcrlf&_
+		"	$('#linkshow').click(function(){"&vbcrlf&_
+		"		$(this).hide();"&vbcrlf&_
+		"		$('input#kltool_order,#linkhide,#linkhide2,div.panel').show();"&vbcrlf&_
+		" 	});"&vbcrlf&_
+		"	$('#linkhide').click(function(){"&vbcrlf&_
+		"			$('input#kltool_order,#linkhide2').hide();"&vbcrlf&_
 		"			$('input#kltool_order').each(function(){"&vbcrlf&_
 		"				orderid=$(this).val();"&vbcrlf&_
 		"				id=$(this).attr('kid');"&vbcrlf&_
@@ -122,7 +121,7 @@ sub index()
 		"					}"&vbcrlf&_
 		"				})"&vbcrlf&_
 		"			})"&vbcrlf&_
-		"		}"&vbcrlf&_
+
 		" 	});"&vbcrlf&_
 		
 		"});"&vbcrlf&_

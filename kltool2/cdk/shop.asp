@@ -78,22 +78,6 @@ sub index()
 	if c_lx="" then c_lx=1
 	
 	html=kltool_head("CDK兑换系统-商城",1)&_
-	"<!-- 模态框（Modal） -->"&vbcrlf&_
-	"<div class=""modal fade"" id=""myModal"" tabindex=""-1"" role=""dialog"" aria-labelledby=""myModalLabel"" aria-hidden=""true"">"&vbcrlf&_
-	"	<div class=""modal-dialog"">"&vbcrlf&_
-	"		<div class=""modal-content"">"&vbcrlf&_
-	"			<div class=""modal-header"">"&vbcrlf&_
-	"				<button type=""button"" class=""close"" data-dismiss=""modal"" aria-hidden=""true"">&times;</button>"&vbcrlf&_
-	"				<h4 class=""modal-title"" id=""myModalLabel"">模态框（Modal）标题</h4>"&vbcrlf&_
-	"			</div>"&vbcrlf&_
-	"			<div class=""modal-body"">在这里添加一些文本</div>"&vbcrlf&_
-	"			<div class=""modal-footer"">"&vbcrlf&_
-	"				<button type=""button"" class=""btn btn-default"" data-dismiss=""modal"">关闭</button>"&vbcrlf&_
-	"				<button type=""button"" class=""btn btn-primary"" style=""display:none;"">提交更改</button>"&vbcrlf&_
-	"			</div>"&vbcrlf&_
-	"		</div><!-- /.modal-content -->"&vbcrlf&_
-	"	</div><!-- /.modal -->"&vbcrlf&_
-	"</div>"&vbcrlf&_
 	
 	"<ul class=""breadcrumb"">"&vbcrlf&_
 	"	<li><a href='index.asp'>CDK兑换</a></li>"&vbcrlf&_
