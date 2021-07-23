@@ -1,5 +1,6 @@
 ﻿<!--#include file="config.asp"-->
 <%
+kltool_use(20)
 kltool_admin(1)
 action=Request.QueryString("action")
 filename=year(now)&Right("0"&month(now),2)&Right("0"&day(now),2)&Right("0"&hour(now),2)&Right("0"&minute(now),2)&Right("0"&second(now),2)&".bak"

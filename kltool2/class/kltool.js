@@ -1193,7 +1193,40 @@ restore();
 			})
 		});	
 	});
-	
+//功能-会员ID转移
+	$("#M-Id").click(function(){
+		ss=$(this);
+		r_id1=$('#uid1').val();
+		r_id2=$('#uid2').val();
+		if (!r_id1) {
+			layer.tips('不能为空', '#uid1', {tips: [1, '#0FA6D8']});
+			return;
+		}
+		if (!r_id2) {
+			layer.tips('不能为空', '#uid2', {tips: [1, '#0FA6D8']});
+			return;
+		}
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			ss.button('loading');
+			$.ajax({
+			url:'?action=moveid',
+			type:'post',
+			data:{
+				uid1:r_id1,
+				uid2:r_id2
+				},
+			async:true,
+				success:function(data){
+					ss.button('reset');
+					layer.alert(data,{shadeClose:true,title:''});
+				}
+			})
+		});	
+	});
 //模态框监测，关闭后清除内容，解除事件绑定
 	 $('#myModal').on('hide.bs.modal', function () {
 		$('.btn.btn-primary').off("click");

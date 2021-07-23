@@ -63,10 +63,8 @@ sub index()
 		
 	rs.movenext
 		Next
-	Response.write"</table>"
-	
 	else
-	   Response.write "<div class=tip>暂时没有记录！</div>"
+	   html=html&"暂时没有记录！"
 	end if
 	rs.close
 	set rs=nothing

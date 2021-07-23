@@ -68,7 +68,7 @@ response.Write kltool_code(kltool_head("头像剪切上传",1))
 </head>
 <body>
   <div class="list-group-item">
-	使用本插件后不可更改工具箱目录，否则图片无法显示
+	<%if kltool_admin(0) then response.write "使用本插件后不可更改工具箱目录，否则图片无法显示"%>
     <h3>点击当前的头像 选择图片进行裁剪</h3>
     <label class="label" data-toggle="tooltip" title2="Change your avatar">
       <img class="rounded" id="avatar" src="<%=kltool_get_userheadimg(userid,0)%>" alt="avatar">

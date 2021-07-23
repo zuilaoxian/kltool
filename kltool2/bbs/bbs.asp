@@ -77,7 +77,7 @@ sub index()
 	html=kltool_head("柯林工具箱-帖子管理",1)&_
 	"<ul class=""breadcrumb"">"&vbcrlf&_
 	"	<li>帖子管理</li>"&vbcrlf&_
-	"	<li><a href=""/kltool2/bbs/Bbs.Asp?action=bbsreword"">回复语设置</a></li>"&vbcrlf&_
+	"	<li><a href=""?action=bbsreword"">回复语设置</a></li>"&vbcrlf&_
 	"	<li><a id=""bbsreplace"" data-toggle=""modal"" data-target=""#myModal"">关键词替换</a></li>"&vbcrlf&_
 	"</ul>"&vbcrlf&_
 	

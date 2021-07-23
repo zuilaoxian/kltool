@@ -201,7 +201,14 @@ end function
 function kltool_alert(kltool_alert_str)
 	kltool_alert=vbcrlf&kltool_alert&"<script>"&vbcrlf&_
 	"$(function(){"&vbcrlf&_
-	"	layer.alert('"&kltool_alert_str&"',{shadeClose:true,title:''});"&vbcrlf&_
+	"	layer.confirm('"&kltool_alert_str&"', {"&vbcrlf&_
+	"	  btn: ['知道了','返回'] ,"&vbcrlf&_
+	"	  shadeClose:true,title:''"&vbcrlf&_
+	"	}, function(){"&vbcrlf&_
+	"	  layer.closeAll()"&vbcrlf&_
+	"	}, function(){"&vbcrlf&_
+	"	  history.go(-1)"&vbcrlf&_
+	"	});"&vbcrlf&_
 	"});"&vbcrlf&_
 	"</script>"&vbcrlf
 End function
