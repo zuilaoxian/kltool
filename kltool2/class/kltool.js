@@ -1115,12 +1115,20 @@ var restore = function(){
 		layer.confirm(tipword, {
 		  btn: ['确定','取消']
 		  ,shadeClose:true
-		  ,title:''
+		  ,title:'恢复备份文件'
 		}, function(){
 			ss.button('loading');
+			/*
 			layer.msg('努力还原中', {
 			  icon: 16
-			  ,shade: 0.01
+			  ,shade: 0.05
+			  ,time:60000 //60秒后关闭
+			});
+			*/
+			layer.alert('努力还原中，请稍后', {
+			  icon: 16
+			  ,shade: 0.1
+			  ,title:'还原数据文件'
 			});
 			$.ajax({
 				url:'?action=restore',
@@ -1130,7 +1138,12 @@ var restore = function(){
 					},
 				async:true,
 					success:function(data){
-						layer.msg(data,{time:2000,anim:6});
+						//layer.msg(data,{time:2000,anim:6});
+						layer.alert('还原数据成功', {
+						  icon: 1
+						  ,shade: 0.1
+						  ,title:'还原数据文件'
+						});
 						if (data.indexOf('成功')>=0) $("a[dbname='"+dbname+"']").parent().fadeOut(300).fadeIn(300);
 						ss.button('reset');
 					}

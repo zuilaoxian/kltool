@@ -40,7 +40,9 @@ end sub
 sub moveid()
 	uid1=Request.Form("uid1")
 	uid2=Request.Form("uid2")
+	
 	On Error Resume Next
+	
 	if uid1="" or uid2="" or not Isnumeric(uid1) or not Isnumeric(uid2) or uid1=uid2 or clng(uid1)=clng(siteid) or clng(uid2)=clng(siteid) then 
 		Response.write "错误的转移id,无法操作"
 		Response.end
@@ -66,7 +68,7 @@ sub moveid()
 	conn.execute("update [user] set [user].[siteid]=d.[siteid],[user].[nickname]=d.[nickname],[user].[password]=d.[password],[user].[managerlvl]=d.[managerlvl],[user].[sex]=d.[sex],[user].[age]=d.[age],[user].[shenggao]=d.[shenggao],[user].[tizhong]=d.[tizhong],[user].[xingzuo]=d.[xingzuo],[user].[aihao]=d.[aihao],[user].[fenfuo]=d.[fenfuo],[user].[zhiye]=d.[zhiye],[user].[city]=d.[city],[user].[mobile]=d.[mobile],[user].[email]=d.[email],[user].[money]=d.[money],[user].[moneyname]=d.[moneyname],[user].[moneyregular]=d.[moneyregular],[user].[RegTime]=d.[RegTime],[user].[LastLoginIP]=d.[LastLoginIP],[user].[LastLoginTime]=d.[LastLoginTime],[user].[LoginTimes]=d.[LoginTimes],[user].[LockUser]=d.[LockUser],[user].[headimg]=d.[headimg],[user].[remark]=d.[remark],[user].[sitename]=d.[sitename],[user].[siteimg]=d.[siteimg],[user].[siteuptip]=d.[siteuptip],[user].[sitedowntip]=d.[sitedowntip],[user].[siteposition]=d.[siteposition],[user].[siterowremark]=d.[siterowremark],[user].[sitelistflag]=d.[sitelistflag],[user].[sitelist]=d.[sitelist],[user].[sitetype]=d.[sitetype],[user].[MaxPerPage_Default]=d.[MaxPerPage_Default],[user].[MaxPerPage_Content]=d.[MaxPerPage_Content],[user].[MaxFileSize]=d.[MaxFileSize],[user].[SaveUpFilesPath]=d.[SaveUpFilesPath],[user].[UpFileType]=d.[UpFileType],[user].[CharFilter]=d.[CharFilter],[user].[UAFilter]=d.[UAFilter],[user].[SessionTimeout]=d.[SessionTimeout],[user].[MailServer]=d.[MailServer],[user].[MailServerUserName]=d.[MailServerUserName],[user].[MailServerPassWord]=d.[MailServerPassWord],[user].[sitemoneyname]=d.[sitemoneyname],[user].[sitespace]=d.[sitespace],[user].[myspace]=d.[myspace],[user].[siteRight]=d.[siteRight],[user].[SidTimeOut]=d.[SidTimeOut],[user].[lvlNumer]=d.[lvlNumer],[user].[lvlTimeImg]=d.[lvlTimeImg],[user].[lvlRegular]=d.[lvlRegular],[user].[myBankMoney]=d.[myBankMoney],[user].[myBankTime]=d.[myBankTime],[user].[chuiNiu]=d.[chuiNiu],[user].[expR]=d.[expR],[user].[endTime]=d.[endTime],[user].[version]=d.[version],[user].[RMB]=d.[RMB],[user].[siteVIP]=d.[siteVIP],[user].[ZoneCount]=d.[ZoneCount],[user].[HangBiaoShi]=d.[HangBiaoShi],[user].[isCheck]=d.[isCheck],[user].[bbsCount]=d.[bbsCount],[user].[bbsReCount]=d.[bbsReCount],[user].[actionTime]=d.[actionTime],[user].[actionState]=d.[actionState],[user].[TJCount]=d.[TJCount] from [user] left join [user] d on d.[userid] = "&uid1&" where [user].[userid] = "&uid2&"")
 
 	'因为username登录名不可重复，单独修改
-	'修改源ID用户名为：用户名02
+	'修改源ID用户名为：用户名a02
 	conn.execute("update [user] set username='"&rs("username")&"a02' where siteid="&siteid&" and userid="&uid1)
 	'修改目标ID用户名为源用户名
 	conn.execute("update [user] set username='"&rs("username")&"' where siteid="&siteid&" and userid="&uid2)
@@ -100,15 +102,21 @@ sub moveid()
 	'广播
 	conn.execute("update [wap_guangbo] set userid="&uid2&",nickname='"&rs("nickname")&"' where userid="&uid1)
 	'留言
-	conn.execute("update [wap_guessbook] set book_pub="&uid2&",book_author='"&rs("nickname")&"',MakerID="&uid2&" where book_pub="&uid1)
+	conn.execute("update [wap_guessbook] set book_pub='"&uid2&"',book_author='"&rs("nickname")&"',MakerID="&uid2&" where convert(nvarchar(255),book_pub)="&uid1)
 	conn.execute("update [wap_guessbookre] set userid="&uid2&",nickname='"&rs("nickname")&"' where userid="&uid1)
 	'下载栏目回复
 	conn.execute("update [wap_downloadre] set userid="&uid2&",nickname='"&rs("nickname")&"' where userid="&uid1)
 	'图片
 	conn.execute("update [wap_picture] set MakerID="&uid2&",book_author='"&rs("nickname")&"' where MakerID="&uid1)
 	conn.execute("update [wap_picturere] set userid="&uid2&",nickname='"&rs("nickname")&"' where userid="&uid1)
+	
 	rs.close
 	set rs=nothing
-	response.write "转移成功："&uid1&"->"&uid2
+	
+	if err<>0 then
+	   response.write "出现错误"
+	else
+		response.write "转移成功："&uid1&"->"&uid2
+	end if
 end sub
 %>

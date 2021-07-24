@@ -20,7 +20,7 @@ select case action
 end select
 
 sub index()
-	html=kltool_head("数据库备份",1)&vbcrlf&_
+	html=kltool_head("数据库备份与恢复",1)&vbcrlf&_
 	"<div role=""form"">"&vbcrlf&_
 	"	1.过大的数据库备份有可能超时<br/>"&vbcrlf&_
 	"	2.建议在访问量少的时候操作<br/>"&vbcrlf&_
@@ -37,7 +37,7 @@ sub index()
 		Set fsofile = fileobj.Files
 		For Each file in fsofile
 		   html=html&"	<li class=""list-group-item"">"&vbcrlf&_
-		   "		"&file.name&"("&int(file.size/1024000)&"M)<br/>"&vbcrlf&_
+		   "		<big><strong>"&file.name&"</strong></big>("&int(file.size/1024000)&"M)<br/>"&vbcrlf&_
 		   "		"&file.datelastmodified&vbcrlf&_
 		   "		<a dbname="""&file.name&""" id=""deldata"" name=""deldata"" tiptext=""删除"&file.name&""">删除</a>"&vbcrlf&_
 		   "		<a dbname="""&file.name&""" id=""restore"" name=""restore"" tiptext=""恢复备份"&file.name&""" data-loading-text=""恢复中..."">恢复</a>"&vbcrlf&_
@@ -64,7 +64,7 @@ sub backup()
 			SQL="backup database "&KL_Main_DatabaseName&" to disk='"&Server.MapPath(dbpath)&"'"
 			conn.execute(SQL)
 			if err<>0 then
-			   response.write "错误："&err.Descripting
+			   response.write "错误,数据备份失败"
 			else
 			   response.write "数据备份成功！"
 			end if
@@ -99,7 +99,7 @@ sub restore()
 			'修复文件所有者发生变化导致无法访问数据
 			cnn.execute("use "&KL_Main_DatabaseName&"	execute Sp_changedbowner '"&KL_SQL_UserName&"',true")
 			if err<>0 then
-			   response.write "错误："&err.Descripting
+			   response.write "错误,数据恢复失败"
 			else
 			   response.write "数据恢复成功！"
 			end if
@@ -121,7 +121,7 @@ sub deldata()
 	On Error Resume Next
 		fso.DeleteFile(Server.mappath(dbpath))
 		if err<>0 then
-		   response.write "错误："&err.Descripting
+		   response.write "错误,备份删除失败"
 		else
 		   response.write "备份删除成功！"
 		end if
