@@ -223,7 +223,7 @@ function kltool_head(head_str1,head_str2)
 	"<script src=""[kltool_path]class/jquery.min.1.12.3.js""></script>"&vbcrlf&_
 	"<script src=""[kltool_path]class/bootstrap-3.4.1/js/bootstrap.min.js""></script>"&vbcrlf&_
 	"<script src=""[kltool_path]class/layer-v3.1.1/layer.js"" type=""text/javascript""></script>"&vbcrlf&_
-	"<script src=""[kltool_path]class/kltool.js"" type=""text/javascript""></script>"&vbcrlf&_
+	"<script src=""[kltool_path]class/kltool.js?v="&Getname()&""" type=""text/javascript""></script>"&vbcrlf&_
 	"<title>"& head_str1 &"</title>"&vbcrlf&_
 	"</head>"&vbcrlf&_
 	"<body>"&vbcrlf

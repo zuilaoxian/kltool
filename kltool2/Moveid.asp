@@ -16,7 +16,7 @@ Response.write kltool_code(kltool_head("柯林工具箱-会员ID转移","1"))
 
 %>
 <div class="well well-sm">源ID保留，源用户名改为：用户名a02</div>
-<div class="well well-sm">源ID丢失内信、好友、收藏、空间背景、空间留言、帖子、回帖、相册</div>
+<div class="well well-sm">源ID丢失内信、好友、收藏、空间背景、空间留言、帖子、回帖、相册、朋友圈、日志、各种回复等等</div>
 <div class="form-group">
 	<label for="name">源ID</label>
 	<input type="text" class="form-control" id="uid1" placeholder="">
@@ -70,11 +70,11 @@ sub moveid()
 	conn.execute("update [user] set username='"&rs("username")&"a02' where siteid="&siteid&" and userid="&uid1)
 	'修改目标ID用户名为源用户名
 	conn.execute("update [user] set username='"&rs("username")&"' where siteid="&siteid&" and userid="&uid2)
-	'修改帖子归属为目标ID
+	'帖子
 	conn.execute("update [wap_bbs] set whylock=null,book_pub="&uid2&",book_author='"&rs("nickname")&"' where book_pub="&uid1)
-	'修改回帖
+	'回帖
 	conn.execute("update [wap_bbsre] set nickname='"&rs("nickname")&"',userid="&uid2&" where userid="&uid1)
-	'修改内信
+	'内信
 	conn.execute("update [wap_message] set nickname='"&rs("nickname")&"',userid="&uid2&" where userid="&uid1)
 	'好友
 	conn.execute("update [wap_friends] set userid="&uid2&" where userid="&uid1)
@@ -89,9 +89,24 @@ sub moveid()
 	'相册分类
 	conn.execute("update [wap_albumSubject] set userid="&uid2&" where userid="&uid1)
 	'相册照片
-	conn.execute("update [wap_album] set userid="&uid2&",book_author='"&rs("nickname")&"',MakerID="&uid2&" where userid="&uid1)
+	conn.execute("update [wap_album] set book_author='"&rs("nickname")&"',MakerID="&uid2&" where MakerID="&uid1)
 	'相册照片评论
 	conn.execute("update [wap_albumre] set userid="&uid2&",nickname='"&rs("nickname")&"' where userid="&uid1)
+	'朋友圈/日志
+	conn.execute("update [wap_rizhi] set makerid="&uid2&" where makerid="&uid1)
+	conn.execute("update [wap_rizhire] set userid="&uid2&",nickname='"&rs("nickname")&"' where userid="&uid1)
+	'动态
+	conn.execute("update [wap_log] set oper_userid="&uid2&",oper_nickname='"&rs("nickname")&"' where oper_userid="&uid1)
+	'广播
+	conn.execute("update [wap_guangbo] set userid="&uid2&",nickname='"&rs("nickname")&"' where userid="&uid1)
+	'留言
+	conn.execute("update [wap_guessbook] set book_pub="&uid2&",book_author='"&rs("nickname")&"',MakerID="&uid2&" where book_pub="&uid1)
+	conn.execute("update [wap_guessbookre] set userid="&uid2&",nickname='"&rs("nickname")&"' where userid="&uid1)
+	'下载栏目回复
+	conn.execute("update [wap_downloadre] set userid="&uid2&",nickname='"&rs("nickname")&"' where userid="&uid1)
+	'图片
+	conn.execute("update [wap_picture] set MakerID="&uid2&",book_author='"&rs("nickname")&"' where MakerID="&uid1)
+	conn.execute("update [wap_picturere] set userid="&uid2&",nickname='"&rs("nickname")&"' where userid="&uid1)
 	rs.close
 	set rs=nothing
 	response.write "转移成功："&uid1&"->"&uid2
