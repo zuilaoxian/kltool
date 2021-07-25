@@ -394,7 +394,7 @@ sub bbsdo()
 		Response.Write"请至少选择一条记录"
 		Response.End()
 	end if
-	kid=replace(kid&",",",,","")
+	'kid=replace(kid&",",",,","")
 	select case r_do
 		case "1","2","3","4","11"
 			if r_do="1" then

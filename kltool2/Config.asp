@@ -290,7 +290,7 @@ Function kltool_end(kltool_end_str1)
 	kltool_end=""
 	if kltool_end_str1=1 then
 		kltool_end=kltool_end&vbcrlf&_
-		"<div class=""well well-sm""><span id=""times"" class=""glyphicon glyphicon-time""><span></div>"
+		"<div class=""well well-sm""><span id=""times"" class=""glyphicon glyphicon-time""> "&year(now)&"-"&Right("0"&month(now),2)&"-"&Right("0"&day(now),2)&" "&time()&" "&weekdayname(weekday(now))&"<span></div>"
 	end if
 	kltool_end=kltool_end&vbcrlf&"</div>"&_
 	vbcrlf&"</body>"&_
@@ -323,7 +323,7 @@ function kltool_code(strContent)
 	strContent=replace(strContent,"[siteid]",siteid)
 	strContent=replace(strContent,"[userid]",userid)
 	strContent=replace(strContent,"///","<br/>")
-	strContent=replace(strContent,"//","　")
+	'strContent=replace(strContent,"//","　")
 	kltool_code=strContent
 end function
 '上一页 下一页 跳转

@@ -98,7 +98,6 @@ sub cdkdh()
 	c_chushou=rs("chushou")
 	rs.close
 	set rs=nothing
-	
 	if c_uid<>"" then
 		if clng(c_uid)<>userid then
 			Response.Write"不属于你，不可以兑换"
@@ -171,6 +170,9 @@ sub cdkdh()
 	
 	conn.Execute("update [cdk] set sy=2,userid="&userid&",usetime='"&now()&"' Where cdk='"&c_cdk&"'")
 	if c_lx="1" or c_lx="2" or c_lx="3" then
+		if c_jinbi<>"" then c_jinbi=clng(c_jinbi) else c_jinbi=0
+		if c_jingyan<>"" then c_jingyan=clng(c_jingyan) else c_jingyan=0
+		money=money+c_jinbi
 		conn.execute"insert into [wap_bankLog](siteid,userid,actionName,money,leftMoney,opera_userid,opera_nickname,remark,ip,addtime)values("&siteid&","&userid&",'CDK兑换',"&c_jinbi&","&money&","&userid&",'"&nickname&"','CDK使用:"&c_cdk&"','"&Request.ServerVariables("REMOTE_ADDR")&"','"&now&"')"
 	End if
 end sub
