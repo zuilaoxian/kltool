@@ -218,7 +218,7 @@ end sub
 sub bbsreword()
 	html=kltool_head("柯林工具箱-回复语管理",1)&_
 	"<ul class=""breadcrumb"">"&vbcrlf&_
-	"	<li><a href=""/kltool2/bbs/Bbs.Asp"">帖子管理</a></li>"&vbcrlf&_
+	"	<li><a href=""?"">帖子管理</a></li>"&vbcrlf&_
 	"	<li>回复语设置</li>"&vbcrlf&_
 	"</ul>"&vbcrlf&_
 	"<li class=""list-group-item"">"&vbcrlf&_

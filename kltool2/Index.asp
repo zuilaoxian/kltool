@@ -60,7 +60,9 @@ sub index()
 			"	</span>"&vbcrlf&_
 			"</div>"&vbcrlf&_
 			"<div class=""panel-body"">"&vbcrlf&_
-			"	<input name=""kltool_order"" id=""kltool_order"" kid="""&id&""" type=""text"" value="""&kltool_order&""" size=""1"" style=""display:none;"">"&vbcrlf&_
+			"	<span style=""display:none;"" id=""kltool_order"">ID:"&id&vbcrlf&_
+			"	<input name=""kltool_order"" id=""kltool_order"" kid="""&id&""" type=""text"" value="""&kltool_order&""" size=""1"">"&vbcrlf&_
+			"</span>"&vbcrlf&_
 			"	"&title&"<span class=""badge"" id="""&id&""">"&tstr&"</span></div>"&vbcrlf&_
 			"	<div id=""collapse"&id&""" class=""list-group panel-collapse collapse"">"&vbcrlf&_
 			"	"&content&vbcrlf&_
@@ -109,10 +111,11 @@ sub index()
 		
 		"	$('#linkshow').click(function(){"&vbcrlf&_
 		"		$(this).hide();"&vbcrlf&_
-		"		$('input#kltool_order,#linkhide,#linkhide2,div.panel').show();"&vbcrlf&_
+		"		$('span#kltool_order,#linkhide,#linkhide2,div.panel').show();"&vbcrlf&_
 		" 	});"&vbcrlf&_
 		"	$('#linkhide').click(function(){"&vbcrlf&_
-		"			$('input#kltool_order,#linkhide2').hide();"&vbcrlf&_
+		"			$('span#kltool_order,#linkhide,#linkhide2').hide();"&vbcrlf&_
+		"			$('#linkshow').show();"&vbcrlf&_
 		"			$('input#kltool_order').each(function(){"&vbcrlf&_
 		"				orderid=$(this).val();"&vbcrlf&_
 		"				id=$(this).attr('kid');"&vbcrlf&_
@@ -220,6 +223,8 @@ sub edtool()
 			"		<button name=""kltool"" t_id=""0"" type=""button"" class=""btn btn-default btn-block"" id=""tool_set"" data-loading-text=""Loading..."">添加</button>"&vbcrlf&_
 			"	</div>"&vbcrlf&_
 			"</li>"&vbcrlf
+	Response.write kltool_code(html)
+	html=""
 	str=kltool_GetRow("select * from [kltool] order by kltool_order",1,30)
 	if str(0) then
 		count=str(0)
@@ -307,7 +312,7 @@ sub edtool()
 	else
 		html=html&"<div class=""alert alert-danger"">暂时没有记录</div>"
 	end if
-	Response.write kltool_code(html&kltool_end(1))
+	Response.write html&kltool_code(kltool_end(1))
 end sub
 
 sub tool_set()
