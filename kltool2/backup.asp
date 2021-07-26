@@ -32,6 +32,11 @@ sub index()
 	If not fso.folderExists(server.mappath(filepath)) Then
 		html=html&"<div class='list-group-item'>文件夹"&filepath&"不存在，首次备份将自动创建</div>"&vbcrlf
 	else
+		html=html&"	<div class=""checkbox list-group-item"">"&vbcrlf&_
+		"<label>"&vbcrlf&_
+		"  <input type=""checkbox"" class=""fixow"" id=""fixow"" checked>尝试修复ow权限(非本机备份请勾选)"&vbcrlf&_
+		"</label>"&vbcrlf&_
+		"</div>"&vbcrlf
 		Set fileobj = fso.GetFolder(server.mappath(filepath))
 		Set fsofolders = fileobj.SubFolders
 		Set fsofile = fileobj.Files
@@ -77,6 +82,7 @@ end sub
 
 sub restore()
 	dbname=Request.QueryString("dbname")
+	fixow=Request.QueryString("fixow")
 	dbpath=filepath&dbname
 	if dbname="" then
 		response.write "错误的备份文件"
@@ -97,7 +103,7 @@ sub restore()
 			cnn.execute("Restore database "&KL_Main_DatabaseName&" from disk='"&Server.MapPath(dbpath)&"'")
 			cnn.execute("ALTER database "&KL_Main_DatabaseName&" set online")
 			'修复文件所有者发生变化导致无法访问数据
-			cnn.execute("use "&KL_Main_DatabaseName&"	execute Sp_changedbowner '"&KL_SQL_UserName&"',true")
+			if fixow=1 then cnn.execute("use "&KL_Main_DatabaseName&"	execute Sp_changedbowner '"&KL_SQL_UserName&"',true")
 			if err<>0 then
 			   response.write "错误,数据恢复失败"
 			else

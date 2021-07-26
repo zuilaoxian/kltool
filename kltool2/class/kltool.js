@@ -1,4 +1,4 @@
-﻿$(function() {
+$(function() {
 //通用提醒
 	$("a#tips").on('click',function(){
 		event.preventDefault();
@@ -475,6 +475,11 @@
 		  ,shadeClose:true
 		  ,title:''
 		}, function(){
+			layer.msg('操作执行中', {
+			  icon: 16
+			  ,shade: 0.1
+			  ,time:3600000
+			});
 			$.ajax({
 					url:'?action=bbsdo',
 					type:'post',
@@ -484,10 +489,9 @@
 						r_num:r_num,
 						r_class:r_class
 						},
-					timeout:'15000',
-					async:false,
+					async:true,
 						success:function(data){
-							layer.alert(data,{shadeClose:true,title:''});
+							layer.alert(data,{shadeClose:true,title:'操作结果'});
 						}
 			});
 		});
@@ -1062,7 +1066,8 @@
 		ss1.button('loading');
 		layer.msg('努力备份中', {
 		  icon: 16
-		  ,shade: 0.01
+		  ,shade: 0.1
+		  ,time:3600000
 		});
 		$.ajax({
 			url:'?action=backup',
@@ -1111,40 +1116,43 @@ var restore = function(){
 	$("a#restore").click(function(){
 		ss=$(this);
 		tipword=$(this).attr("tiptext");
-		dbname=$(this).attr("dbname")
+		dbname=$(this).attr("dbname");
+		fixow=$('#fixow').is(':checked')?1:0;
 		layer.confirm(tipword, {
 		  btn: ['确定','取消']
 		  ,shadeClose:true
 		  ,title:'恢复备份文件'
 		}, function(){
 			ss.button('loading');
-			/*
-			layer.msg('努力还原中', {
-			  icon: 16
-			  ,shade: 0.05
-			  ,time:60000 //60秒后关闭
-			});
-			*/
-			layer.alert('努力还原中，请稍后', {
+			layer.msg('努力还原中，请稍后', {
 			  icon: 16
 			  ,shade: 0.1
-			  ,title:'还原数据文件'
+			  ,title:'',
+			  time:3600000
 			});
 			$.ajax({
 				url:'?action=restore',
 				type:'get',
 				data:{
-					dbname:dbname
+					dbname:dbname,
+					fixow:fixow
 					},
 				async:true,
 					success:function(data){
-						//layer.msg(data,{time:2000,anim:6});
-						layer.alert('还原数据成功', {
-						  icon: 1
-						  ,shade: 0.1
-						  ,title:'还原数据文件'
-						});
-						if (data.indexOf('成功')>=0) $("a[dbname='"+dbname+"']").parent().fadeOut(300).fadeIn(300);
+						if (data.indexOf('成功')>=0){
+							$("a[dbname='"+dbname+"']").parent().fadeOut(300).fadeIn(300);
+							layer.alert(data, {
+							  icon: 1
+							  ,shade: 0.1
+							  ,title:'还原数据文件'
+							});
+						}else{
+							layer.alert(data, {
+							  icon: 2
+							  ,shade: 0.1
+							  ,title:'还原数据文件'
+							});
+						}
 						ss.button('reset');
 					}
 			})
@@ -1248,11 +1256,7 @@ restore();
 //反选
 	$("#chose").click(function(){
 		$('input#kid').each(function(){
-			if ($(this).is(':checked')){
-				$(this).prop("checked", false);
-			}else{
-				$(this).prop("checked", true);
-			}
+			$(this).prop("checked", $(this).is(':checked')?false:true);
 		})
 	})
 //全选，取消
