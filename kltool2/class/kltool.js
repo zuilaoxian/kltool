@@ -12,11 +12,10 @@ $(function() {
 			$.ajax({
 			url:tiplink,
 			type:'get',
-			timeout:'15000',
 			async:true,
 				success:function(data){
 					layer.alert(
-						data,{closeBtn: 0,title:''}
+						data,{closeBtn: 0,shadeClose:true,title:''}
 					);
 				}
 			})
@@ -80,7 +79,7 @@ $(function() {
 				url:'?action=cdk&c_cdk='+$(this).val(),
 				type:'get',
 				timeout:'15000',
-				async:false,
+				async:true,
 					success:function(data){
 						$('label#c_cdkjy').html(data);
 					}
@@ -102,7 +101,7 @@ $(function() {
 				url:'?action=cdkdh&c_cdk='+c_cdk,
 				type:'get',
 				timeout:'15000',
-				async:false,
+				async:true,
 					success:function(data){
 						layer.alert(data,{shadeClose:true,title:''});
 					}
@@ -117,7 +116,7 @@ $(function() {
 			url:'?action=cdkzs&c_cdk='+c_cdk,
 			type:'get',
 			timeout:'15000',
-			async:false,
+			async:true,
 				success:function(data){
 					$(".modal-title").html("cdk赠送");
 					$(".modal-body").html(data);
@@ -137,7 +136,7 @@ $(function() {
 					c_msg:c_msg
 					},
 				timeout:'15000',
-				async:false,
+				async:true,
 					success:function(data){
 						layer.alert(data,{shadeClose:true,title:''});
 					}
@@ -297,7 +296,7 @@ $(function() {
 			url:'?action=cdksend&c_id='+c_id,
 			type:'get',
 			timeout:'15000',
-			async:false,
+			async:true,
 				success:function(data){
 					$(".modal-title").html("cdk发放");
 					$(".modal-body").html(data);
@@ -316,7 +315,7 @@ $(function() {
 					c_msg:c_msg
 					},
 				timeout:'15000',
-				async:false,
+				async:true,
 					success:function(data){
 						layer.alert(data,{shadeClose:true,title:''});
 					}
@@ -359,7 +358,7 @@ $(function() {
 			url:'?action=bbsreplace',
 			type:'get',
 			timeout:'15000',
-			async:false,
+			async:true,
 				success:function(data){
 					$(".modal-title").html("关键词替换");
 					$(".modal-body").html(data);
@@ -378,7 +377,7 @@ $(function() {
 					re_word2:re_word2
 					},
 				timeout:'15000',
-				async:false,
+				async:true,
 					success:function(data){
 						layer.alert(data,{shadeClose:true,title:''});
 					}
@@ -394,7 +393,7 @@ $(function() {
 			url:'?action=bbsrecontent&tid='+tid,
 			type:'get',
 			timeout:'15000',
-			async:false,
+			async:true,
 				success:function(data){
 					$(".modal-title").html("帖子修改");
 					$(".modal-body").html(data);
@@ -416,7 +415,7 @@ $(function() {
 					re_content:re_content
 					},
 				timeout:'15000',
-				async:false,
+				async:true,
 					success:function(data){
 						layer.alert(data,{shadeClose:true,title:''});
 					}
@@ -1239,6 +1238,40 @@ restore();
 			data:{
 				uid1:r_id1,
 				uid2:r_id2
+				},
+			async:true,
+				success:function(data){
+					ss.button('reset');
+					layer.alert(data,{shadeClose:true,title:''});
+				}
+			})
+		});	
+	});
+//功能-sql语句执行
+	$("#Exec_Sql_click").click(function(){
+		ss=$(this);
+		Edata=$('input#Edata:checked').val();
+		Esql=$('#Esql').val();
+		if (!Edata) {
+			layer.tips('请至少选择一项', '#Edata', {tips: [1, '#0FA6D8']});
+			return;
+		}
+		if (!Esql) {
+			layer.tips('sql语句不能为空', '#Esql', {tips: [1, '#0FA6D8']});
+			return;
+		}
+		layer.confirm("确定执行?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			ss.button('loading');
+			$.ajax({
+			url:'?action=execsql',
+			type:'post',
+			data:{
+				Edata:Edata,
+				Esql:Esql
 				},
 			async:true,
 				success:function(data){

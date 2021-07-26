@@ -114,7 +114,7 @@ sub moveid()
 	set rs=nothing
 	
 	if err<>0 then
-	   response.write "出现错误"
+	   response.write "出现错误<br/>"&Err.Description
 	else
 		response.write "转移成功："&uid1&"->"&uid2
 	end if

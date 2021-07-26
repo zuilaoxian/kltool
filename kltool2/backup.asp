@@ -69,7 +69,7 @@ sub backup()
 			SQL="backup database "&KL_Main_DatabaseName&" to disk='"&Server.MapPath(dbpath)&"'"
 			conn.execute(SQL)
 			if err<>0 then
-			   response.write "错误,数据备份失败"
+			   response.write "错误,备份失败<br/>"&Err.Description
 			else
 			   response.write "数据备份成功！"
 			end if
@@ -105,7 +105,7 @@ sub restore()
 			'修复文件所有者发生变化导致无法访问数据
 			if fixow=1 then cnn.execute("use "&KL_Main_DatabaseName&"	execute Sp_changedbowner '"&KL_SQL_UserName&"',true")
 			if err<>0 then
-			   response.write "错误,数据恢复失败"
+			   response.write "错误,恢复数据失败<br/>"&Err.Description
 			else
 			   response.write "数据恢复成功！"
 			end if
@@ -127,7 +127,7 @@ sub deldata()
 	On Error Resume Next
 		fso.DeleteFile(Server.mappath(dbpath))
 		if err<>0 then
-		   response.write "错误,备份删除失败"
+		   response.write "错误,备份删除失败<br/>"&Err.Description
 		else
 		   response.write "备份删除成功！"
 		end if

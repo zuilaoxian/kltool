@@ -930,4 +930,37 @@ function kltool_get_cdklx(c_lx)
 			kltool_get_cdklx="勋章"
 		end if
 end function
+'字符串截取
+function cutstr(str1,str2,str3)
+	str4 = InStr(1,str1, str2,1)+len(str2)
+	str5 = InStr(str4, str1, str3,1)-str4
+	cutstr = Mid(str1, str4, str5)
+end function
+'读取文件
+Function readFromTextFile (FileUrl,CharSet)
+	dim str 
+	set stm=server.CreateObject("adodb.stream") 
+	stm.Type=2 '以本模式读取 
+	stm.mode=3  
+	stm.charset=CharSet 
+	stm.open 
+	stm.loadfromfile server.MapPath(FileUrl) 
+	str=stm.readtext 
+	stm.Close 
+	set stm=nothing
+	readFromTextFile=str 
+End Function
+'写入文件
+Sub writeToTextFile (FileUrl,byval Str,CharSet)  
+	set stm=server.CreateObject("adodb.stream") 
+	stm.Type=2 '以本模式读取 
+	stm.mode=3 
+	stm.charset=CharSet 
+	stm.open 
+	stm.WriteText str
+	stm.SaveToFile server.MapPath(FileUrl),2  
+	stm.flush 
+	stm.Close 
+	set stm=nothing 
+End Sub
 %>
