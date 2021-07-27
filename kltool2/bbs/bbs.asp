@@ -121,7 +121,6 @@ sub index()
 		sql=sql&" and book_classid="&r_class
 		gopage="?Class="&r_class&"&"
 	end if
-	response.write gopage
 	sql=sql&" Order by id desc"
 	str=kltool_GetRow(sql,0,pagesize)
 	If str(0) Then
