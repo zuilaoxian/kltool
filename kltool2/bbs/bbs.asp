@@ -33,7 +33,7 @@ End Function
 
 function get_classinfo(uid)
 	set rs1=conn.execute("select * from [class] where classid="&uid)
-	if not rs1.eof then get_classinfo="栏目:<a href=""?siteid="&siteid&"&r_class="&uid&""">"&rs1("classname")&"("&uid&")</a>" else get_classinfo="栏目("&uid&")不存在"
+	if not rs1.eof then get_classinfo="栏目:<a href=""?siteid="&siteid&"&Class="&uid&""">"&rs1("classname")&"("&uid&")</a>" else get_classinfo="栏目("&uid&")不存在"
 	rs1.close
 	set rs1=nothing
 end function
@@ -106,20 +106,20 @@ sub index()
 	"</li>"&vbcrlf
 	
 	r_search=Request.QueryString("r_search")
-	r_class=Request.QueryString("r_class")
+	r_class=Request.QueryString("Class")
 	if r_search<>"" then r_search=clng(r_search) else r_search=false
 	if r_class<>"" then r_class=clng(r_class) else r_class=false
 	sql="select id,userid,book_classid,book_title,book_author,book_pub,book_re,book_click,book_date,book_good,suport,topic,islock,isCheck from [wap_bbs] where userid="&siteid
 	gopage="?"
 	if r_search and r_class then
 		sql=sql&" and book_pub="&r_search&" and book_classid="&r_class
-		gopage="?r_search="&r_search&"&r_class="&r_class&"&"
+		gopage="?r_search="&r_search&"&Class="&r_class&"&"
 	elseif r_search and not r_class then
 		sql=sql&" and book_pub="&r_search
 		gopage="?r_search="&r_search&"&"
 	elseif not r_search and r_class then
 		sql=sql&" and book_classid="&r_class
-		gopage="?r_class="&r_class&"&"
+		gopage="?Class="&r_class&"&"
 	end if
 	response.write gopage
 	sql=sql&" Order by id desc"

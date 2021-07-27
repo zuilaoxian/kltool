@@ -32,7 +32,7 @@ Response.write kltool_code(kltool_head("柯林工具箱-Sql语句执行","1"))
 	</div>
 </div>
 <div class="well well-sm">执行增删改查，只返回成功与否，不返回查询结果</div>
-<div class="well well-sm">示例：用户ID1000的金币+1000<br/>update [user] set money+1000 where userid=1000</div>
+<div class="well well-sm">示例：用户ID1000的金币+1000<br/>update [user] set money=money+1000 where userid=1000</div>
 <%
 Response.write kltool_code(kltool_end(1))
 end sub
