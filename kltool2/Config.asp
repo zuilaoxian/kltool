@@ -335,28 +335,28 @@ if pagecount>1 then
 	"	<ul class=""pagination"">"&vbcrlf
 		if page>1 then
 			kltool_page=kltool_page&_
-			"		<li><a href='"&gopage&"siteid="&siteid&"&pagesize="&pagesize&"'><<</a></li>"&vbcrlf&_
-			"		<li><a href='"&gopage&"page="&page-1&"&siteid="&siteid&"&pagesize="&pagesize&"'><</a></li>"&vbcrlf
+			"		<li><a href='"&gopage&"siteid="&siteid&"'>首页</a></li>"&vbcrlf&_
+			"		<li><a href='"&gopage&"page="&page-1&"&siteid="&siteid&"'>上页</a></li>"&vbcrlf
 		else
 			kltool_page=kltool_page&_
-			"		<li class=""disabled""><a><<</a></li>"&vbcrlf&_
-			"		<li class=""disabled""><a><</a></li>"&vbcrlf
+			"		<li class=""disabled""><a>首页</a></li>"&vbcrlf&_
+			"		<li class=""disabled""><a>上页</a></li>"&vbcrlf
 		end if
 		kltool_page=kltool_page&_
-		"			<li class=""disabled""><a><b>"&page&"</b>/"&pagecount&"页/"&count&"条</a></li>"&vbcrlf
+		"			<li class=""gopage disabled""><a><b>"&page&"</b>/"&pagecount&"页("&count&"条)</a></li>"&vbcrlf
 		if page<pagecount then
 			kltool_page=kltool_page&_
-			"		<li><a href='"&gopage&"page="&page+1&"&siteid="&siteid&"&pagesize="&pagesize&"'>></a></li>"&vbcrlf&_
-			"		<li><a href='"&gopage&"page="&pagecount&"&siteid="&siteid&"&pagesize="&pagesize&"'>>></a></li>"&vbcrlf
+			"		<li><a href='"&gopage&"page="&page+1&"&siteid="&siteid&"'>下页</a></li>"&vbcrlf&_
+			"		<li><a href='"&gopage&"page="&pagecount&"&siteid="&siteid&"'>尾页</a></li>"&vbcrlf
 		else
 			kltool_page=kltool_page&_
-			"    <li class=""disabled""><a>></a></li>"&vbcrlf&_
-			"    <li class=""disabled""><a>>></a></li>"&vbcrlf
+			"    <li class=""disabled""><a>下页</a></li>"&vbcrlf&_
+			"    <li class=""disabled""><a>尾页</a></li>"&vbcrlf
 		end if
 	kltool_page=kltool_page&_
 	"	</ul>"&vbcrlf&_
 	"</li>"&vbcrlf
-	if things=2 then
+	if things=3 then
 		kltool_page=kltool_page&_
 		"<li class=""list-group-item"">"&vbcrlf&_
 		"	<form class=""form-inline"" method=""get"" action=""?"" role=""form"">"&vbcrlf

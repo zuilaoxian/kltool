@@ -1300,7 +1300,32 @@ restore();
 			$('input#kid').prop("checked", false);
 		}
 	})
-	
+//分页
+	gopagehtml=$('.gopage').html();
+	var gopage = function(){
+		$('.gopage').click(function(){
+			turl=location.search;
+			if (location.search=="") turl+='?';
+			var valuen='';
+			s=turl.split('?')[1].split('&');
+			for(i=0;i<s.length;i++){
+				value=s[i]
+				if (value){
+					values=value.split('=')
+					if (values[0]!='page') valuen+='<input name="'+values[0]+'" value="'+decodeURI(values[1])+'" type="hidden">';
+				}
+			}
+			valuen+='<input name="page" value="" type="text" size="2">';
+			$(this).html('<a><form action="'+location.pathname+'" method="get">'+valuen+'</form></a>').unbind();
+			$('input[name=page]').focus();
+			$('input[name=page]').blur(function(){
+				$('.gopage').html(gopagehtml);
+				gopage();
+			});
+		})
+	}
+	gopage();
+//时钟
   setInterval(clock,1000);
 });
 function clock(){
