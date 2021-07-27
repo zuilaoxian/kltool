@@ -66,7 +66,7 @@ sub backup()
 		If fso.FileExists(Server.MapPath(dbpath)) Then
 			Response.Write "该命名的备份已存在，请删除或重命名"
 		Else
-			SQL="backup database "&KL_Main_DatabaseName&" to disk='"&Server.MapPath(dbpath)&"'"
+			SQL="backup database "&KL_Main_DatabaseName&" to disk='"&Server.MapPath(dbpath)&"' WITH NOFORMAT, INIT,  NAME = N'备份"&now()&"', SKIP, NOREWIND, NOUNLOAD,  STATS = 10"
 			conn.execute(SQL)
 			if err<>0 then
 			   response.write "错误,备份失败<br/>"&Err.Description
@@ -99,9 +99,9 @@ sub restore()
 				response.write "错误，无法登陆sa，请检查密码"
 				response.end
 			end if
-			cnn.execute("ALTER DATABASE "&KL_Main_DatabaseName&" SET OFFLINE WITH ROLLBACK IMMEDIATE")
-			cnn.execute("Restore database "&KL_Main_DatabaseName&" from disk='"&Server.MapPath(dbpath)&"'")
-			cnn.execute("ALTER database "&KL_Main_DatabaseName&" set online")
+			cnn.execute("ALTER DATABASE "&KL_Main_DatabaseName&" SET SINGLE_USER WITH ROLLBACK IMMEDIATE")
+			cnn.execute("Restore database "&KL_Main_DatabaseName&" from disk='"&Server.MapPath(dbpath)&"' WITH FILE = 1,  NOUNLOAD,  REPLACE,  STATS = 5")
+			cnn.execute("ALTER database "&KL_Main_DatabaseName&" set MULTI_USER")
 			'修复文件所有者发生变化导致无法访问数据
 			if fixow=1 then cnn.execute("use "&KL_Main_DatabaseName&"	execute Sp_changedbowner '"&KL_SQL_UserName&"',true")
 			if err<>0 then
