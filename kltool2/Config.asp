@@ -4,13 +4,13 @@ kltool_execution_startime=timer()
 '-----设置每页条数和页数
 dim pagesize,page
 pagesize=15
-if Request.QueryString("pagesize") then
+if Request.QueryString("pagesize")<>"" then
 	if Isnumeric(Request.QueryString("pagesize")) then
 		if  Request.QueryString("pagesize")>0 then pagesize=int(Request.QueryString("pagesize"))
 	end if
 end if
 page=1
-if Request.QueryString("page") then
+if Request.QueryString("page")<>"" then
 	if Isnumeric(Request.QueryString("page")) then
 		if  Request.QueryString("page")>0 then page=int(Request.QueryString("page"))
 	end if
