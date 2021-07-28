@@ -682,21 +682,7 @@ $(function() {
 		})
 	}
 	$("#UserData").click(function(){
-		r_uid=$("#r_uid").val();
-		r_siteid=$("#r_siteid").val();
-		r_username=$("#r_username").val();
-		r_nick=$("#r_nick").val();
-		r_pass=$("#r_pass").val();
-		r_money=$("#r_money").val();
-		r_exp=$("#r_exp").val();
-		r_rmb=$("#r_rmb").val();
-		r_bankmoney=$("#r_bankmoney").val();
-		r_logintimes=$("#r_logintimes").val();
-		r_zone=$("#r_zone").val();
-		r_remake=$("#r_remake").val();
-		r_lvl=$("#r_lvl:checked").val();
-		r_sex=$("#r_sex:checked").val();
-		r_lock=$("#r_lock:checked").val();
+		userdata=$("#reuserdata").serialize();
 		layer.confirm("确定?", {
 		  btn: ['确定','取消']
 		  ,shadeClose:true
@@ -705,23 +691,7 @@ $(function() {
 			$.ajax({
 			url:'?action=yes',
 			type:'post',
-			data:{
-				r_uid:r_uid,
-				r_siteid:r_siteid,
-				r_username:r_username,
-				r_nick:r_nick,
-				r_pass:r_pass,
-				r_money:r_money,
-				r_exp:r_exp,
-				r_rmb:r_rmb,
-				r_bankmoney:r_bankmoney,
-				r_logintimes:r_logintimes,
-				r_zone:r_zone,
-				r_remake:r_remake,
-				r_lvl:r_lvl,
-				r_sex:r_sex,
-				r_lock:r_lock
-				},
+			data:userdata,
 			timeout:'15000',
 			async:true,
 				success:function(data){
@@ -742,65 +712,11 @@ $(function() {
 		});		
 	});
 //功能-注册ID
-	$("#RegisterIds").click(function(){
-		r_num=$("#r_num").val();
-		r_last_userid=$("#r_last_userid").val();
-		r_siteid=$("#r_siteid").val();
-		r_nick=$("#r_nick").val();
-		r_lvl=$("#r_lvl:checked").val();
-		r_sex=$("#r_sex:checked").val();
-		if (!r_num) {
-			layer.tips('不能为空', '#r_num', {tips: [1, '#0FA6D8']});
-			return;
-		}
-		layer.confirm("确定?", {
-		  btn: ['确定','取消']
-		  ,shadeClose:true
-		  ,title:''
-		}, function(){
-			$.ajax({
-			url:'?action=yes',
-			type:'post',
-			data:{
-				r_num:r_num,
-				r_last_userid:r_last_userid,
-				r_siteid:r_siteid,
-				r_nick:r_nick,
-				r_lvl:r_lvl,
-				r_sex:r_sex
-				},
-			timeout:'15000',
-			async:true,
-				success:function(data){
-					layer.alert(
-						data,
-						{
-							closeBtn: 0,
-							title:''
-							,btn: ['了解']
-							,yes: function(index){
-								layer.close(index);
-								$.get("?action=yes2",function(data){$("#r_last_userid").val(data).fadeOut(200).fadeIn(300).fadeOut(200).fadeIn(300);});
-							}
-						}
-					);
-				}
-			})
-		});		
+	$('input#r_reg').click(function(){
+		if ($(this).val()==1){$('#r_num').fadeIn(500);}else{$('#r_num').fadeOut(500);}
 	});
-//
 	$("#RegisterId").click(function(){
-		r_uid=$("#r_uid").val();
-		r_siteid=$("#r_siteid").val();
-		r_username=$("#r_username").val();
-		r_nick=$("#r_nick").val();
-		r_pass=$("#r_pass").val();
-		r_lvl=$("#r_lvl:checked").val();
-		r_sex=$("#r_sex:checked").val();
-		if (!r_uid) {
-			layer.tips('不能为空', '#r_uid', {tips: [1, '#0FA6D8']});
-			return;
-		}
+		userdata=$("form").serialize();
 		layer.confirm("确定?", {
 		  btn: ['确定','取消']
 		  ,shadeClose:true
@@ -809,15 +725,7 @@ $(function() {
 			$.ajax({
 			url:'?action=yes',
 			type:'post',
-			data:{
-				r_uid:r_uid,
-				r_username:r_username,
-				r_siteid:r_siteid,
-				r_nick:r_nick,
-				r_pass:r_pass,
-				r_lvl:r_lvl,
-				r_sex:r_sex
-				},
+			data:userdata,
 			timeout:'15000',
 			async:true,
 				success:function(data){

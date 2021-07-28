@@ -42,7 +42,7 @@ sub index()
 	if rs("managerlvl")="02" then lvlcheck2="checked"
 	if rs("managerlvl")="03" then lvlcheck3="checked"
 	if rs("managerlvl")="04" then lvlcheck4="checked"
-	html=html&"<div role=""form"" class=""form-horizontal"">"&vbcrlf&_
+	html=html&"<form role=""form"" class=""form-horizontal"" id=""reuserdata"">"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_uid"" class=""col-sm-2 control-label"">他的ID</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
@@ -52,67 +52,67 @@ sub index()
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_siteid"" class=""col-sm-2 control-label"">所属网站ID</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<input type=""text"" class=""form-control"" name=""r_siteid"" id=""r_siteid"" placeholder="""&rs("siteid")&""" value="""">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""r_siteid"" id=""r_siteid"" value="""&rs("siteid")&""">"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_username"" class=""col-sm-2 control-label"">用户登录名(英/数)</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<input type=""text"" class=""form-control"" name=""r_username"" id=""r_username"" placeholder="""&rs("username")&""" value="""">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""r_username"" id=""r_username"" value="""&rs("username")&""">"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_nick"" class=""col-sm-2 control-label"">昵称(汉/英/数)</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<input type=""text"" class=""form-control"" name=""r_nick"" id=""r_nick"" placeholder="""&rs("nickname")&""" value="""">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""r_nick"" id=""r_nick"" value="""&rs("nickname")&""">"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_pass""  class=""col-sm-2 control-label"">密码-(英/数)</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<input type=""text"" class=""form-control"" name=""r_pass"" id=""r_pass"" placeholder="""" value="""">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""r_pass"" id=""r_pass"" placeholder=""不修改则留空"">"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<div class=""form-group"" class=""col-sm-2 control-label"">"&vbcrlf&_
 	"		<label for=""r_money"" class=""col-sm-2 control-label"">[sitemoneyname]</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<input type=""text"" class=""form-control"" name=""r_money"" id=""r_money"" placeholder="""&rs("money")&""" value="""">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""r_money"" id=""r_money"" value="""&rs("money")&""">"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_exp"" class=""col-sm-2 control-label"">经验</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<input type=""text"" class=""form-control"" name=""r_exp"" id=""r_exp"" placeholder="""&rs("expr")&""" value="""">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""r_exp"" id=""r_exp"" value="""&rs("expr")&""">"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_rmb"" class=""col-sm-2 control-label"">RMB</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<input type=""text"" class=""form-control"" name=""r_rmb"" id=""r_rmb"" placeholder="""&rs("rmb")&""" value="""">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""r_rmb"" id=""r_rmb"" value="""&rs("rmb")&""">"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_bankmoney"" class=""col-sm-2 control-label"">存款</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<input type=""text"" class=""form-control"" name=""r_bankmoney"" id=""r_bankmoney"" placeholder="""&rs("mybankmoney")&""" value="""">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""r_bankmoney"" id=""r_bankmoney"" value="""&rs("mybankmoney")&""">"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_logintimes"" class=""col-sm-2 control-label"">在线积时</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<input type=""text"" class=""form-control"" name=""r_logintimes"" id=""r_logintimes"" placeholder="""&rs("logintimes")&""" value="""">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""r_logintimes"" id=""r_logintimes"" value="""&rs("logintimes")&""">"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_zone"" class=""col-sm-2 control-label"">空间人气</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<input type=""text"" class=""form-control"" name=""r_zone"" id=""r_zone"" placeholder="""&rs("ZoneCount")&""" value="""">"&vbcrlf&_
+	"			<input type=""text"" class=""form-control"" name=""r_zone"" id=""r_zone"" value="""&rs("ZoneCount")&""">"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""r_remake"" class=""col-sm-2 control-label"">个性签名</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
-	"			<textarea class=""form-control"" rows=""3"" name=""r_remake"" id=""r_remake"" placeholder="""&rs("remark")&"""></textarea>"&vbcrlf&_
+	"			<textarea class=""form-control"" rows=""3"" name=""r_remake"" id=""r_remake"">"&rs("remark")&"</textarea>"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	<label for=""r_lvl"" class=""col-sm-2 control-label"">权限</label>"&vbcrlf&_
@@ -152,7 +152,7 @@ sub index()
 	"    </label>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
 	"	  <button name=""kltool"" type=""button"" class=""btn btn-default btn-block"" id=""UserData"" data-loading-text=""Loading..."">提交</button>"&vbcrlf&_
-	"</div>"&vbcrlf
+	"</form>"&vbcrlf
 	rs.close
 	set rs=nothing
 	Response.write kltool_code(html&kltool_end(1))
