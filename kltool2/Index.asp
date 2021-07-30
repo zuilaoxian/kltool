@@ -63,7 +63,7 @@ sub index()
 			"	<span style=""display:none;"" id=""kltool_order"">ID:"&id&vbcrlf&_
 			"	<input name=""kltool_order"" id=""kltool_order"" kid="""&id&""" type=""text"" value="""&kltool_order&""" size=""1"">"&vbcrlf&_
 			"</span>"&vbcrlf&_
-			"	"&title&"<span class=""badge"" id="""&id&""">"&tstr&"</span></div>"&vbcrlf&_
+			"	"&title&"<span class=""badge pull-right"" id="""&id&""">"&tstr&"</span></div>"&vbcrlf&_
 			"	<div id=""collapse"&id&""" class=""list-group panel-collapse collapse"">"&vbcrlf&_
 			"	"&content&vbcrlf&_
 			"	</div>"&vbcrlf&_
@@ -99,12 +99,7 @@ sub index()
 		"		timeout:'15000',"&vbcrlf&_
 		"			success:function(data){"&vbcrlf&_
 		"				layer.msg(data,{time:2000,anim:6});"&vbcrlf&_
-		"				if ($('span#'+id).text()=='启用'){"&vbcrlf&_
-		"					$('span#'+id).text('停用');"&vbcrlf&_
-		"				}else if ($('span#'+id).text()=='停用'){"&vbcrlf&_
-		"					$('span#'+id).text('启用');"&vbcrlf&_
-		"				}else{"&vbcrlf&_
-		"				}"&vbcrlf&_
+		"				$('span#'+id).text(data);"&vbcrlf&_
 		"			}"&vbcrlf&_
 		"		})"&vbcrlf&_
 		"	});"&vbcrlf&_

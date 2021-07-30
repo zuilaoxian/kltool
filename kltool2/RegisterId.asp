@@ -101,21 +101,13 @@ sub index1()
 	r_lvl=Request.Form("r_lvl")
 	r_sex=Request.Form("r_sex")
 	r_sex=clng(r_sex)
-	if r_uid="" or r_siteid="" then
-		Response.write "不能为空"
-		Response.End()
-	end if
-	if not Isnumeric(r_uid) or not Isnumeric(r_siteid) then
-		Response.write "必须是数字"
+	if r_uid="" or r_siteid="" or not isnum(r_uid) or not isnum(r_siteid) or (r_num<>"" and not isnum(r_num)) then
+		Response.write "不能为空，必须是数字"
 		Response.End()
 	end if
 	
 	conn.execute("SET IDENTITY_INSERT [USER] ON")
 	if r_num<>"" then
-		if not Isnumeric(r_num) then
-			Response.write "数量必须是数字"
-			Response.End()
-		end if
 		if clng(r_num)<=1 then
 			Response.write "数量必须大于1"
 			Response.End()

@@ -237,34 +237,38 @@ function kltool_head(head_str1,head_str2)
 			end if
 			kltool_head=kltool_head&"<nav class=""navbar navbar-default"" role=""navigation"">"&vbcrlf&_
 			"	<div class=""container-fluid"">"&vbcrlf&_
-			"	<div class=""navbar-header"">"&vbcrlf&_
-			"		<button type=""button"" class=""navbar-toggle"" data-toggle=""collapse"""&vbcrlf&_
-			"				data-target=""#example-navbar-collapse"">"&vbcrlf&_
-			"			<span class=""sr-only"">切换导航</span>"&vbcrlf&_
-			"			<span class=""icon-bar""></span>"&vbcrlf&_
-			"			<span class=""icon-bar""></span>"&vbcrlf&_
-			"			<span class=""icon-bar""></span>"&vbcrlf&_
-			"		</button>"&vbcrlf&_
-			"		<a class=""navbar-brand"" href="""&homelink&""">"&hometext&"</a>"&vbcrlf&_
-			"	</div>"&vbcrlf&_
-			"	<div class=""collapse navbar-collapse"" id=""example-navbar-collapse"">"&vbcrlf&_
-			"		<ul class=""nav navbar-nav"">"&vbcrlf&_
-			"			<li class=""active""><a href=""/myfile.aspx?siteid="&siteid&"""><span class=""glyphicon glyphicon-user""></span> "&kltool_get_usernickname(userid,1)&"("&userid&")</a></li>"&vbcrlf&_
-			"			<li><a><span class=""glyphicon glyphicon-leaf""></span> [sitemoneyname] "&kltool_get_usermoney(userid,1)&"</a></li>"&vbcrlf&_
-			"			<li><a><span class=""glyphicon glyphicon-flash""></span> 经验 "&kltool_get_usermoney(userid,2)&"</a></li>"&vbcrlf&_
-			"			<li><a><span class=""glyphicon glyphicon-th-list""></span> RMB "&kltool_get_usermoney(userid,4)&"</a></li>"&vbcrlf&_
-			"			<li><a><span class=""glyphicon glyphicon-credit-card""></span> 存款 "&kltool_get_usermoney(userid,3)&"</a></li>"&vbcrlf&_
-			"		</ul>"&vbcrlf&_
-			"		<ul class=""nav navbar-nav navbar-right"">"&vbcrlf&_
-			"		<li><a href=""/bbs/messagelist.aspx?siteid=[siteid]&classid=0&types=0""><span class=""glyphicon glyphicon-envelope""></span> 消息 "&kltool_get_usermsg(userid,1)&"</a></li>"&vbcrlf&_
-			"		<li><a href=""/waplogout.aspx?siteid=[siteid]""><span class=""glyphicon glyphicon-off""></span> 注销登录</a></li>"&vbcrlf&_
-			"		</ul>"&vbcrlf&_
-			"	</div>"&vbcrlf&_
+			"		<div class=""navbar-header"">"&vbcrlf&_
+			"			<button type=""button"" class=""navbar-toggle"" data-toggle=""collapse"""&vbcrlf&_
+			"					data-target=""#example-navbar-collapse"">"&vbcrlf&_
+			"				<span class=""sr-only"">切换导航</span>"&vbcrlf&_
+			"				<span class=""icon-bar""></span>"&vbcrlf&_
+			"				<span class=""icon-bar""></span>"&vbcrlf&_
+			"				<span class=""icon-bar""></span>"&vbcrlf&_
+			"			</button>"&vbcrlf&_
+			"			<a class=""navbar-brand"" href="""&homelink&""">"&hometext&"</a>"&vbcrlf&_
+			"		</div>"&vbcrlf&_
+			"		<div class=""collapse navbar-collapse"" id=""example-navbar-collapse"">"&vbcrlf&_
+			"			<ul class=""nav navbar-nav"">"&vbcrlf&_
+			"				<li class=""active""><a href=""/myfile.aspx?siteid="&siteid&"""><span class=""glyphicon glyphicon-user""></span> "&kltool_get_usernickname(userid,1)&"("&userid&")</a></li>"&vbcrlf&_
+			"			</ul>"&vbcrlf&_
+			"			<ul class=""nav navbar-nav"">"&vbcrlf&_
+			"				<li class=""dropdown""><a href=""#"" class=""dropdown-toggle"" id=""jsontools"" data-toggle=""dropdown"" role=""button"" aria-haspopup=""true"" aria-expanded=""false""><span class=""glyphicon glyphicon-leaf""></span> [sitemoneyname] "&kltool_get_usermoney(userid,1)&" <span class=""caret""></span></a>"&vbcrlf&_
+			"					<ul class=""dropdown-menu"" role=""menu"" aria-labelledby=""dropdownMenu1"">"&vbcrlf&_
+			"						<li><a><span class=""glyphicon glyphicon-flash""></span> 经验 "&kltool_get_usermoney(userid,2)&"</a></li>"&vbcrlf&_
+			"						<li><a><span class=""glyphicon glyphicon-th-list""></span> RMB "&kltool_get_usermoney(userid,4)&"</a></li>"&vbcrlf&_
+			"						<li><a><span class=""glyphicon glyphicon-credit-card""></span> 存款 "&kltool_get_usermoney(userid,3)&"</a></li>"&vbcrlf&_
+			"					</ul>"&vbcrlf&_
+			"				</li>"&vbcrlf&_
+			"			</ul>"&vbcrlf&_
+			"			<ul class=""nav navbar-nav navbar-right"">"&vbcrlf&_
+			"				<li><a href=""/bbs/messagelist.aspx?siteid=[siteid]&classid=0&types=0""><span class=""glyphicon glyphicon-envelope""></span> 消息 "&kltool_get_usermsg(userid,1)&"</a></li>"&vbcrlf&_
+			"				<li><a href=""/waplogout.aspx?siteid=[siteid]""><span class=""glyphicon glyphicon-off""></span> 注销登录</a></li>"&vbcrlf&_
+			"			</ul>"&vbcrlf&_
+			"		</div>"&vbcrlf&_
 			"	</div>"&vbcrlf&_
 			"</nav>"&vbcrlf&_
 			"<style>"&vbcrlf&_
 			"  .container{max-width:600px;}"&vbcrlf&_
-			"  .badge{float:right;}"&vbcrlf&_
 			"</style>"&vbcrlf
 		end if
 		kltool_head=kltool_head&"<div class=""container container-small"">"&vbcrlf&_
@@ -290,7 +294,7 @@ Function kltool_end(kltool_end_str1)
 	kltool_end=""
 	if kltool_end_str1=1 then
 		kltool_end=kltool_end&vbcrlf&_
-		"<div class=""well well-sm""><span id=""times"" class=""glyphicon glyphicon-time""> "&year(now)&"-"&Right("0"&month(now),2)&"-"&Right("0"&day(now),2)&" "&time()&" "&weekdayname(weekday(now))&"<span></div>"
+		"	<div class=""well well-sm""><span id=""times"" class=""glyphicon glyphicon-time""> "&year(now)&"-"&Right("0"&month(now),2)&"-"&Right("0"&day(now),2)&" "&time()&" "&weekdayname(weekday(now))&"</span></div>"
 	end if
 	kltool_end=kltool_end&vbcrlf&"</div>"&_
 	vbcrlf&"</body>"&_
@@ -963,4 +967,14 @@ Sub writeToTextFile (FileUrl,byval Str,CharSet)
 	stm.Close 
 	set stm=nothing 
 End Sub
+
+function isnum(str)
+	isnum=false
+	if Isnumeric(str) then
+		isnum=true
+		if str<=0 then isnum=false
+	else
+		isnum=false
+	end if
+end function
 %>

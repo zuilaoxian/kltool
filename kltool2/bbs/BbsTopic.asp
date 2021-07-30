@@ -11,7 +11,7 @@ select case action
 end select
 sub index()
 	html=kltool_head("柯林工具箱-贴子带专题发布通道",1)
-	html=html&"<div role=""form"" class=""form-horizontal"">"&vbcrlf&_
+	html=html&"<form role=""form"" class=""form-horizontal"">"&vbcrlf&_
 	"	<div class=""form-group"">"&vbcrlf&_
 	"		<label for=""bbs_title"" class=""col-sm-2 control-label"">帖子标题</label>"&vbcrlf&_
 	"		<div class=""col-sm-10"">"&vbcrlf&_
@@ -51,21 +51,20 @@ sub index()
 	"	</div>"&vbcrlf&_
 	
 	"	  <button name=""kltool"" type=""button"" class=""btn btn-default btn-block"" id=""BbsTopic"" data-loading-text=""Loading..."">提交</button>"&vbcrlf&_
-	"</div>"&vbcrlf
+	"</form>"&vbcrlf
 	response.write kltool_code(html&kltool_end(1))
 end sub
 sub index1()
 	bbs_title=Request.Form("bbs_title")
 	bbs_content=Request.Form("bbs_content")
-	bbs_classid=Request.Form("bbs_classid")
-	bbs_topic=Request.Form("bbs_topic")
+	bbs_classid=Request.Form("Class")
+	bbs_topic=Request.Form("Topic")
 	bbs_author=Request.Form("bbs_author")
 	bbs_pub=Request.Form("bbs_pub")
-	if bbs_title="" or bbs_content="" or bbs_author="" or bbs_pub="" or bbs_classid="" then
-		Response.write "发表帖子失败"
+	if bbs_title="" or bbs_content="" or bbs_author="" or bbs_pub="" or bbs_classid="" or not isnum(bbs_pub) or not isnum(bbs_classid) or (bbs_topic<>"" and not isnum(bbs_topic)) then
+		Response.write "错误：标题、内容、作者、作者ID、栏目，均不能为空"
 		Response.End()
 	end if
-
 		set rs=Server.CreateObject("ADODB.Recordset")
 		rs.open"select * from [wap_bbs]",conn,1,2
 		rs.addnew

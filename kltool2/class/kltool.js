@@ -263,20 +263,21 @@ $(function() {
 		});	
 	});
 //功能-cdk-cdk批量删除
+//功能-加黑解黑-批量解黑
 	$("#Cdk_Del").click(function(){
 		if ($('input#kid:checked').length<1){layer.alert('请至少选择一条',{shadeClose:true,title:''}); return;}
 		var kid=[];
 		$('input#kid:checked').each(function(){
 			kid.push($(this).val());
 		})
-		layer.confirm("确定?", {
+		layer.confirm("确定此批量操作?", {
 		  btn: ['确定','取消']
 		  ,shadeClose:true
 		  ,title:''
 		}, function(){
 			$.ajax({
 			url:'?action=cdkdel',
-			type:'get',
+			type:'post',
 			data:{
 				c_id:kid.join(',')
 				},
@@ -566,18 +567,10 @@ $(function() {
 		});		
 	});
 //功能-发表帖子带专题
+//功能-域名转发-添加域名
+//功能-加黑解黑-添加
 	$("#BbsTopic").click(function(){
-		bbs_title=$('#bbs_title').val();
-		bbs_content=$('#bbs_content').val();
-		bbs_classid=$('#Class:checked').val();
-		bbs_topic=$('#Topic:checked').val();
-		bbs_author=$('#bbs_author').val();
-		bbs_pub=$('#bbs_pub').val();
-		if (!bbs_title) {layer.tips('不能为空', '#bbs_title', {tips: [1, '#0FA6D8']}); return;}
-		if (!bbs_content) {layer.tips('不能为空', '#bbs_content', {tips: [1, '#0FA6D8']}); return;}
-		if (!bbs_classid) {layer.tips('不能为空', '#Class', {tips: [1, '#0FA6D8']}); return;}
-		if (!bbs_author) {layer.tips('不能为空', '#bbs_author', {tips: [1, '#0FA6D8']}); return;}
-		if (!bbs_pub) {layer.tips('不能为空', '#bbs_pub', {tips: [1, '#0FA6D8']}); return;}
+		bbsdata=$("form").serialize();
 		layer.confirm("确定?", {
 		  btn: ['确定','取消']
 		  ,shadeClose:true
@@ -586,14 +579,7 @@ $(function() {
 			$.ajax({
 			url:'?action=yes',
 			type:'post',
-			data:{
-				bbs_title:bbs_title,
-				bbs_content:bbs_content,
-				bbs_classid:bbs_classid,
-				bbs_topic:bbs_topic,
-				bbs_author:bbs_author,
-				bbs_pub:bbs_pub
-				},
+			data:bbsdata,
 			timeout:'15000',
 			async:true,
 				success:function(data){
@@ -601,6 +587,11 @@ $(function() {
 				}
 			})
 		});		
+	});
+//功能-加黑解黑-查找
+	$("#lockuser_search").click(function(){
+		s_str1=$("#s_str1").val();
+		self.location.href='?ksearch='+s_str1;	
 	});
 //功能-vip自助开通设置
 	$("button#Vip_Set").click(function(){
@@ -703,7 +694,6 @@ $(function() {
 							,btn: ['确定','关闭']
 							,yes: function(index){
 								location.reload();
-								layer.close(index);
 							}
 						}
 					);
@@ -1189,6 +1179,37 @@ restore();
 			})
 		});	
 	});
+//功能-域名转发修改
+	$("a#s_xg").click(function(){
+		tid=$(this).attr("s_str0")
+		$('.btn.btn-primary').show();
+		$.ajax({
+			url:'?action=xg&s_str0='+tid,
+			type:'get',
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					$(".modal-title").html("修改域名转发");
+					$(".modal-body").html(data);
+				}
+		})
+		$('.btn.btn-primary').click(function(){
+			s_data=$("#s_xg").serialize();
+			$.ajax({
+				url:'?action=yes',
+				type:'post',
+				data:s_data,
+				timeout:'15000',
+				async:true,
+					success:function(data){
+						layer.alert(data,{shadeClose:true,title:''});
+					}
+			});
+			$('#myModal').modal('hide')
+		})
+	});
+
+	
 //模态框监测，关闭后清除内容，解除事件绑定
 	 $('#myModal').on('hide.bs.modal', function () {
 		$('.btn.btn-primary').off("click");

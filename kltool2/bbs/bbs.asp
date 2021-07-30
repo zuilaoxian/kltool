@@ -210,9 +210,24 @@ sub index()
 end sub
 
 sub bbsreplace()
-	Response.write"论坛(可选)<br/>"&kltool_get_classlist(16)&_
-	"<br/><input name=""bbsreplaceword1"" id=""bbsreplaceword1"" type=""text"" value="""" size=""12"" placeholder=""原字符串"">"&vbcrlf&_
-	"<input name=""bbsreplaceword2"" id=""bbsreplaceword2"" type=""text"" value="""" size=""12"" placeholder=""将要替换"">"&vbcrlf
+	Response.write "<form role=""form"" class=""form-horizontal"">"
+	
+	Response.write"<div class=""form-group"">"
+	Response.write"<label for=""name"" class=""col-sm-2 control-label"">论坛(可选):</label>"
+	Response.write"<div class=""col-sm-offset-2"">"&kltool_get_classlist(16)&"</div>"
+	Response.write"</div>"
+	
+	Response.write "<div class=""form-group"">"
+	Response.write"<label for=""name"" class=""col-sm-2 control-label"">原字符串:</label>"
+	Response.write"<div class=""col-sm-10""><textarea class=""form-control"" name=""bbsreplaceword1"" id=""bbsreplaceword1"" rows=""2"" placeholder=""原字符串""></textarea></div>"
+	Response.write"</div>"
+
+	Response.write "<div class=""form-group"">"
+	Response.write"<label for=""name"" class=""col-sm-2 control-label"">替换为:</label>"
+	Response.write"<div class=""col-sm-10""><textarea class=""form-control"" name=""bbsreplaceword2"" id=""bbsreplaceword2"" rows=""2"" placeholder=""将要替换""></textarea></div>"
+	Response.write"</div>"
+
+	Response.write "</form>"
 end sub
 
 sub bbsreword()
@@ -293,17 +308,39 @@ sub bbsrecontent()
 		Response.Write"不存在的记录"
 		Response.End()
 	end if
-	Response.write "<input name=""siteid"" type=""hidden"" value="""&siteid&""">"
-	Response.write "<input name=""pg"" type=""hidden"" value=""rebbsyes"">"
-	Response.write "<input name=""tid"" type=""hidden"" value="""&tid&""">"
-
-	Response.write"<div class=line2>栏目（不修改则留空）:<br/>"&kltool_get_classlist(16)
 	
-	Response.write "<div class=line1>专题（留空则取消）:<br/>"&kltool_get_topiclist()
+	Response.write "<form role=""form"" class=""form-horizontal"">"
 
-	Response.write "<div class=""title"">标题:<br/><textarea name=""title"" id=""title"" rows=""3"">"&rs("book_title")&"</textarea></div>"
-	Response.write "<div class=""content"">内容:<br/><textarea name=""content"" id=""content"" rows=""5"">"&rs("book_content")&"</textarea></div>"
-	Response.write "<div class=""line1"">作者:<input name=""pub"" type=""text"" value="""&rs("book_pub")&"""></div>"
+	Response.write "<input name=""siteid"" type=""hidden"" value="""&siteid&""">"
+	Response.write "<input name=""tid"" type=""hidden"" value="""&tid&""">"
+	
+	Response.write"<div class=""form-group"">"
+	Response.write"<label for=""name"" class=""col-sm-2 control-label"">栏目（不修改则留空）:</label>"
+	Response.write"<div class=""col-sm-offset-2"">"&kltool_get_classlist(16)&"</div>"
+	Response.write"</div>"
+	
+	Response.write"<div class=""form-group"">"
+	Response.write"<label for=""name"" class=""col-sm-2 control-label"">专题（留空则取消）:</label>"
+	Response.write"<div class=""col-sm-offset-2"">"&kltool_get_topiclist()&"</div>"
+	Response.write"</div>"
+	
+	Response.write "<div class=""form-group"">"
+	Response.write"<label for=""name"" class=""col-sm-2 control-label"">标题:</label>"
+	Response.write"<div class=""col-sm-10""><textarea class=""form-control"" name=""title"" id=""title"" rows=""2"">"&rs("book_title")&"</textarea></div>"
+	Response.write"</div>"
+	
+	Response.write "<div class=""form-group"">"
+	Response.write"<label for=""name"" class=""col-sm-2 control-label"">内容:</label>"
+	Response.write"<div class=""col-sm-10""><textarea class=""form-control"" name=""content"" id=""content"" rows=""5"">"&rs("book_content")&"</textarea></div>"
+	Response.write"</div>"
+	
+	Response.write "<div class=""form-group"">"
+	Response.write"<label for=""name"" class=""col-sm-2 control-label"">作者:</label>"
+	Response.write"<div class=""col-sm-10""><input class=""form-control"" name=""pub"" type=""text"" value="""&rs("book_pub")&"""></div>"
+	Response.write"</div>"
+	
+	Response.write "</form>"
+
 	rs.close
 	set rs=nothing
 end sub

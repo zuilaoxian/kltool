@@ -27,10 +27,9 @@ sub index()
 end sub
 
 sub index1()
-
 	uid=Request.Form("uid")
 	remarks=Request.Form("remark")
-	if remarks="" or (uid<>"" and not Isnumeric(uid)) then
+	if remarks="" or (uid<>"" and not isnum(uid)) then
 		Response.write"修改失败"
 		Response.End()
 	end if

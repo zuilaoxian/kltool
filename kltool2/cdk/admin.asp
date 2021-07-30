@@ -128,8 +128,8 @@ sub index()
 			if c_zs="1" then c_zs_c="可赠" else c_zs_c="不可赠"
 			if c_sy="1" then c_sy_c="未用" else c_sy_c="已用"
 			html=html&_
-			"<li class=""list-group-item"">"&vbcrlf&_
-			"<h4><input type=""checkbox"" class=""kid"" id=""kid"" value="""&c_id&"""> "&c_id&" cdk:"&cdk&"</h4>"&vbcrlf&_
+			"<li class=""list-group-item""><label>"&vbcrlf&_
+			"<h4><input type=""checkbox"" class=""kid"" id=""kid"" value="""&c_id&"""> "&c_id&" <span>"&cdk&"</span></h4>"&vbcrlf&_
 			"cdk内容:"&kltool_get_cdkinfo(c_id)&"<br/>"&vbcrlf
 			
 			if c_userid<>"" then html=html&"<a href=""?c_uid=1000"">"&c_userid&"</a> " else html=html&"<a c_id="""&c_id&""" id=""cdk_send""  data-toggle=""modal"" data-target=""#myModal"">发放</a> "
@@ -138,7 +138,7 @@ sub index()
 			"<a href=""?action=cdkzs&c_id="&c_id&""" id=""tips"" tiptext=""转换状态<br/>当前："&c_zs_c&""">"&c_zs_c&"</a> "&vbcrlf&_
 			"<a href=""?action=cdkdel&c_id="&c_id&""" id=""tips"" tiptext=""确定删除吗<br/>"&cdk&""">删除</a> "&vbcrlf
 			if c_chushou="1" and c_userid="" then html=html&"出售中 价格"&c_jiage
-			html=html&"</li>"&vbcrlf
+			html=html&"</label></li>"&vbcrlf
 			
 		Next
 		html=html&"<li class=""list-group-item"">"&vbcrlf&_
@@ -225,7 +225,7 @@ sub cdksy()
 	response.write "成功转换使用状态"
 end sub
 sub cdkdel()
-	c_id=Request.QueryString("c_id")
+	c_id=Request.form("c_id")
 	conn.Execute("delete from [cdk] where id in("&c_id&")")
 	Response.write "删除cdk成功"
 end sub
