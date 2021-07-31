@@ -2,15 +2,6 @@
 <%
 kltool_use(10)
 kltool_admin(1)
-	function getmanagername(str)
-		if str=0 then getmanagername="全部"
-		if str=1 then getmanagername="超管"
-		if str=2 then getmanagername="副管"
-		if str=3 then getmanagername="普通"
-		if str=4 then getmanagername="总编辑"
-		if str=5 then getmanagername="总版主"
-		if str=6 then getmanagername="非本站"
-	end function
 action=Request.QueryString("action")
 select case action
 	case ""
@@ -61,28 +52,31 @@ sub index()
 	"	</form>"&vbcrlf&_
 	"</li>"&vbcrlf&_
 	"<ul class=""breadcrumb"">"&vbcrlf
+	
+	sql= "select userid,siteid,LockUser,managerlvl from [user] where "
+	getmanagername=array("全部","超管","副管","普通","总编辑","总版主","非本站")
+	select case lx
+		case 0
+			sql=sql&"siteid="&siteid
+		case 1
+			sql=sql&"siteid="&siteid&" and managerlvl=0"
+		case 2
+			sql=sql&"siteid="&siteid&" and managerlvl=1"
+		case 3
+			sql=sql&"siteid="&siteid&" and managerlvl=2"
+		case 4
+			sql=sql&"siteid="&siteid&" and managerlvl=3"
+		case 5
+			sql=sql&"siteid="&siteid&" and managerlvl=4"
+		case 6
+			sql=sql&"siteid<>"&siteid
+		case 7
+			sql=sql&"siteid="&siteid&" and (userid like '%"&r_search&"%' or username like '%"&r_search&"%' or nickname like '%"&r_search&"%')"
+	end select
 	for i=0 to 6
 		if lx=i then html=html&"<li>"&getmanagername(i)&"</li>"&vbcrlf else html=html&"<li><a href='?siteid="&siteid&"&lx="&i&"'>"&getmanagername(i)&"</a></li>"&vbcrlf
 	next
-	html=html&"</ul>"
-	sql= "select userid,siteid,LockUser,managerlvl from [user] where "
-	if lx=0 then
-		sql=sql&"siteid="&siteid
-	elseif lx=1 then
-		sql=sql&"siteid="&siteid&" and managerlvl=0"
-	elseif lx=2 then
-		sql=sql&"siteid="&siteid&" and managerlvl=1"
-	elseif lx=3 then
-		sql=sql&"siteid="&siteid&" and managerlvl=2"
-	elseif lx=4 then
-		sql=sql&"siteid="&siteid&" and managerlvl=3"
-	elseif lx=5 then
-		sql=sql&"siteid="&siteid&" and managerlvl=4"
-	elseif lx=6 then
-		sql=sql&"siteid<>"&siteid
-	elseif lx=7 then
-		sql=sql&"siteid="&siteid&" and (userid like '%"&r_search&"%' or username like '%"&r_search&"%' or nickname like '%"&r_search&"%')"
-	end if
+	html=html&"</ul>"&vbcrlf
 		str=kltool_GetRow(sql,0,pagesize)
 		If str(0) Then
 			count=str(0)

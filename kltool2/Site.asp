@@ -60,7 +60,7 @@ end sub
 
 sub sc()
 	s_str0=Request.QueryString("s_str0")
-	if s_str0="" or not isnum(s_str0) or s_str0="1" then
+	if s_str0="" or not Isnumeric(s_str0) or s_str0="1" then
 		response.write "无法删除"
 		response.end
 	end if
@@ -80,7 +80,7 @@ end sub
 
 sub xg()
 	s_str0=Request.QueryString("s_str0")
-	if s_str0="" or not isnum(s_str0) or s_str0="1" then
+	if s_str0="" or not Isnumeric(s_str0) or s_str0="1" then
 		response.write "无法修改"
 		response.end
 	end if
@@ -118,7 +118,7 @@ sub yes()
 	s_str1=replace(s_str1,"http://","")
 	s_str1=replace(s_str1,"https://","")
 	
-	if isnum(s_str2) then
+	if Isnumeric(s_str2) then
 		realpath="http://"&s_str1&"/wapindex.aspx?siteid="&s_str2
 	else
 		s_str2=replace(s_str2,"http://","")

@@ -1,6 +1,4 @@
 ﻿<%
-kltool_execution_startime=timer()
-'On Error Resume Next
 '-----设置每页条数和页数
 dim pagesize,page
 pagesize=15
@@ -17,103 +15,81 @@ if Request.QueryString("page")<>"" then
 end if
 if page<=0 or page="" then page=1	
 if pagesize<=0 or pagesize="" then pagesize=15
-
-'-----管理员操作日志【删除】开关，1允许，其他否(默认其他，推荐其他)
-kltool_admin_log_del=2
-'-----
+'运行环境检测-FSO文件系统
 if ObjTest("Scripting.FileSystemObject",0)=False then
 	Response.write kltool_code(kltool_head("FSO文件系统不支持",0)&kltool_alert("FSO文件系统(文件操作):<br/>"&ObjTest("Scripting.FileSystemObject",1))&kltool_end(0))
 	Response.End()
 end if
-
+'运行环境检测-adodb系统
 if ObjTest("adodb.recordset",0)=False then
 	Response.write kltool_code(kltool_head("adodb系统不支持",0)&kltool_alert("adodb系统,数据库操作:<br/>"&ObjTest("adodb.recordset",1))&kltool_end(0))
 	Response.End()
 end if
-
 '-----连接工具箱数据库
-'数据库文件
-klmdb=kltool_path&"datakltool/#kltool.mdb"
-'检测工具箱数据库是否存在
-set fso = server.CreateObject("Scripting.FileSystemObject")
-if not fso.FileExists(server.mappath(klmdb)) then
-	Response.write kltool_code(kltool_head("柯林工具箱数据文件不存在",0)&kltool_alert("柯林工具箱数据文件不存在")&kltool_end(0))
-	Response.End()
-end if
-set fso=nothing
-'连接数据库
-'connstr="DBQ="+server.mappath(klmdb)+";DefaultDir=;DRIVER={Microsoft Access Driver (*.mdb)};"
-connstr="provider=microsoft.jet.oledb.4.0;data source="&server.mappath(klmdb)
-Set kltool = Server.CreateObject("ADODB.Connection") 
-kltool.open connstr
-If Err Then
-	Err.Clear
-	Response.write kltool_code(kltool_head("工具箱数据库错误",0)&kltool_alert("工具箱数据库错误")&kltool_end(0))
-	Response.End()
-end if
-sub closekltool()
-	 kltool.close
-	 set kltool=nothing
-end sub
+	klmdb=kltool_path&"datakltool/#kltool.mdb"
+	'检测工具箱数据库是否存在
+	set fso = server.CreateObject("Scripting.FileSystemObject")
+	if not fso.FileExists(server.mappath(klmdb)) then
+		Response.write kltool_code(kltool_head("柯林工具箱数据文件不存在",0)&kltool_alert("柯林工具箱数据文件不存在")&kltool_end(0))
+		Response.End()
+	end if
+	set fso=nothing
+	On Error Resume Next
+	connstr="provider=microsoft.jet.oledb.4.0;data source="&server.mappath(klmdb)
+	Set kltool = Server.CreateObject("ADODB.Connection") 
+	kltool.open connstr
+	If Err<>0 Then
+		Err.Clear
+		Response.write kltool_code(kltool_head("工具箱数据库错误",0)&kltool_alert("工具箱数据库错误")&kltool_end(0))
+		Response.End()
+	end if
+	On Error goto 0
+'-----连接柯林数据库
+	SourceFile=Server.MapPath("/")&"\web.config"
+	Const ForReading = 1, ForWriting = 2 
+	Set objFSO=Server.CreateObject("Scripting.FileSystemObject")
+	Set f = objFSO.OpenTextFile(SourceFile, ForReading) 
+		kelin_config = f.ReadAll()
+	f.Close 
+	kelin_config=replace(kelin_config,chr(34),"")
+	kelin_config=replace(kelin_config,chr(32),"")
+	
+	s1=InStr(kelin_config, "KL_DatabaseNamevalue=")
+	o1 = InStr(s1, kelin_config, "/>")
+	KL_Main_DatabaseName = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
 
-''''''''''''''''''''''''读柯林数据库配置文件'''''''''''''''''''''''
-dim SourceFile
-SourceFile = Server.MapPath("/")  
-SourceFile=SourceFile&"\web.config"
+	s1=InStr(kelin_config, "KL_SQL_UserNamevalue=")
+	o1 = InStr(s1, kelin_config, "/>")
+	KL_SQL_UserName = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
+	s1=InStr(kelin_config, "KL_SQL_PassWordvalue=")
+	o1 = InStr(s1, kelin_config, "/>")
+	KL_SQL_PassWord = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
 
+	s1=InStr(kelin_config, "KL_SQL_SERVERIPvalue=")
+	o1 = InStr(s1, kelin_config, "/>")
+	KL_SQL_SERVERIP = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
 
-Const ForReading = 1, ForWriting = 2 
-Dim objFSO
-Set objFSO=Server.CreateObject("Scripting.FileSystemObject")
-Dim f, kelin_config
-Set f = objFSO.OpenTextFile(SourceFile, ForReading) 
-kelin_config = f.ReadAll()
-f.Close 
-kelin_config=replace(kelin_config,chr(34),"")
-kelin_config=replace(kelin_config,chr(32),"")
-dim s1,o1,KL_Main_DatabaseName,KL_SQL_SERVERIP,KL_SQL_UserName,KL_SQL_PassWord
-
-s1=InStr(kelin_config, "KL_DatabaseNamevalue=")
-o1 = InStr(s1, kelin_config, "/>")
-KL_Main_DatabaseName = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
-
-s1=InStr(kelin_config, "KL_SQL_UserNamevalue=")
-o1 = InStr(s1, kelin_config, "/>")
-KL_SQL_UserName = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
-s1=InStr(kelin_config, "KL_SQL_PassWordvalue=")
-o1 = InStr(s1, kelin_config, "/>")
-KL_SQL_PassWord = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
-
-s1=InStr(kelin_config, "KL_SQL_SERVERIPvalue=")
-o1 = InStr(s1, kelin_config, "/>")
-KL_SQL_SERVERIP = Mid(kelin_config, s1 + 21, o1 - s1 - 21)
-
-set conn=Server.CreateObject("ADODB.Connection")
-'conn.open "driver={SQL Server};database="&KL_Main_DatabaseName&";Server="&KL_SQL_SERVERIP&";uid="&KL_SQL_UserName&";pwd="&KL_SQL_PassWord 
-conn.open "PROVIDER=SQLOLEDB;DATA SOURCE="&KL_SQL_SERVERIP&";UID="&KL_SQL_UserName&";PWD="&KL_SQL_PassWord&";DATABASE="&KL_Main_DatabaseName
-if Err then
-   Err.Clear
-	Response.write kltool_code(kltool_head("kelink数据库连接错误",0)&kltool_alert("kelink数据库连接错误")&kltool_end(0))
-   Response.End()
-End if
-'关数据库
-sub closeConn()
-	 conn.close
-	 set conn=nothing
-end sub
-''''''''''''''''''''''''读柯林数据库配置结束'''''''''''''''''''''''
+	On Error Resume Next
+	set conn=Server.CreateObject("ADODB.Connection")
+	conn.open "PROVIDER=SQLOLEDB;DATA SOURCE="&KL_SQL_SERVERIP&";UID="&KL_SQL_UserName&";PWD="&KL_SQL_PassWord&";DATABASE="&KL_Main_DatabaseName
+	if Err<>0 then
+		Err.Clear
+		Response.write kltool_code(kltool_head("kelink数据库连接错误",0)&kltool_alert("kelink数据库连接错误")&kltool_end(0))
+		Response.End
+	End if
+	On Error goto 0
 %>
 <!--#include file="class/cookies.asp"-->
 <!--#include file="class/md5.asp"-->
 <!--#include file="class/kltool_rndnick_s.asp"-->
 <%
-'-----读会员数据
-if siteid="" then siteid=1000
-if userid="" then userid=0
-if userid=0 then Response.redirect"/waplogin.aspx?siteid="&siteid
-userid=clng(userid)
-siteid=clng(siteid)
-	set siters=conn.execute("select username,nickname,password,managerlvl,money,moneyname,logintimes,lockuser,sessiontimeout,endtime,SidTimeOut,mybankmoney,mybanktime,DATEDIFF(dd, mybanktime, GETDATE())  as dtimes,expR,RMB from [user] where  userid="&userid &" and siteid="&siteid)	
+'-----读当前会员数据
+	if siteid="" then siteid=1000
+	if userid="" then userid=0
+	if userid=0 then Response.redirect"/waplogin.aspx?siteid="&siteid
+	userid=clng(userid)
+	siteid=clng(siteid)
+	set siters=conn.execute("select username,nickname,password,managerlvl,money,moneyname,logintimes,lockuser,sessiontimeout,endtime,SidTimeOut,mybankmoney,mybanktime,DATEDIFF(dd, mybanktime, GETDATE()) as dtimes,expR,RMB from [user] where userid="&userid &" and siteid="&siteid)	
 	if not siters.eof then      	
 		getusername=siters("username")
 		nickname=siters("nickname")
@@ -133,14 +109,14 @@ siteid=clng(siteid)
 		RMB=Round(siters("RMB"),2)
 		if isNull(dtimes) then dtimes=0
       end if
-	siters.close()
+	siters.close
 	set siters=nothing
 	if sessionid<>SidTimeOut then Response.redirect"/waplogin.aspx?siteid="&siteid
 '-----取币名
-set rs=conn.execute("select * from [user] where userid="&siteid)
-	sitemoneyname=rs("sitemoneyname")
-rs.close
-set rs=nothing
+	set rs=conn.execute("select * from [user] where userid="&siteid)
+		sitemoneyname=rs("sitemoneyname")
+	rs.close
+	set rs=nothing
 '-----工具箱权限判断
 Function kltool_admin(kltool_admin_str)
 	set adminrs=server.CreateObject("adodb.recordset")
@@ -169,25 +145,25 @@ Function kltool_use(kltool_use_id)
 		end if
 	kltool_use_rs.close
 	set kltool_use_rs=nothing
-
 End Function
 '-----数据表检测
 Function kltool_sql(str)
 	On Error Resume Next
 	set kltool_sql_rs=conn.execute("select * from "&str)
-	If Err Then 
-		err.Clear
+	If Err<>0 Then
+		Err.Clear
 		Response.write kltool_code(kltool_head("请等待管理员配置此功能",0)&kltool_alert("请等待管理员配置此功能")&kltool_end(0))
-		Response.End()
+		Response.End
 	end if
 	kltool_sql_rs.close
 	set kltool_sql_rs=nothing
+	On Error goto 0
 End Function
 
 '-----路径检测，常量无法赋值，以此来实现无限级目录
 Function kltool_path
 	kltool_path=Lcase(Left(Request.ServerVariables("script_name"),InStrRev(Request.ServerVariables("script_name"),"/")))
-	kltool_folder=array("bbs","cdk","redbag","picture","svip","vip","headimg")
+	kltool_folder=array("bbs","cdk","redbag","svip","vip","headimg")
 	str1=split(kltool_path,"/")
 	str2=str1(ubound(str1)-1)
 	for each ipath in kltool_folder
@@ -269,9 +245,8 @@ function kltool_head(head_str1,head_str2)
 			"</nav>"&vbcrlf&_
 			"<style>"&vbcrlf&_
 			"  .container{max-width:600px;}"&vbcrlf&_
-			"</style>"&vbcrlf
-		end if
-		kltool_head=kltool_head&"<div class=""container container-small"">"&vbcrlf&_
+			"</style>"&vbcrlf&_
+			"<div class=""container container-small"">"&vbcrlf&_
 			"<!-- 模态框（Modal） -->"&vbcrlf&_
 			"<div class=""modal fade"" id=""myModal"" tabindex=""-1"" role=""dialog"" aria-labelledby=""myModalLabel"" aria-hidden=""true"">"&vbcrlf&_
 			"	<div class=""modal-dialog"">"&vbcrlf&_
@@ -288,6 +263,7 @@ function kltool_head(head_str1,head_str2)
 			"		</div><!-- /.modal-content -->"&vbcrlf&_
 			"	</div><!-- /.modal -->"&vbcrlf&_
 			"</div>"&vbcrlf
+		end if
 End function
 '-----底部内容
 Function kltool_end(kltool_end_str1)
@@ -404,12 +380,13 @@ function ObjTest(strObj,str)
   on error resume next
   set TestObj=server.CreateObject (strObj)
 	If -2147221005 <> Err then
-if str=1 then ObjTest =strObj&"：支持<br/>" else ObjTest = True
+		if str=1 then ObjTest =strObj&"：支持<br/>" else ObjTest = True
 	else
-ObjTest=strObj&"：不支持<br/>"
-if str=1 then ObjTest=ObjTest else ObjTest=false
+		ObjTest=strObj&"：不支持<br/>"
+		if str=1 then ObjTest=ObjTest else ObjTest=false
 	end if
   set TestObj=nothing
+  on error goto 0
 End function
 '-----随机数运算，最大值最小值
 Function RndNumber(MaxNum,MinNum)
@@ -432,7 +409,6 @@ End Function
 '-----函数名:getname
 '-----作用:获取日期
 public Function Getname()
-'on error resume next
     Dim y,m,d,h,mm,S
     y = Year(Now)
     m = Month(Now): If m < 10 Then m = "0" & m
@@ -515,7 +491,7 @@ function kltool_DateDiff(dt1,dt2,dt3)
 's	秒
 kltool_DateDiff=DateDiff(dt3,dt1,dt2)
 end function
-'-----延迟函数
+'-----延迟函数,支持小数如0.1
 function sleep(stime)
 	stimes = timer
 	do
@@ -523,26 +499,15 @@ function sleep(stime)
 end function
 '-----VIP每日抽奖，奖品设定
 function kltool_get_prizelist(things)
-prize_lx="1|2|3|4|5|6|7"
-prize_name=sitemoneyname&"|经验|RMB(元)|银行存款|VIP延期(天)|空间人气|在线积时"
-prize_lx_=split(prize_lx,"|")
-prize_name_=split(prize_name,"|")
-			For i=0 To ubound(prize_name_)
-				kltool_get_prizelist=kltool_get_prizelist&"  <label class=""checkbox-inline""><input type=""radio"" name="""&things&""" id="""&things&""" value="""&prize_lx_(i)&"""> "&prize_lx_(i)&" "&prize_name_(i)&"</label>"&vbcrlf
-			Next
+	prize_name_str=array("",sitemoneyname,"经验","RMB(元)","银行存款","VIP延期(天)","空间人气","在线积时")
+	for i=1 to 7
+		kltool_get_prizelist=kltool_get_prizelist&"  <label class=""checkbox-inline""><input type=""radio"" name="""&things&""" id="""&things&""" value="""&i&"""> "&i&" "&prize_name_str(i)&"</label>"&vbcrlf
+	Next
 end function
 '-----VIP每日抽奖，奖品
 function kltool_get_prize(things)
-prize_lx_str="1|2|3|4|5|6|7"
-prize_name_str=sitemoneyname&"|经验|RMB(元)|银行存款|VIP延期(天)|空间人气|在线积时"
-prize_lx_g=split(prize_lx_str,"|")
-prize_name_g=split(prize_name_str,"|")
-			For prize_i=0 To ubound(prize_name_g)
-				if clng(things)=clng(prize_lx_g(prize_i)) then
-					kltool_get_prize=prize_lx_g(prize_i)&":"&prize_name_g(prize_i)&vbcrlf
-					'Exit For
-				end if
-			Next
+	prize_name_str=array("",sitemoneyname,"经验","RMB(元)","银行存款","VIP延期(天)","空间人气","在线积时")
+	kltool_get_prize=prize_name_str(things)
 end function
 '-----VIP每日抽奖，获取vip列表，展示性
 function kltool_get_viplist_show
@@ -568,7 +533,7 @@ function kltool_get_prizelist_show
 		s_lx=str(2)(1,i)
 		s_prize1=str(2)(2,i)
 		s_prize2=str(2)(3,i)
-			kltool_get_prizelist_show=kltool_get_prizelist_show&"<li class=""list-group-item"">奖品"&kltool_get_prize(s_lx)&"<br/>"&vbcrlf&_
+			kltool_get_prizelist_show=kltool_get_prizelist_show&"<li class=""list-group-item"">奖品:"&kltool_get_prize(s_lx)&"<br/>"&vbcrlf&_
 			""&s_prize1&"--"&s_prize2&vbcrlf&_
 			"</li>"&vbcrlf
 		next
@@ -612,11 +577,8 @@ Function kltool_get_topiclist()
 end Function
 '-----取权限名称
 function kltool_get_managername(str)
-	if str=0 then kltool_get_managername="超管"
-	if str=1 then kltool_get_managername="副管"
-	if str=2 then kltool_get_managername="普通"
-	if str=3 then kltool_get_managername="总编辑"
-	if str=4 then kltool_get_managername="总版主"
+	kltool_get_managername_arr=array("超管","副管","普通","总编辑","总版主")
+	kltool_get_managername=kltool_get_managername_arr(str)
 end function
 '-----获取用户加黑状态,加黑天数，操作时间，操作人,加黑栏目
 Function kltool_get_userlock(uid,things)
@@ -672,17 +634,7 @@ Function kltool_get_usermanagerlvl(uid)
 	set rsk=conn.execute("select managerlvl,siteid from [user] where userid="&uid)
 	if not rsk.eof then
 		kmanagerlvl=clng(rsk("managerlvl"))
-		if kmanagerlvl=00 Then
-			kltool_get_usermanagerlvl="超级管理员"
-		elseif kmanagerlvl=01 Then
-			kltool_get_usermanagerlvl="副管理员"
-		elseif kmanagerlvl=02 Then
-			kltool_get_usermanagerlvl="普通会员"
-		elseif kmanagerlvl=03 Then
-			kltool_get_usermanagerlvl="总编辑"
-		elseif kmanagerlvl=04 Then
-			kltool_get_usermanagerlvl="总版主"
-		end if
+		kltool_get_usermanagerlvl=kltool_get_managername(kmanagerlvl)
 	if clng(siteid)<>clng(rsk("siteid")) then kltool_get_usermanagerlvl="副级管理员"
 	end if
 	rsk.Close
@@ -697,11 +649,8 @@ Function kltool_get_usermoney(uid,things)
 	kmybankmoney=clng(rsk("mybankmoney"))
 	krmb=rsk("rmb")
 	klogintimes=clng(rsk("logintimes"))
-		if things=1 then kltool_get_usermoney=kmoney
-		if things=2 then kltool_get_usermoney=kexpr
-		if things=3 then kltool_get_usermoney=kmybankmoney
-		if things=4 then kltool_get_usermoney=krmb
-		if things=5 then kltool_get_usermoney=klogintimes
+	kltool_get_usermoney_array=array("",kmoney,kexpr,kmybankmoney,krmb,klogintimes)
+	kltool_get_usermoney=kltool_get_usermoney_array(things)
 	end if
 	rsk.Close
 	set rsk=nothing
@@ -918,21 +867,8 @@ end function
 '-----获取cdk类型
 function kltool_get_cdklx(c_lx)
 		lx=clng(c_lx)
-		if lx="1" then
-			kltool_get_cdklx=sitemoneyname
-		elseif lx="2" then
-			kltool_get_cdklx="经验"
-		elseif lx="3" then
-			kltool_get_cdklx=sitemoneyname&"和经验"
-		elseif lx="4" then
-			kltool_get_cdklx="rmb"
-		elseif lx="5" then
-			kltool_get_cdklx="VIP"
-		elseif lx="6" then
-			kltool_get_cdklx="积时"
-		elseif lx="7" then
-			kltool_get_cdklx="勋章"
-		end if
+		kltool_get_cdklx_array=array("",sitemoneyname,"经验",sitemoneyname&"和经验","rmb","VIP","积时","勋章")
+		kltool_get_cdklx=kltool_get_cdklx_array(lx)
 end function
 '字符串截取
 function cutstr(str1,str2,str3)
@@ -967,14 +903,4 @@ Sub writeToTextFile (FileUrl,byval Str,CharSet)
 	stm.Close 
 	set stm=nothing 
 End Sub
-
-function isnum(str)
-	isnum=false
-	if Isnumeric(str) then
-		isnum=true
-		if str<=0 then isnum=false
-	else
-		isnum=false
-	end if
-end function
 %>

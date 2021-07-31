@@ -61,7 +61,7 @@ sub index1()
 	bbs_topic=Request.Form("Topic")
 	bbs_author=Request.Form("bbs_author")
 	bbs_pub=Request.Form("bbs_pub")
-	if bbs_title="" or bbs_content="" or bbs_author="" or bbs_pub="" or bbs_classid="" or not isnum(bbs_pub) or not isnum(bbs_classid) or (bbs_topic<>"" and not isnum(bbs_topic)) then
+	if bbs_title="" or bbs_content="" or bbs_author="" or bbs_pub="" or bbs_classid="" or not Isnumeric(bbs_pub) or not Isnumeric(bbs_classid) or (bbs_topic<>"" and not Isnumeric(bbs_topic)) then
 		Response.write "错误：标题、内容、作者、作者ID、栏目，均不能为空"
 		Response.End()
 	end if

@@ -24,20 +24,16 @@ sub index()
 	"</ul>"&vbcrlf&_
 
 	"<li class=""list-group-item"">"&vbcrlf&_
-	"	<div class=""form-inline"" role=""form"">"&vbcrlf&_
-	"	<div>"&vbcrlf&_
+	"	<div role=""form"">"&vbcrlf&_
 	"	<label for=""c_cdk"" id=""c_cdkjy"" class=""control-label"">输入cdk</label>"&vbcrlf&_
-	"	</div>"&vbcrlf&_
-	"		<div class=""row"">"&vbcrlf&_
-	"			<div class=""col-lg-6"">"&vbcrlf&_
-	"				<div class=""input-group col-xs-8"">"&vbcrlf&_
-	"					<input name=""c_cdkjy"" id=""c_cdk"" type=""text"" value="""" placeholder=""输入cdk"" class=""form-control"">"&vbcrlf&_
-	"					<span class=""input-group-btn"">"&vbcrlf&_
-	"						<button class=""btn btn-default"" type=""button"" id=""c_cdkdh"">"&vbcrlf&_
+	"		<div class=""col-lg"">"&vbcrlf&_
+	"			<div class=""input-group col-xs"">"&vbcrlf&_
+	"				<input name=""c_cdkjy"" id=""c_cdk"" type=""text"" value="""" placeholder=""输入cdk"" class=""form-control"">"&vbcrlf&_
+	"				<span class=""input-group-btn"">"&vbcrlf&_
+	"					<button class=""btn btn-default"" type=""button"" id=""c_cdkdh"">"&vbcrlf&_
 	"						兑换!"&vbcrlf&_
-	"						</button>"&vbcrlf&_
-	"					</span>"&vbcrlf&_
-	"				</div>"&vbcrlf&_
+	"					</button>"&vbcrlf&_
+	"				</span>"&vbcrlf&_
 	"			</div>"&vbcrlf&_
 	"		</div>"&vbcrlf&_
 	"	</div>"&vbcrlf&_
@@ -178,7 +174,7 @@ sub cdkdh()
 end sub
 sub cdk()
 	c_cdk=Request.QueryString("c_cdk")
-		Response.Write "CDK:["&c_cdk&"]<br/>"
+		Response.Write "CDK:["&c_cdk&"]"
 	set rs=Server.CreateObject("ADODB.Recordset")
 	rs.open"select * from [cdk] where cdk='"&c_cdk&"' and chushou=2",conn,1,2
 	if rs.eof then
@@ -191,9 +187,9 @@ sub cdk()
 	c_sy=rs("sy")
 	rs.close
 	set rs=nothing
-	if c_userid<>"" then Response.Write "所有人："&c_userid
-	if c_sy="1" then Response.Write " 未使用 " else Response.Write" 已使用 "
-	Response.Write "类型："&kltool_get_cdklx(c_lx)&"<br>"&kltool_get_cdkinfo(c_id)
+	if c_sy="1" then Response.Write " <font color=red>未使用</font>" else Response.Write " <font color=red>已使用</font>"
+	if c_userid<>"" then Response.Write "<br/>归属于："&kltool_get_usernickname(c_userid,1)&"("&c_userid&")"
+	Response.Write "<br/>类型："&kltool_get_cdklx(c_lx)&" -> "&kltool_get_cdkinfo(c_id)
 end sub
 
 sub cdkzs()

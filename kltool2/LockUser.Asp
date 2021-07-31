@@ -26,7 +26,7 @@ sub index()
 Response.write kltool_code(kltool_head("柯林工具箱-论坛加黑会员","1"))
 
 %>
-<form role="form" class="bs-example bs-example-form">
+<form role="form" class="bs-example bs-example-form list-group-item">
 	<div class="form-group">
 		<label for="name" class="col-sm-2 control-label">会员ID</label>
 		<div class="col-sm-10">
@@ -42,7 +42,7 @@ Response.write kltool_code(kltool_head("柯林工具箱-论坛加黑会员","1")
 	<div class="form-group">
 		<label for="name" class="col-sm-2 control-label">加黑天数</label>
 		<div class="col-sm-10">
-			<input type="text" class="form-control" name="s_str2" id="s_str2" placeholder="0为无期限" value="">
+			<input type="text" class="form-control" name="s_str2" id="s_str2" placeholder="0或空 为无期限" value="">
 		</div>
 	</div>
 	
@@ -119,7 +119,7 @@ sub yes()
 	s_str3=request("Class")
 	s_str2=request("s_str2")
 
-	if s_str1="" or not isnum(s_str1) or s_str1="1000" or s_str1=siteid or (s_str2<>"" and not Isnumeric(s_str2)) then 
+	if s_str1="" or not Isnumeric(s_str1) or s_str1="1000" or s_str1=siteid or (s_str2<>"" and not Isnumeric(s_str2)) then 
 		Response.write "填写错误"
 		Response.end
 	end if
