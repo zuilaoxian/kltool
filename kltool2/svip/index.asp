@@ -99,7 +99,7 @@ sub yes()
 		s_tip=s_tip&"经验增加"&prize&""
 		conn.Execute("update [user] set expr=expr+"&prize&" where userid="&userid)
 	elseif s_lx=3 then
-		prize=RndNumberDouble(s_prize2,s_prize1)
+		prize=RndNumberDouble(s_prize1,s_prize2)'随机最大值小数溢出自身，反转变量
 		s_tip=s_tip&"RMB增加"&prize&""
 		conn.Execute("update [user] set rmb=rmb+"&prize&" where userid="&userid)
 	elseif s_lx=4 then
