@@ -155,7 +155,7 @@ kltool_sql("svip_log")
 		s_content=str(2)(2,i)
 		s_time=str(2)(3,i)
 		html=html&"<li class=""list-group-item"">"&vbcrlf&_
-			" "&page*PageSize+i-PageSize+1&"."&kltool_get_usernickname(s_userid,2)&"("&s_userid&")"&vbcrlf&_
+			" "&page*PageSize+i-PageSize+1&"."&kltool_get_usernickname(s_userid,1)&"("&s_userid&")"&vbcrlf&_
 			" <br/>"&s_content&_
 			" <br/><span style=""color: #a0a0a0;font-size:12px;"">("&s_time&")</span>"&vbcrlf&_
 			"</li>"&vbcrlf

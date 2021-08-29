@@ -50,7 +50,7 @@ sub index()
 				shoptip=shoptip&sitemoneyname&":"&jinbi&" "
 				jinbi=clng(jinbi)
 			end if
-			if jinyan<>"" and not isnull(jinyan) and clng(jingyan)>0 then
+			if jinyan<>"" and not isnull(jinyan) and clng(jinyan)>0 then
 				shoptip=shoptip&"经验:"&jinyan&" "
 				jinyan=clng(jinyan)
 			end if
