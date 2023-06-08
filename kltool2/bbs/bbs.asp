@@ -267,7 +267,13 @@ sub bbsreword()
 			re_id=str(2)(0,i)
 			re_content=str(2)(1,i)
 			re_qt=str(2)(2,i)
-			if re_qt="1" then recheck1="checked" else recheck2="checked"
+			if re_qt="1" then
+				recheck1="checked"
+				recheck2=""
+			else
+				recheck1=""
+				recheck2="checked"
+			end if
 		html=html&"<li class=""list-group-item"">"&vbcrlf&_
 		"		<label for=""re_word"" class=""col-sm-2 control-label"">"&re_id&"</label>"&vbcrlf&_
 		"		<div class=""col-sm-10"">"&vbcrlf&_
