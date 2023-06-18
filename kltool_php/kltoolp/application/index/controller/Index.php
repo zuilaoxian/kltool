@@ -54,18 +54,6 @@ class Index extends Base
     		return $this->error('受保护的ID:'.show_user_nick($tid));
 		}
     }
-    public function redbag_admin()
-    {
-        $this->kltooluse();
-    }
-    public function cdk()
-    {
-        
-        $path = ROOT_PATH .  DS .'backup/';
-        $files = File::readDir($path);
-        print_r($files);
-        //return view('/backup',['title'=>'柯林工具箱-数据库备份','list'=>$files]);
-    }
     public function backup()
     {
         $path = ROOT_PATH.'backup\\';
@@ -79,10 +67,21 @@ class Index extends Base
         $name=input('post.name');
         $fixow=input('post.fixow');
         $sapassword=input('post.sapassword');
+        $kelink_config=@file_get_contents($_SERVER['DOCUMENT_ROOT'].'/web.config');
+        $kelink_dbname=@cut_str([
+                's'=>'KL_DatabaseName" value="',
+                'e'=>'"',
+                'str'=>$kelink_config,
+            ]);
+        $kelink_dbuser=@cut_str([
+                's'=>'KL_SQL_UserName" value="',
+                'e'=>'"',
+                'str'=>$kelink_config,
+            ]);
         if ($action=='submit'){
             $name = time();
             $path = ROOT_PATH.'backup\\'.$name.'.bak';
-            $a = Db::execute("backup database aaaaa to disk='{$path}' WITH NOFORMAT, INIT, NAME = N'备份{$name}', SKIP, NOREWIND, NOUNLOAD");
+            $a = Db::execute("backup database [{$kelink_dbname}] to disk='{$path}' WITH NOFORMAT, INIT, NAME = N'备份{$name}', SKIP, NOREWIND, NOUNLOAD");
             if (is_file($path)){
                 return $this->success('备份成功');
             }else{
@@ -98,17 +97,6 @@ class Index extends Base
                 return $this->success('删除成功');
             }
         }elseif ($action=='back'){
-            $kelink_config=@file_get_contents($_SERVER['DOCUMENT_ROOT'].'/web.config');
-            $kelink_dbname=@cut_str([
-                    's'=>'KL_DatabaseName" value="',
-                    'e'=>'"',
-                    'str'=>$kelink_config,
-                ]);
-            $kelink_dbuser=@cut_str([
-                    's'=>'KL_SQL_UserName" value="',
-                    'e'=>'"',
-                    'str'=>$kelink_config,
-                ]);
             $name=input('post.name');
             $path = ROOT_PATH.'backup\\'.$name;
             $sapassword = input('post.sapassword');
