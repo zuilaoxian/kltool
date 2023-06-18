@@ -85,3 +85,20 @@ function get_user_headimg($uid){
 function cut_str($param){
     return explode($param['e'],explode($param['s'],$param['str'])[1])[0];
 }
+
+//字节转MB
+function fileSizeConvert($bytes) {
+  $_retval=$bytes;
+  if ($bytes < 1024) {
+    $_retval=round($bytes, 0)."B";
+  }
+  elseif ($bytes >= 1024 && $bytes < 1048576) {
+    $_retval=round($bytes / 1024, 1)."KB";
+  }
+  elseif ($bytes >= 1048576) {
+    $_retval=round(($bytes / 1024) / 1024, 2)."MB";
+  }elseif ($bytes >= 1073741824) {
+    $_retval = round($bytes / 1024 / 1024 / 1024, 2) . 'GB';
+  }
+  return $_retval;
+}

@@ -7,7 +7,7 @@
     <li class="list-group-item dobackup">
         <div class="row">
             <div class="col-xs-2">
-                <button class="btn btn-default backup" type="submit">立刻备份</button>
+                <button class="btn btn-default backup" type="submit" data-loading-text="loading...">立刻备份</button>
             </div>
             <div class="col-xs-10">
                 <label class="col-xs-4 control-label">
@@ -21,13 +21,29 @@
         </div>
     </li>
 	<div class="content">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>备份</th>
+              <th>大小</th>
+              <th>备份时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
 		{volist name='list' id='vo' empty='暂时没有数据'}
-		<li class="list-group-item">
-			<span>{$vo}</span>
-			<span class="label label-default pull-right backup" type="back" name="{$vo|basename}">还原</span>
-			<span class="label label-success pull-right backup" type="del" name="{$vo|basename}">删除</span>
-		</li>
+		<tr>
+		    <td>{$vo.file|basename}</td>
+			<td>{$vo.size|fileSizeConvert}</td>
+			<td>{$vo.ctime|date="Y-m-d H:i:s",###}</td>
+			<td>
+			    <span class="label label-default backup" type="back" name="{$vo.file|basename}" data-loading-text="loading...">还原</span>
+			    <span class="label label-success backup" type="del" name="{$vo.file|basename}" data-loading-text="loading...">删除</span>
+			</td>
+		</tr>
 		{/volist}
+          </tbody>
+        </table>
 	</div>
 <script>
 $(function() {
@@ -37,6 +53,8 @@ $(function() {
 	    const name=elm.attr('name');
 	    const fixow=$('#fixow').is(':checked');
 	    const sapassword=$('#sapassword').val();
+	    if (action=='back' && !sapassword) return layer.tips('sa密码不能为空', '#sapassword',{tips: 3,tipsMore: true})
+	    layer.msg('执行中，请等待...');
 		$.ajax({
 			url: 'kbackup',
 			type: 'post',
