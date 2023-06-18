@@ -1,0 +1,40 @@
+{extend name="base"/}
+{block name="main"}
+	<style>
+		.k-use{cursor:Pointer}
+		.k-use:hover{border: 1px solid #ff0000;}
+	</style>
+	<div class="content">{:getmydata()}
+	    <div class="alert alert-danger alert-dismissible" role="alert">
+        	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        	<a href="admins">工具箱权限管理</a>
+        </div>
+		{volist name='list' id='vo' empty='暂时没有数据'}
+		<li class="list-group-item">
+			<a href="{$vo.kaction}.html">{$vo.name}</a>
+			<span class="badge pull-right k-use" tid="{$vo.id}">{eq name="$vo.use" value="1"}启用{else/}停用{/eq}</span>
+		</li>
+		{/volist}
+	</div>
+<script>
+$(function() {
+	$('.content').on('click','span.k-use',function(){
+		const elm=$(this);
+		const tid=elm.attr('tid');
+		$.ajax({
+			url: 'kuse',
+			type: 'post',
+			data: { id:tid },
+			async: true,
+			dataType: "json",
+			success: (data) => {
+			    layer.msg(data.msg,{time:1500,anim:6});
+			    elm.text(data.data)
+			},
+			error: () => {},
+			complete: () => {$('.content').load('./ .content')}
+		});
+	});
+});
+</script>
+{/block}

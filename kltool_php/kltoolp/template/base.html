@@ -1,0 +1,76 @@
+<!DOCTYPE html><html>
+<head>
+	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+	<meta http-equiv="Cache-Control" content="max-age=0"/>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=0">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Cache-Control" content="max-age=0"/>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=0">
+    <meta name="referrer" content="no-referrer">
+	{css href="public/static/bootstrap-3.4.1-dist/css/bootstrap.min.css" /}
+	{js href="public/static/js/jquery.min.1.12.3.js" /}
+	{js href="public/static/js/jquery.cookie.js" /}
+	{js href="public/static/bootstrap-3.4.1-dist/js/bootstrap.min.js" /}
+	{js href="public/static/layer/layer.js" /}
+	{js href="public/static/js/my.js" /}
+	<title>{$title}</title>
+</head>
+<body>
+<nav class="navbar navbar-default" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#example-navbar-collapse">
+				<span class="sr-only">切换导航</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="{$k_data.kltool_path}">柯林工具箱</a>
+		</div>
+		<div class="collapse navbar-collapse" id="example-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/myfile.aspx?siteid=1000"><span class="glyphicon glyphicon-user"></span> {$k_data.userid|show_user_nick}({$k_data.userid})</a></li>
+			</ul>
+			<ul class="nav navbar-nav">
+				<li class="dropdown"><a href="#" class="dropdown-toggle" id="jsontools" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-leaf"></span> {$k_data.sitemoneyname} {$k_data.money} <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+						<li><a><span class="glyphicon glyphicon-flash"></span> 经验 {$k_data.expR}</a></li>
+						<li><a><span class="glyphicon glyphicon-th-list"></span> RMB {$k_data.RMB}</a></li>
+						<li><a><span class="glyphicon glyphicon-credit-card"></span> 存款 {$k_data.mybankmoney}</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/bbs/messagelist.aspx?siteid=1000&classid=0&types=0"><span class="glyphicon glyphicon-envelope"></span> 消息 {$k_data.message}</a></li>
+				<li><a href="/waplogout.aspx?siteid=1000"><span class="glyphicon glyphicon-off"></span> 注销登录</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+<style>
+  .container{max-width:600px;}
+</style>
+<div class="container container-small">
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+				</div>
+				<div class="modal-body">在这里添加一些文本</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" style="display:none;">提交更改</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+{block name="main"}{/block}
+	<div class="well well-sm"><span id="times" class="glyphicon glyphicon-time">{$k_data.mytime}</span></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+查看phpinfo
+
+保存后访问
+查看PHP Extension Build项，后面是NTS还是TS
+
+运行SQLSRV53.EXE，选择一个任意目录释放文件
+如果你没有使用php7.0而是7.0以下
+请自行下载其他版本扩展
+http://www.microsoft.com/en-us/download/details.aspx?id=20098
+
+如，我的PHP Extension Build项后面有nts
+而我的php版本为7.0，我的windows是x86也就是32位系统
+我的选择是
+pdo_sqlsrv_7_nts_x86.dll
+将此文件放进php的扩展目录如：php/7.0/ext
+
+接着打开php/7.0/php.ini
+搜索php_pdo_sqlsrv
+看一下是否有类似extension =php_pdo_sqlsrv_7_nts_x86.dll
+因php安装源不同，可能已经预置，前面有分号的话去掉即可
+
+没有的话可以在最后添加
+extension =php_pdo_sqlsrv_7_nts_x86.dll
+
+在phpinfo页面中ctrl+f搜索到即表示安装扩展成功
+
+如果还有错误，可能是sql被精简，安装SQL的ODBC驱动，根据你的系统选择64位或32位
+https://www.microsoft.com/en-us/download/details.aspx?id=50420

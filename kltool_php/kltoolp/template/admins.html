@@ -1,0 +1,66 @@
+{extend name="base"/}
+{block name="main"}
+	<style>
+		.k-use{cursor:Pointer}
+		.k-use:hover{border: 1px solid #ff0000;}
+	</style>
+	<div class="content">
+        <li class="list-group-item">
+        	<div class="form-group">
+        		<label for="adminuid">输入用户ID</label><br>
+        	</div>
+        	<div class="form-inline" role="form">
+        		<input name="siteid" type="hidden" value="1000">
+        		<div class="row">
+        			<div class="col-lg-6">
+        				<div class="input-group col-xs-8">
+        					<input name="adminuid" id="adminuid" type="text" value="" placeholder="输入用户ID" class="form-control">
+        					<span class="input-group-btn">
+        						<button class="btn btn-default madmin" type="submit">
+        						添加!
+        						</button>
+        					</span>
+        				</div>
+        			</div>
+        		</div>
+        	</div>
+        </li>
+		{volist name='list' id='vo' empty='暂时没有数据'}
+		<li class="list-group-item">
+			<div class="media-left media-middle">
+				<div class="media-left">
+					{$vo.userid|show_user_headimg}
+					
+				</div>
+				<div class="media-body">
+				    <h4 class="media-heading">
+					    {$vo.userid|show_user_nick}({$vo.userid})
+					    
+					</h4>
+					<p><button class="badge pull-right madmin" tid="{$vo.userid}">删除</button></p>
+				</div>
+			</div>
+		</li>
+		{/volist}
+	</div>
+<script>
+$(function() {
+	$('button.madmin').click(function(){
+		const elm=$(this);
+		let tid=elm.attr('tid');
+		const action=$(this).attr('type');
+		if (action) tid=$('#adminuid').val();
+		$.ajax({
+			url: 'madmin',
+			type: 'post',
+			data: { tid:tid,action:action },
+			async: true,
+			dataType: "json",
+			success: (data) => {layer.msg(data.msg);},
+			error: () => {},
+			complete: () => {}
+		});
+	});
+});
+</script>
+{/block}

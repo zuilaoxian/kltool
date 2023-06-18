@@ -1,0 +1,53 @@
+{extend name="base"/}
+{block name="main"}
+	<style>
+		.k-use{cursor:Pointer}
+		.k-use:hover{border: 1px solid #ff0000;}
+	</style>
+    <li class="list-group-item dobackup">
+        <div class="row">
+            <div class="col-xs-2">
+                <button class="btn btn-default backup" type="submit">立刻备份</button>
+            </div>
+            <div class="col-xs-10">
+                <label class="col-xs-4 control-label">
+                    <input id="fixow" type="checkbox"> 修复OW权限<br>还原时可选
+                </label>
+                <div class="input-group col-xs-8">
+                    <span class="input-group-addon">sa密码</span>
+                    <input class="form-control" id="sapassword" type="text" value="" placeholder="还原时输入">
+                </div>
+             </div>
+        </div>
+    </li>
+	<div class="content">
+		{volist name='list' id='vo' empty='暂时没有数据'}
+		<li class="list-group-item">
+			<span>{$vo}</span>
+			<span class="label label-default pull-right backup" type="back" name="{$vo|basename}">还原</span>
+			<span class="label label-success pull-right backup" type="del" name="{$vo|basename}">删除</span>
+		</li>
+		{/volist}
+	</div>
+<script>
+$(function() {
+	$('.content,.dobackup').on('click','.backup',function(){
+	    const elm=$(this);
+	    const action=elm.attr('type');
+	    const name=elm.attr('name');
+	    const fixow=$('#fixow').is(':checked');
+	    const sapassword=$('#sapassword').val();
+		$.ajax({
+			url: 'kbackup',
+			type: 'post',
+			data: {action:action,name:name,fixow:fixow,sapassword:sapassword},
+			async: true,
+			dataType: "json",
+			success: (data) => {layer.msg(data.msg,{time:1500,anim:6});},
+			error: () => {},
+			complete: () => {$('.content').load('backup.html .content');}
+		});
+	});
+});
+</script>
+{/block}
