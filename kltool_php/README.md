@@ -38,7 +38,7 @@ require __DIR__ . '/thinkphp/start.php';
 
 - application\config.php 配置文件
 - application\database.php 配置数据库连接
-- application\database.php 路由规则
+- application\route.php 路由规则
 - application\common.php 公共函数
 - application\index\controller\Base.php 全局引用文件，包含全局变量k_data
 - application\index\controller\Index.php 应用文件
