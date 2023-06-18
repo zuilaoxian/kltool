@@ -1,10 +1,10 @@
 # kltool
  柯林工具箱php版
- - 这个版本依然采用了嵌入柯林系统本身的写法，不过采用了thinkphp框架，版本是`5.0.24`
+ - 这个版本依然采用了嵌入柯林系统本身的写法，不过采用了thinkphp框架，版本是`5.0.24`，php的要求是7.0
  
 ### php支持说明
 
-配置sqlsrv支持，在windows下使用宝塔，目前php版本自带驱动，但需要自己安装OBDC驱动，我提供的`msodbcsql.msi`版本13，如果还是不行，请阅读`安装pdo_sqlsrv扩展.txt`
+配置php7.0的sqlsrv支持，在windows下使用宝塔，目前php版本自带驱动，但需要自己安装OBDC驱动，我提供的`msodbcsql.msi`版本13，如果还是不行，请阅读`安装pdo_sqlsrv扩展.txt`
 
 ###  柯林配置文件
 使用了宝塔配置，归类在web_config文件夹中
