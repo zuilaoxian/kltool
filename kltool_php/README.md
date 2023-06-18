@@ -4,7 +4,7 @@
  
 ### php支持说明
 
-配置sqlsrv支持，在windows下使用宝塔，目前php版本自带驱动，但需要自己安装PDO驱动，如果还是不行，请阅读`安装pdo_sqlsrv扩展.txt`
+配置sqlsrv支持，在windows下使用宝塔，目前php版本自带驱动，但需要自己安装OBDC驱动，我提供的`msodbcsql.msi`版本13，如果还是不行，请阅读`安装pdo_sqlsrv扩展.txt`
 
 ###  柯林配置文件
 使用了宝塔配置，归类在web_config文件夹中
