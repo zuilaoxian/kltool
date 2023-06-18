@@ -97,6 +97,38 @@ class Index extends Base
             }else{
                 return $this->success('删除成功');
             }
+        }elseif ($action=='back'){
+            $kelink_config=@file_get_contents($_SERVER['DOCUMENT_ROOT'].'/web.config');
+            $kelink_dbname=@cut_str([
+                    's'=>'KL_DatabaseName" value="',
+                    'e'=>'"',
+                    'str'=>$kelink_config,
+                ]);
+            $kelink_dbuser=@cut_str([
+                    's'=>'KL_SQL_UserName" value="',
+                    'e'=>'"',
+                    'str'=>$kelink_config,
+                ]);
+            $name=input('post.name');
+            $path = ROOT_PATH.'backup\\'.$name;
+            $sapassword = input('post.sapassword');
+            $config= [
+                    'type'        => 'sqlsrv',
+                    'hostname'    => '127.0.0.1',
+                    'database'    => 'master',
+                    'username'    => 'sa',
+                    'password'    => $sapassword,
+                    'charset'     => 'utf8',
+                    'prefix'          => '',
+                    'auto_timestamp'  => true,
+                ];
+                $r= Db::connect($config);
+                $b=$r->execute('ALTER DATABASE ['.$kelink_dbname.'] SET OFFLINE WITH ROLLBACK IMMEDIATE;');//使数据库离线
+                $b=$r->execute('RESTORE DATABASE ['.$kelink_dbname.'] FROM DISK = N\''.$path.'\' WITH FILE = 1,RECOVERY,NOUNLOAD,REPLACE;');//还原数据库，从文件覆盖
+                //$b=$r->execute('RESTORE DATABASE ['.$kelink_dbname.'] WITH RECOVERY;');
+                sleep(1);//等待1秒，否则出错
+                $b=$r->execute('use ['.$kelink_dbuser.'];execute Sp_changedbowner \''.$kelink_dbuser.'\',true');//设置ow权限
+                return $this->success('还原成功');
         }
     }
 }

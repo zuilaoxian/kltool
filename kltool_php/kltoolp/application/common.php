@@ -82,3 +82,6 @@ function get_user_headimg($uid){
 	if (!stristr($headimg,'/')) return '/bbs/head/'.$headimg;
 	if (stristr($headimg,'http')) return $headimg;
 }
+function cut_str($param){
+    return explode($param['e'],explode($param['s'],$param['str'])[1])[0];
+}
