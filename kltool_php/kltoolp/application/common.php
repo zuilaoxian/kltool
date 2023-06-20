@@ -28,7 +28,6 @@ function show_user_nick($uid){
 		->join(['[wap2_smallType]'=>'b'],'a.SessionTimeout=b.id','left')
 		->field('a.userid,a.nickname,a.SessionTimeout,b.id as vip,b.subclassName as vipstr')
 		->where('a.userid',$uid)
-		//a.userid=1000 and (b.id is null or a.SessionTimeout=b.id)
 		->where(function($query){
             $query->whereNUll('b.id')
                   ->whereOr('a.SessionTimeout',Db::raw('b.id'));
@@ -86,6 +85,9 @@ function cut_str($param){
     return explode($param['e'],explode($param['s'],$param['str'])[1])[0];
 }
 
+function convert_urls($urls){
+    return implode("",array_map(function($value) { return '<a href="' . $value . '.html">'; }, explode('|',$urls)));
+}
 //字节转MB
 function fileSizeConvert($bytes) {
   $_retval=$bytes;

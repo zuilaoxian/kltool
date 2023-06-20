@@ -1,0 +1,233 @@
+{extend name="base"/}
+{block name="main"}
+	<style>
+		.k-use{cursor:Pointer}
+		.k-use:hover{border: 1px solid #ff0000;}
+	</style>
+        <form method="get" action="?" role="form">
+            <div class="row">
+                <div class="col-xs-5">
+                    <div class="input-group">
+                        <span class="input-group-addon">输入用户id</span></span>
+                        <input class="form-control" name="s_userid" id="sapassword" type="text" value="" placeholder="">
+                    </div>
+                </div>
+                <div class="col-xs-5">
+                    <div class="form-group" id="rclass">
+                    		{$show_class_select('class_select2')}
+                    	</div>
+                </div>
+                <div class="col-xs-2">
+                    <input type="submit" class="btn btn-default" value="搜索">
+                </div>
+            </div>
+        </form>
+	<div class="content">
+	    <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>
+                      <div class="form-inline">
+                          <label class="checkbox">
+                            <input type="checkbox" dom="input#tid" class="choseall" id="choseall" value=""> ID
+                          </label>
+                      </div>
+                      </th>
+                  <th>标题</th>
+                  <th>内容</th>
+                  <th>作者</th>
+                  <th>回/赞/阅</th>
+                  <th>栏目</th>
+                </tr>
+              </thead>
+              <tbody>
+    		{volist name='list' id='vo' empty='暂时没有数据'}
+    		<tr tid="{$vo.id}">
+    		    <td>
+    		        <label class="control-label">
+    		        <input type="checkbox" class="tid" id="tid" value="{$vo.id}"> {$vo.id}
+    		        </label>
+    		    </td>
+    			<td{eq name="$vo.isCheck" value="2"} style="text-decoration:line-through;"{/eq}>
+    			    {eq name="$vo.isCheck" value="2"}<span class="glyphicon glyphicon-remove-circle"></span>{/eq}
+    			    {eq name="$vo.islock" value="1"}<span class="glyphicon glyphicon glyphicon-lock"></span>{/eq}
+    			    <a href="/bbs/book_view.aspx?siteid={$k_data['siteid']}&classid={$vo.book_classid}&id={$vo.id}">{$vo.book_title|mb_substr=0,10}</a>
+    			    </td>
+    			<td id="edit">{$vo.book_content|strip_tags|mb_substr=0,10}...</td>
+    			<td>{$vo.book_pub|show_user_nick}(ID:{$vo.book_pub})</td>
+    			<td>{$vo.book_re}/{$vo.suport}/{$vo.book_click}</td>
+    			<td>{$vo.classname}({$vo.book_classid})</td>
+    		</tr>
+    		{/volist}
+              </tbody>
+            </table>
+        </div>
+        {$list->render()}
+	</div>
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-xs-3">
+                <a id="chose" dom="input#tid" class="label label-success">反选</a> <a id="choseall" dom="input#tid" class="label label-default">全选</a>
+            </div>
+        	<div class="col-xs-5">
+        		<div class="input-group">
+        			<span class="input-group-btn">
+        				<select id="bbsdoselect" class="btn btn-default">
+        				  <option value="0">选择操作</option>
+        				  <option value="1">删除</option>
+        				  <option value="2">恢复</option>
+        				  <option value="3">锁定</option>
+        				  <option value="4">解锁</option>
+        				  <option value="5">增加阅读量</option>
+        				  <option value="6">减少阅读量</option>
+        				  <option value="7">增加回复</option>
+        				  <option value="8">增加点赞</option>
+        				  <option value="9">减少点赞</option>
+        				  <option value="10">转移栏目</option>
+        				  <option value="11">彻底删除</option>
+        				</select>
+        			</span>
+        			<input type="text" class="form-control" name="r_num" id="r_num" placeholder="输入数量" style="display:none;" size="3">
+                	<div class="form-group" id="r_class" style="display:none;">
+                		{$show_class_select('class_select')}
+                	</div>
+        		</div>
+        	</div>
+            <div class="col-xs-4">
+                <button id="bbsdo" class="btn btn-default" data-loading-text="Loading...">确定</button>
+            </div>
+        </div>
+    </li>
+<script>
+$(function() {
+//功能-帖子管理-帖子修改
+	$("td#edit").click(function(){
+		const tid=$(this).parent().attr("tid")
+		$('#myModal').modal('show')
+		$('.btn.btn-primary').show();
+		const class_select = $('#r_class').html();
+		$.ajax({
+			url:'postdo',
+			type:'post',
+			data:{tid:tid,r_do:'getpost'},
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					$(".modal-title").html('修改帖子');
+					$(".modal-body").html(`
+                        <form role="form" id="editpost">
+                          <input type="hidden" name="r_do" value="editpost">
+                          <input type="hidden" name="r_id" value="${data.id}">
+                          <div class="form-group">
+                            <label for="name">标题</label>
+                            <input type="text" name="r_title" class="form-control"value="${data.book_title}">
+                          </div>
+                          <div class="form-group">
+                            <label for="inputfile">内容</label>
+                            <textarea name="r_content" id="url" class="form-control" rows="5">${data.book_content}</textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="name">论坛</label>
+                            ${class_select}
+                          </div>
+                          <div class="form-group">
+                            <label for="name">专题</label>
+                            {$show_topic_select('topic_select','r_topic')}
+                          </div>
+                        </form>
+					`);
+					$(`.modal-body #class_select option[value=${data.book_classid}]`).prop("selected", true);
+				    $(`.modal-body #topic_select option[value=${data.topic}]`).prop("selected", true);
+				    
+				}
+		});
+	});
+	$('.btn.btn-primary').click(function(){
+		$.ajax({
+			url:'postdo',
+			type:'post',
+			data:$("form#editpost").serialize(),
+			timeout:'15000',
+			async:true,
+				success:function(data){
+					layer.alert(data.msg,{shadeClose:true,title:''});
+				}
+		});
+		$('#myModal').modal('hide')
+	});
+
+//功能-帖子管理-监控操作选择
+	$("#bbsdoselect").change(function(){
+		r_do=$('#bbsdoselect option:selected').val();
+		switch(r_do){
+			case '1': case '2': case '3': case '4': case '11':
+			$('input#r_num').hide();
+			$('#r_class').hide();
+			break;
+			case '5': case '6': case '7': case '8': case '9':
+				$('input#r_num').show();
+				$('#r_class').hide();
+			break;
+			case '10':
+				$('input#r_num').hide();
+				$('#r_class').show();
+			break;
+		}
+	});
+	$("button#bbsdo").click(function(){
+		r_do=$('#bbsdoselect option:selected').val();
+		if (r_do==0){layer.tips('请选择操作', '#bbsdoselect', {tips: [1, '#0FA6D8']}); return;}
+		var r_num,r_class;
+		switch(r_do){
+			case '1': case '2': case '3': case '4': case '11':
+			$('input#r_num').hide();
+			$('#r_class').hide();
+			break;
+			case '5': case '6': case '7': case '8': case '9':
+				$('input#r_num').show();
+				$('#r_class').hide();
+				r_num=$('input#r_num').val();
+				if (!r_num){layer.tips('输入数量', 'input#r_num', {tips: [1, '#0FA6D8']}); return;}
+			break;
+			case '10':
+				$('input#r_num').hide();
+				$('#r_class').show();
+				r_class=$('#class_select option:selected').val();
+				if (!r_class){layer.tips('没有选择栏目', '#class_select', {tips: [1, '#0FA6D8']}); return;}
+			break;
+		}
+		if ($('input#tid:checked').length<1){layer.alert('请至少选择一条',{shadeClose:true,title:''}); return;}
+		var tid=[];
+		$('input#tid:checked').each(function(){
+			tid.push($(this).val());
+		})
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			layer.msg('操作执行中,请等待', {
+			  icon: 16
+			  ,shade: 0.1
+			  ,time:3000
+			});
+			$.ajax({
+					url:'bbsdo',
+					type:'post',
+					data:{
+						r_do:r_do,
+						tid:tid.join(','),
+						r_num:r_num,
+						r_class:r_class
+						},
+					async:true,
+						success:function(data){
+							layer.alert(data.msg,{shadeClose:true,title:'操作结果'});
+						}
+			});
+		});
+	});
+});
+</script>
+{/block}

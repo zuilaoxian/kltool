@@ -18,9 +18,19 @@ Route::group('',function(){
     Route::get('redbag','index/redbag');
     Route::get('redbag_admin','index/redbag_admin');
     
-    Route::get('cdk','index/cdk');
     Route::get('backup','index/backup');
     Route::post('kbackup','index/k_backup');
+    
+    Route::get('bbs','index/bbs');
+    Route::post('bbsdo','index/bbsdo');
+    Route::post('postdo','index/postdo');
+    
+    Route::get('bbstopic','index/bbstopic');
+    Route::post('bbstopicdo','index/bbstopicdo');
+    
+    
+    
+    
 });
 return [
     '__pattern__' => [

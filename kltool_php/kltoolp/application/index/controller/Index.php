@@ -56,6 +56,7 @@ class Index extends Base
     }
     public function backup()
     {
+        $this->isadmin();
         $path = ROOT_PATH.'backup\\';
         if (!is_dir($path)) return $this->error('目录错误');
         $files = glob($path . "*");
@@ -75,6 +76,7 @@ class Index extends Base
     }
     public function k_backup()
     {
+        $this->isadmin();
         $action=input('post.action');
         $name=input('post.name');
         $fixow=input('post.fixow');
@@ -126,6 +128,158 @@ class Index extends Base
                 sleep(1);//等待1秒，否则出错
                 $b=$r->execute('use ['.$kelink_dbuser.'];execute Sp_changedbowner \''.$kelink_dbuser.'\',true');//设置ow权限
                 return $this->success('还原成功');
+        }
+    }
+
+    public function show_topic_select($classname='topic_select',$selectname='s_topic'){
+    	$data=Db('[wap2_smalltype]')
+    	->where('siteid',$this->k_data['siteid'])
+    	->where('systype','like','bbs%')
+    	->select();
+    	$d='<select name="'.$selectname.'" id="'.$classname.'" class="form-control">
+    	<option value="0">所有专题</option>';
+    	foreach ($data as $r){
+    	    $d.='<option value="'.$r['id'].'">class:'.str_replace('bbs','',$r['systype']).' - 专题:'.$r['subclassName'].'('.$r['id'].')</option>';
+    	}
+    	$d.='</select>';
+    	return $d;
+    }
+    public function show_class_select($classname='class_select',$selectname='s_class'){
+    	$data=Db('class')
+    	->field('classid,classname')
+    	->where(['userid'=>$this->k_data['siteid'],'typeid'=>16])
+    	->select();
+    	$d='<select name="'.$selectname.'" id="'.$classname.'" class="form-control">
+    	<option value="">选择一个论坛</option>';
+    	foreach ($data as $r){
+    	    $d.='<option value="'.$r['classid'].'">'.$r['classname'].'('.$r['classid'].')</option>';
+    	}
+    	$d.='</select>';
+    	return $d;
+    }
+    public function bbs()
+    {
+        $this->isadmin();
+        $this->assign('show_class_select', [$this,'show_class_select']);
+        $this->assign('show_topic_select', [$this,'show_topic_select']);
+        $s_class=input('get.s_class');
+        $s_userid=input('get.s_userid');
+        $s=['a.userid'=>$this->k_data['siteid']];
+        $s2=[];
+        if ($s_class){
+            $s['a.book_classid']=$s_class;
+            $s2['s_class']=$s_class;
+        }
+        if ($s_userid){
+            $s['a.book_pub']=$s_userid;
+            $s2['s_userid']=$s_userid;
+        }
+		$data=Db('wap_bbs')->alias('a')
+		->join(['[class]'=>'b'],'a.book_classid=b.classid','left')
+		->field('a.id,a.userid,a.book_classid,b.classname,a.book_title,a.book_content,a.book_author,a.book_pub,a.book_re,a.book_click,a.book_date,a.book_good,a.suport,a.topic,a.islock,a.isCheck')
+		->where($s)
+		->order('id desc')
+		->paginate(15,false,['query'=>$s2]);
+        return view('/bbs',['title'=>'柯林工具箱-帖子管理','list'=>$data]);
+    }
+    public function bbsdo()
+    {
+        $this->isadmin();
+        $r_do = input('post.r_do');
+        $tid = input('post.tid');
+        $r_num = input('post.r_num');
+        $r_class = input('post.r_class');
+        if ($r_num && !is_numeric($r_num)) return $this->error('数量必须是数字');
+        switch ($r_do) {
+          case 1:
+            Db('wap_bbs')->where('id','in',$tid)->update(['isCheck'=>2]);
+            $msg='删除帖子';
+            break;
+          case 2:
+            Db('wap_bbs')->where('id','in',$tid)->update(['isCheck'=>0]);
+            $msg='恢复帖子';
+            break;
+          case 3:
+            Db('wap_bbs')->where('id','in',$tid)->update(['islock'=>1]);
+            $msg='锁定帖子';
+            break;
+          case 4:
+            Db('wap_bbs')->where('id','in',$tid)->update(['islock'=>0]);
+            $msg='解锁帖子';
+            break;
+          case 11:
+            Db('wap_bbs')->where('id','in',$tid)->delete();
+            $msg='彻底删除帖子';
+            break;
+          case 5:
+            Db('wap_bbs')->where('id','in',$tid)->update(['book_click'=>Db::raw('[book_click]+'.$r_num)]);
+            $msg='帖子增加阅读量';
+            break;
+          case 6:
+            Db('wap_bbs')->where('id','in',$tid)->update(['book_click'=>Db::raw('[book_click]-'.$r_num)]);
+            $msg='帖子减少阅读量';
+            break;
+          case 8:
+            Db('wap_bbs')->where('id','in',$tid)->update(['suport'=>Db::raw('[suport]+'.$r_num)]);
+            $msg='帖子增加点赞量';
+            break;
+          case 9:
+            Db('wap_bbs')->where('id','in',$tid)->update(['suport'=>Db::raw('[suport]-'.$r_num)]);
+            $msg='帖子减少点赞量';
+            break;
+          case 10:
+            Db('wap_bbs')->where('id','in',$tid)->update(['book_classid'=>$r_class]);
+            $msg='转移栏目';
+            break;
+          case 7:
+            foreach(explode(',',$tid) as $r){
+                if ($r){
+                    $datas=[];
+                    for($i=0;$i<$r_num;$i++){
+                        $v = Db('kltool_reply_words')->where('xy',1)->order('NewID()')->find();
+                        $vv = Db('user')->where('siteid',$this->k_data['siteid'])->order('NewID()')->find();
+                        $cid= db('wap_bbs')->where('id',$r)->find()['book_classid'];
+                        $datas[]=[
+							'devid'=>$this->k_data['siteid'],
+							'userid'=>$vv['userid'],
+							'nickname'=>$vv['nickname'],
+							'classid'=>$cid,
+							'content'=>$v['content'],
+							'bookid'=>$r,
+							'myGetMoney'=>'0',
+							'book_top'=>'0',
+							'isCheck'=>'0',
+							'HangBiaoShi'=>'0',
+							'isdown'=>'0',
+							'reply'=>'0',
+                            ];
+                    }
+                    $result = Db::name('wap_bbsre')->insertAll($datas);
+                    Db('wap_bbs')->where('id',$r)->update(['book_re'=>db::raw('[book_re]+'.$r_num)]);
+                }
+            }
+            $msg='增加回复';
+            break;
+        }
+        return $this->success($msg);
+    }
+    public function postdo()
+    {
+        $this->isadmin();
+        $r_do=input('post.r_do');
+        $tid=input('post.tid');
+        if ($r_do=='getpost'){
+            return Db('wap_bbs')->where('id',$tid)->find();
+        }elseif($r_do=='editpost'){
+            $r_id=input('post.r_id');
+            $r=[
+                'book_title'=>input('post.r_title'),
+                'book_classid'=>input('post.s_class'),
+                'book_content'=>input('post.r_content'),
+                'topic'=>input('post.r_topic')
+                ];
+            Db('wap_bbs')->where('id',$r_id)->update($r);
+            return $this->success('修改成功');
         }
     }
 }

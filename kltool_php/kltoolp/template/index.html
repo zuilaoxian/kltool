@@ -11,7 +11,7 @@
         </div>
 		{volist name='list' id='vo' empty='暂时没有数据'}
 		<li class="list-group-item">
-			<a href="{$vo.kaction}.html">{$vo.name}</a>
+			{$vo.kaction|convert_urls}{$vo.name}</a>
 			<span class="badge pull-right k-use" tid="{$vo.id}">{eq name="$vo.use" value="1"}启用{else/}停用{/eq}</span>
 		</li>
 		{/volist}
