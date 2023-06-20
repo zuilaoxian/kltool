@@ -25,8 +25,9 @@ Route::group('',function(){
     Route::post('bbsdo','index/bbsdo');
     Route::post('postdo','index/postdo');
     
-    Route::get('bbstopic','index/bbstopic');
-    Route::post('bbstopicdo','index/bbstopicdo');
+    Route::get('bbsre','index/bbsre');
+    Route::post('bbsredo','index/bbsredo');
+    
     
     
     

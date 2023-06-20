@@ -1,9 +1,5 @@
 {extend name="base"/}
 {block name="main"}
-	<style>
-		.k-use{cursor:Pointer}
-		.k-use:hover{border: 1px solid #ff0000;}
-	</style>
         <form method="get" action="?" role="form">
             <div class="row">
                 <div class="col-xs-5">
@@ -102,7 +98,7 @@
 <script>
 $(function() {
 //功能-帖子管理-帖子修改
-	$("td#edit").click(function(){
+	$('.content').on('click','td#edit',function(){
 		const tid=$(this).parent().attr("tid")
 		$('#myModal').modal('show')
 		$('.btn.btn-primary').show();
@@ -150,9 +146,9 @@ $(function() {
 			data:$("form#editpost").serialize(),
 			timeout:'15000',
 			async:true,
-				success:function(data){
-					layer.alert(data.msg,{shadeClose:true,title:''});
-				}
+            success: (data) => {layer.alert(data.msg,{shadeClose:true,title:'操作结果'});},
+			error: () => {},
+        	complete: () => {$('.content').load('bbs.html .content')}
 		});
 		$('#myModal').modal('hide')
 	});
@@ -222,9 +218,9 @@ $(function() {
 						r_class:r_class
 						},
 					async:true,
-						success:function(data){
-							layer.alert(data.msg,{shadeClose:true,title:'操作结果'});
-						}
+					success: (data) => {layer.alert(data.msg,{shadeClose:true,title:'操作结果'});},
+					error: () => {},
+	            	complete: () => {$('.content').load('bbs.html .content')}
 			});
 		});
 	});

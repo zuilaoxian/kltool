@@ -99,14 +99,14 @@ class Index extends Base
             if (is_file($path)){
                 return $this->success('备份成功');
             }else{
-                return $this->success('失败');
+                return $this->error('失败');
             }
         }elseif ($action=='del'){
             $path = ROOT_PATH.'backup\\'.$name;
             if (!is_file($path)) return $this->success('备份文件不存在'.$path);
             @unlink($path);
             if (is_file($path)){
-                return $this->success('删除失败');
+                return $this->error('删除失败');
             }else{
                 return $this->success('删除成功');
             }
@@ -281,5 +281,50 @@ class Index extends Base
             Db('wap_bbs')->where('id',$r_id)->update($r);
             return $this->success('修改成功');
         }
+    }
+    public function bbsre()
+    {
+        $this->isadmin();
+		$data=Db('[kltool_reply_words]')
+		->order('id desc')
+		->paginate(15);
+        return view('/bbsre',['title'=>'柯林工具箱-回复语管理','list'=>$data]);
+    }
+    public function bbsredo()
+    {
+        $this->isadmin();
+        $r_do=input('post.r_do');
+        $tid=input('post.tid');
+        switch ($r_do) {
+          case 1:
+            Db('kltool_reply_words')->where('id','in',$tid)->delete();
+            $msg='删除';
+            break;
+          case 2:
+            Db('kltool_reply_words')->where('id','in',$tid)->update(['xy'=>1]);
+            $msg='启用';
+            break;
+          case 3:
+            Db('kltool_reply_words')->where('id','in',$tid)->update(['xy'=>0]);
+            $msg='停用';
+            break;
+          case 4:
+            return Db('kltool_reply_words')->where('id',$tid)->find();
+            break;
+          case 5:
+            $r_content=input('post.r_content');
+            $r_xy=input('post.r_xy');
+            $r_id=input('post.r_id');
+            Db('kltool_reply_words')->where('id',$r_id)->update(['content'=>$r_content,'xy'=>$r_xy]);
+            $msg='修改成功';
+            break;
+          case 6:
+            $r_content=input('post.r_content');
+            $r_xy=input('post.r_xy');
+            Db('kltool_reply_words')->insert(['content'=>$r_content,'xy'=>$r_xy]);
+            $msg='新增成功';
+            break;
+        }
+        return $this->success($msg);
     }
 }
