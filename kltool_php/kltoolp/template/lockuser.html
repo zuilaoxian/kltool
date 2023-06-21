@@ -1,0 +1,154 @@
+{extend name="base"/}
+{block name="main"}
+        <form method="get" action="?" role="form">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">输入用户id</span>
+                        <input class="form-control" name="s_userid" id="s_userid" type="text" value="" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="form-group" id="rclass">
+                    	{$show_class_select('class_select2')}
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <input type="submit" class="btn btn-default" value="搜索">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">拉黑天数</span>
+                        <input class="form-control" name="s_days" id="s_days" type="text" value="" placeholder="">
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <button type="button" id="lock" class="btn btn-default">加黑</button>
+                </div>
+            </div>
+        </form>
+	<div class="content">
+	    <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>
+                      <div class="form-inline">
+                          <label class="checkbox">
+                            <input type="checkbox" dom="input#tid" class="choseall" id="choseall" value=""> ID
+                          </label>
+                      </div>
+                      </th>
+                  <th>用户</th>
+                  <th>锁定天数</th>
+                  <th>锁定时间</th>
+                  <th>锁定栏目</th>
+                  <th>操作人</th>
+                </tr>
+              </thead>
+              <tbody>
+    		{volist name='list' id='vo' empty='暂时没有数据'}
+    		<tr tid="{$vo.id}">
+    		    <td>
+    		        <label class="control-label">
+    		        <input type="checkbox" class="tid" id="tid" value="{$vo.id}"> {$vo.id}
+    		        </label>
+    		    </td>
+    		    <td>{$vo.lockuserid|show_user_nick}({$vo.lockuserid})</td>
+    			<td>{eq name="$vo.lockdate" value="0"}永久{else/}
+    			{$vo.lockdate}天 ({$vo.operdate|strtotime|strtotime="+". $vo.lockdate." day",###|date='Y-m-d H:i:s',###})
+    			{gt name="$vo.dtimes" value="$vo.lockdate"}已到期{else/}未到期{/gt}
+    			{/eq}</td>
+    			
+    			<td>{$vo.operdate|strtotime|date='Y-m-d H:i:s',###}</td>
+    			<td>{eq name="$vo.classid" value="0"}全站{else/}{$vo.classname}{/eq}({$vo.classid})</td>
+    			<td>{$vo.operuserid|show_user_nick}({$vo.operuserid})</td>
+    		</tr>
+    		{/volist}
+              </tbody>
+            </table>
+        </div>
+        {$list->render()}
+	</div>
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-xs-2">
+                <a id="chose" dom="input#tid" class="label label-success">反选</a> <a id="choseall" dom="input#tid" class="label label-default">全选</a>
+            </div>
+            <div class="col-xs-2">
+                <button id="bbsdo" class="btn btn-default" data-loading-text="Loading...">删除选择</button>
+            </div>
+        </div>
+    </li>
+<script>
+$(function() {
+	$("#bbsdo").click(function(){
+		if ($('input#tid:checked').length<1){layer.alert('请至少选择一条',{shadeClose:true,title:''}); return;}
+		var tid=[];
+		$('input#tid:checked').each(function(){
+			tid.push($(this).val());
+		})
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			layer.msg('操作执行中,请等待', {
+			  icon: 16
+			  ,shade: 0.1
+			  ,time:3000
+			});
+			$.ajax({
+					url:'lockuserdo',
+					type:'post',
+					data:{
+						r_do:1,
+						tid:tid.join(','),
+						},
+					async:true,
+					success: (data) => {layer.alert(data.msg,{shadeClose:true,title:'操作结果'});},
+					error: () => {},
+	            	complete: () => {$('.content').load('lockuser.html .content')}
+			});
+		});
+	});
+	$("#lock").click(function(){
+	    s_userid=$('#s_userid').val();
+	    s_days=$('#s_days').val();
+	    s_class=$('#class_select2 option:selected').val();
+	    s_class=s_class??'0';
+	    s_days=s_days??'0';
+	    if (!s_userid){layer.tips('请输入一个用户ID', '#s_userid', {tips: [1, '#0FA6D8']}); return;}
+		layer.confirm("确定?", {
+		  btn: ['确定','取消']
+		  ,shadeClose:true
+		  ,title:''
+		}, function(){
+			layer.msg('操作执行中,请等待', {
+			  icon: 16
+			  ,shade: 0.1
+			  ,time:3000
+			});
+			$.ajax({
+					url:'lockuserdo',
+					type:'post',
+					data:{
+						r_do:2,
+						s_userid:s_userid,
+						s_class:s_class,
+						s_days:s_days
+						},
+					async:true,
+					success: (data) => {layer.alert(data.msg,{shadeClose:true,title:'操作结果'});},
+					error: () => {},
+	            	complete: () => {$('.content').load('lockuser.html .content')}
+			});
+		});
+	});
+});
+</script>
+{/block}

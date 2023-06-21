@@ -28,7 +28,8 @@ Route::group('',function(){
     Route::get('bbsre','index/bbsre');
     Route::post('bbsredo','index/bbsredo');
     
-    
+    Route::get('lockuser','lockuser/lockuser');
+    Route::post('lockuserdo','lockuser/lockuserdo');
     
     
     
