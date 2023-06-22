@@ -120,7 +120,7 @@ $(function() {
 	    s_userid=$('#s_userid').val();
 	    s_days=$('#s_days').val();
 	    s_class=$('#class_select2 option:selected').val();
-	    s_class=s_class??'0';
+	    if (!s_class || s_class=='') s_class='0';
 	    s_days=s_days??'0';
 	    if (!s_userid){layer.tips('请输入一个用户ID', '#s_userid', {tips: [1, '#0FA6D8']}); return;}
 		layer.confirm("确定?", {

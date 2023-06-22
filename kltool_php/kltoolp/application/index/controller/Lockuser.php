@@ -56,6 +56,56 @@ class Lockuser extends Base
             $s_class=input('post.s_class');
             $s_days=input('post.s_days');
             $s_userid=input('post.s_userid');
+            $r = Db('user')->where('userid',$s_userid)->where('siteid',$this->k_data['siteid'])->find();
+            if (!$r) return $this->success('不存在的会员');
+            $do=true;
+            $msg='添加';
+
+            $r2 = Db('user_lock')
+            ->where('lockuserid',$s_userid)
+            ->where('siteid',$this->k_data['siteid'])
+            ->where('classid','0')
+            ->where('lockdate','0')
+            ->find();
+            if ($r2){
+                $do=false;
+                $msg='全站永久加黑，无需重复添加';
+            }else{
+                $r2 = Db('user_lock')
+                ->field('*,DATEDIFF(second, GETDATE(), DATEADD(day, [lockdate], [operdate])) as ss')
+                ->where('lockuserid',$s_userid)
+                ->where('siteid',$this->k_data['siteid'])
+                ->where('classid','0')
+                ->find();
+                if ($r2 && $r2['ss']>0){
+                    $do=false;
+                    $msg='全站加黑未到期，无需重复添加';
+                }else{
+                    if ($s_class!=0 && $s_days!=0){
+                        $r2 = Db('user_lock')
+                        ->field('*,DATEDIFF(second, GETDATE(), DATEADD(day, [lockdate], [operdate])) as ss')
+                        ->where('lockuserid',$s_userid)
+                        ->where('siteid',$this->k_data['siteid'])
+                        ->where('classid',$s_class)
+                        ->find();
+                        if ($r2 && $r2['ss']>0){
+                            $do=false;
+                            $msg='在'.$s_class.' 的加黑未到期，无需重复添加';
+                        }
+                    }elseif($s_class!=0 && $s_days==0){
+                        $r2 = Db('user_lock')
+                        ->where('lockuserid',$s_userid)
+                        ->where('siteid',$this->k_data['siteid'])
+                        ->where('classid',$s_class)
+                        ->where('lockdate','0')
+                        ->find();
+                        if ($r2){
+                            $do=false;
+                            $msg='在'.$s_class.' 已永久加黑，无需重复添加';
+                        }
+                    }
+                }
+            }
             $datas=[
               'siteid'=>$this->k_data['siteid'],
               'lockuserid'=>$s_userid,
@@ -64,8 +114,9 @@ class Lockuser extends Base
               'operuserid'=>$this->k_data['userid'],
               'classid'=>$s_class,
                 ];
-            Db('user_lock')->insert($datas);
-            $msg='添加';
+            if ($do){
+                Db('user_lock')->insert($datas);
+            }
             break;
         }
         return $this->success($msg);
